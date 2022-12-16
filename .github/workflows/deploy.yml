@@ -41,7 +41,7 @@ jobs:
       - name: Build static files
         uses: borales/actions-yarn@v4
         with:
-          cmd: build
+          cmd: build:prod
           
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
