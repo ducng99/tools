@@ -12,15 +12,18 @@
   "dependencies": {
     "@popperjs/core": "^2.11.6",
     "bootstrap": "^5.2.3",
+    "csv-parse": "^5.3.3",
+    "csv-stringify": "^6.2.3",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.6.2"
   },
   "devDependencies": {
     "@types/react": "^18.0.26",
-    "@types/react-dom": "^18.0.9",
-    "@vitejs/plugin-react": "^3.0.0",
+    "@types/react-dom": "^18.0.10",
+    "@vitejs/plugin-react": "^3.0.1",
     "typescript": "^4.9.4",
-    "vite": "^4.0.1"
+    "vite": "^4.0.4"
   },
   "packageManager": "yarn@3.3.0"
 }
