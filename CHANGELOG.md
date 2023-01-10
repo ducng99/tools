@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2023-01-10
+
+### Features
+
+- Added CSV display table tool
+
+### Miscellaneous Tasks
+
+- [release] Re-release on main branch
+- [deps] Added react router & updated other deps
+
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
 ## [1.0.2] - 2022-12-16
 
 ### Miscellaneous Tasks
