@@ -1,12 +1,15 @@
-import { useState } from 'react'
-import CSV_Swap from './tools/CSV_Swap'
+import { Outlet } from 'react-router-dom'
+import Sidebar from './common/Sidebar'
 
 function App() {
-	const [count, setCount] = useState(0)
-
 	return (
-		<div className="App">
-			<CSV_Swap />
+		<div className="container-fluid">
+			<div className="row">
+				<Sidebar />
+				<div className="col">
+					<Outlet />
+				</div>
+			</div>
 		</div>
 	)
 }

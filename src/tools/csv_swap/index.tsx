@@ -1,17 +1,17 @@
 import { ChangeEvent, FormEvent, useState } from "react";
-import { swapColumnsRows } from "./CSV_Swap.ext";
+import { swapColumnsRows } from "./extension";
 
 function CSV_Swap() {
 	const [csvText, setCsvText] = useState('');
 	const [csvTextOutput, setCsvTextOutput] = useState('');
 
 	function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
-		const file = event.target.files?.[0];
+		const file = event.target.files![0];
 		const reader = new FileReader();
 		reader.onload = (e) => {
 			setCsvText(e.target?.result as string);
 		};
-		reader.readAsText(file!);
+		reader.readAsText(file);
 	}
 
 	function handlePaste(event: ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) {
@@ -33,7 +33,7 @@ function CSV_Swap() {
 					<input type="file" className="form-control" id="csv-input" onChange={handleFileChange} />
 				</div>
 				<div className="form-group my-3">
-					<textarea className="form-control" placeholder="Or paste CSV text here" onChange={handlePaste}></textarea>
+					<textarea className="form-control" placeholder="Or paste CSV text here" onChange={handlePaste} value={csvText}></textarea>
 				</div>
 				<button type="submit" className="btn btn-primary">Swap Columns and Rows</button>
 			</form>
