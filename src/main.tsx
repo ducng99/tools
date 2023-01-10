@@ -4,7 +4,6 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import App from './App'
 
 import('bootstrap/dist/css/bootstrap.min.css');
-import('bootstrap-icons/font/bootstrap-icons.css');
 
 const CSV_Swap = lazy(() => import('./tools/csv_swap'));
 const CSV_Display_Table = lazy(() => import('./tools/csv_display_table'));
