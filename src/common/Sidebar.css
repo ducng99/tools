@@ -1,5 +1,9 @@
 @media (min-width: 768px) {
-	#sidebar > div {
+	#sidebar>div {
 		min-height: 100vh;
 	}
+}
+
+#sidebar {
+	max-height: 100vh;
 }
