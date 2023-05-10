@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.1] - 2023-05-10
+
+### Bug Fixes
+
+- Switch to HashRouter to fix GitHub pages refresh
+
 ## [1.2.0] - 2023-05-10
 
 ### Features
