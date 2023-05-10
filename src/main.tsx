@@ -1,6 +1,6 @@
 import React, { lazy, Suspense } from 'react'
 import ReactDOM from 'react-dom/client'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createHashRouter, RouterProvider } from 'react-router-dom';
 import App from './App'
 import { ToolsIds } from './tools/ToolsIDs';
 
@@ -11,7 +11,7 @@ const CSV_Swap = lazy(() => import('./tools/csv_swap'));
 const CSV_Display_Table = lazy(() => import('./tools/csv_display_table'));
 const PasswordGenerator = lazy(() => import('./tools/password_generator'));
 
-const router = createBrowserRouter(
+const router = createHashRouter(
 	[
 		{
 			path: "/",
@@ -31,10 +31,7 @@ const router = createBrowserRouter(
 				}
 			]
 		}
-	],
-	{
-		basename: '/tools'
-	}
+	]
 );
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
