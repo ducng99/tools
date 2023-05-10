@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2023-05-10
+
+### Features
+
+- Added password generator
+
+### Miscellaneous Tasks
+
+- [deps] Updated dependencies, added bootstrap-icons
+
 ## [1.1.2] - 2023-01-10
 
 ### Bug Fixes
