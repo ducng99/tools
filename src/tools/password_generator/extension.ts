@@ -1,23 +1,23 @@
 export interface PasswordOptions {
-    length: number,
-    includeUppercase: boolean,
-    includeLowercase: boolean,
-    includeNumbers: boolean,
-    includeSymbols: boolean,
-    customSymbols: string,
+    length: number;
+    includeUppercase: boolean;
+    includeLowercase: boolean;
+    includeNumbers: boolean;
+    includeSymbols: boolean;
+    customSymbols: string;
 }
 
-export const DEFAULT_SYMBOLS = "!@#$%^&*()_-+=";
+export const DEFAULT_SYMBOLS = '!@#$%^&*()_-+=';
 
 export function generatePassword(options: PasswordOptions) {
     // Define character sets
-    const lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
-    const uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    const numberChars = "0123456789";
+    const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
+    const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const numberChars = '0123456789';
     const symbolChars = options.customSymbols || DEFAULT_SYMBOLS;
 
     // Initialize character set to use
-    let chars = "";
+    let chars = '';
     if (options.includeLowercase) {
         chars += lowercaseChars;
     }
@@ -32,7 +32,7 @@ export function generatePassword(options: PasswordOptions) {
     }
 
     // Generate password
-    let password = "";
+    let password = '';
     for (let i = 0; i < options.length; i++) {
         const randomIndex = Math.floor(Math.random() * chars.length);
         password += chars[randomIndex];

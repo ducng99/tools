@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "build:prod": "tsc && vite build --base=/tools/",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint ./src",
+    "lint:fix": "eslint --fix ./src"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.7",
@@ -23,8 +25,15 @@
     "@types/bootstrap": "^5.2.6",
     "@types/react": "^18.2.6",
     "@types/react-dom": "^18.2.4",
+    "@typescript-eslint/eslint-plugin": "^5.43.0",
     "@vitejs/plugin-react": "^4.0.0",
-    "typescript": "^5.0.4",
+    "eslint": "^8.0.1",
+    "eslint-config-standard-with-typescript": "^34.0.1",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-n": "^15.0.0",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-react": "^7.32.2",
+    "typescript": "*",
     "vite": "^4.3.5"
   },
   "packageManager": "yarn@3.3.0"

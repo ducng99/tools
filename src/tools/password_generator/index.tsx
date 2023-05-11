@@ -1,59 +1,59 @@
-import { useEffect, useRef, useState } from "react";
-import { DEFAULT_SYMBOLS, generatePassword, PasswordOptions } from "./extension";
-import { Tooltip } from "bootstrap";
+import { type ChangeEvent, useEffect, useRef, useState } from 'react';
+import { DEFAULT_SYMBOLS, generatePassword, type PasswordOptions } from './extension';
+import { Tooltip } from 'bootstrap';
 
 function PasswordGenerator() {
     const passwordCopyButtonRef = useRef<HTMLButtonElement>(null);
     const [passwordCopyTooltip, setPasswordCopyTooltip] = useState<Tooltip | null>(null);
     const passwordCopyTooltipTimeout = useRef<number>(0);
 
-    const [password, setPassword] = useState<string>("");
+    const [password, setPassword] = useState<string>('');
     const [options, setOptions] = useState<PasswordOptions>({
-        length: 9,
+        length: 16,
         includeUppercase: true,
         includeLowercase: true,
         includeNumbers: true,
         includeSymbols: true,
-        customSymbols: DEFAULT_SYMBOLS,
+        customSymbols: DEFAULT_SYMBOLS
     });
 
     useEffect(() => {
         if (passwordCopyButtonRef.current) {
             const tooltip = new Tooltip(passwordCopyButtonRef.current, {
-                title: "Copied!",
-                trigger: "manual",
+                title: 'Copied!',
+                trigger: 'manual'
             });
 
             setPasswordCopyTooltip(tooltip);
         }
     }, []);
 
-    const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleOptionChange = (event: ChangeEvent<HTMLInputElement>) => {
         const { name, checked } = event.target;
         setOptions((prevOptions) => ({
             ...prevOptions,
-            [name]: checked,
+            [name]: checked
         }));
     };
 
-    const handleLengthChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleLengthChange = (event: ChangeEvent<HTMLInputElement>) => {
         setOptions((prevOptions) => ({
             ...prevOptions,
-            length: Number(event.target.value),
+            length: Number(event.target.value)
         }));
     };
 
-    const handleSymbolChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleSymbolChange = (event: ChangeEvent<HTMLInputElement>) => {
         setOptions((prevOptions) => ({
             ...prevOptions,
-            customSymbols: event.target.value,
+            customSymbols: event.target.value
         }));
     };
 
     const handleResetSymbolsClick = () => {
         setOptions((prevOptions) => ({
             ...prevOptions,
-            customSymbols: DEFAULT_SYMBOLS,
+            customSymbols: DEFAULT_SYMBOLS
         }));
     };
 
@@ -63,17 +63,16 @@ function PasswordGenerator() {
 
     const handleCopyPassword = () => {
         if (password) {
-            navigator.clipboard.writeText(password);
-
             clearTimeout(passwordCopyTooltipTimeout.current);
+            navigator.clipboard.writeText(password).then(() => {
+                passwordCopyTooltip?.show();
 
-            passwordCopyTooltip?.show();
+                const timeout = setTimeout(() => {
+                    passwordCopyTooltip?.hide();
+                }, 1000);
 
-            const timeout = setTimeout(() => {
-                passwordCopyTooltip?.hide();
-            }, 1000);
-
-            passwordCopyTooltipTimeout.current = timeout;
+                passwordCopyTooltipTimeout.current = timeout;
+            }).catch(console.error);
         }
     };
 
