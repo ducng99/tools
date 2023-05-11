@@ -10,11 +10,6 @@ on:
 permissions:
   contents: write
 
-# Allow one concurrent deployment
-concurrency:
-  group: "release"
-  cancel-in-progress: true
-
 jobs:
   generate-changelog:
     name: Generate changelog
