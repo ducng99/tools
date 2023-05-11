@@ -4,29 +4,38 @@ name: Build & Deploy static content to Pages
 on:
   # Runs on pushes targeting the default branch
   push:
-    tags:
-      - "v*.*.*"
+    branches:
+      - main
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# Allow one concurrent deployment
+# Allow one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: "pages"
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
+    permissions:
+      actions: write
+      contents: read
+
     name: Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: Does this commit has tag?
+        run: |
+          git fetch -p --unshallow --tags -q
+          if ! git show-ref --tags | grep -q "${{ github.sha }}"; then
+            gh run cancel ${{ github.run_id }}
+            gh run watch ${{ github.run_id }}
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -52,10 +61,15 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
+    permissions:
+      pages: write
+      id-token: write
+
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
     needs: build
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v2
