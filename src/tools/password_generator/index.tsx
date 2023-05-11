@@ -9,6 +9,7 @@ function PasswordGenerator() {
     const passwordCopyTooltipTimeout = useRef<number>(0);
 
     const [password, setPassword] = useState<string>('');
+    const [isPasswordReveal, setIsPasswordReveal] = useState<boolean>(false);
     const options = useStore();
 
     useEffect(() => {
@@ -60,6 +61,10 @@ function PasswordGenerator() {
         }
     };
 
+    const handleRevealPassword = () => {
+        setIsPasswordReveal(state => !state);
+    };
+
     return (
         <div className="container mt-5">
             <h1>Password Generator</h1>
@@ -96,15 +101,16 @@ function PasswordGenerator() {
             {options.includeSymbols && (
                 <div className="input-group" role="group">
                     <input className="form-control" type="text" name="customSymbols" value={options.customSymbols} onChange={handleSymbolChange} />
-                    <button className="btn btn-secondary" onClick={handleResetSymbolsClick}><i className="bi bi-arrow-counterclockwise" /></button>
+                    <button className="btn btn-secondary" onClick={handleResetSymbolsClick}><i className="bi bi-arrow-counterclockwise" />&nbsp;Reset</button>
                 </div>
             )}
 
             <button className="btn btn-primary my-3" onClick={handleGenerateClick}>Generate Password</button>
 
             <div className="input-group" role="group">
-                <input className="form-control" type="text" value={password} readOnly />
-                <button className="btn btn-secondary" onClick={handleCopyPassword} ref={passwordCopyButtonRef}><i className="bi bi-clipboard-fill" /></button>
+                <input className="form-control" type={(isPasswordReveal ? 'text' : 'password')} value={password} onChange={(event) => { setPassword(event.currentTarget.value); }} />
+                <button className="btn btn-secondary" onClick={handleRevealPassword}><i className={'bi bi-eye-' + (isPasswordReveal ? 'fill' : 'slash')} />&nbsp;Reveal</button>
+                <button className="btn btn-secondary" onClick={handleCopyPassword} ref={passwordCopyButtonRef}><i className="bi bi-clipboard-fill" />&nbsp;Copy</button>
             </div>
         </div>
     );
