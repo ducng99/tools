@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.2] - 2023-05-11
+
+### Features
+
+- Added ESLint
+- Store password generator options in localStorage
+
+### Miscellaneous Tasks
+
+- Added page title to each tool page
+
 ## [1.2.1] - 2023-05-10
 
 ### Bug Fixes
