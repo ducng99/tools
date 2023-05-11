@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.3] - 2023-05-11
+
+### Refactor
+
+- Use a more secure random generator
+
 ## [1.2.2] - 2023-05-11
 
 ### Features
