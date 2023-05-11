@@ -26,8 +26,8 @@ function PasswordGenerator() {
     }, []);
 
     const handleOptionChange = (event: ChangeEvent<HTMLInputElement>) => {
-        const { name, checked } = event.target;
-        options.updateOptions({ [name]: checked });
+        const { id, checked } = event.target;
+        options.updateOptions({ [id]: checked });
     };
 
     const handleLengthChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -69,38 +69,38 @@ function PasswordGenerator() {
         <div className="container mt-5">
             <h1>Password Generator</h1>
             <div className="mb-3">
-                <label className="form-label">
+                <label className="form-label" htmlFor="passwordLength">
                     Password Length:
                 </label>
-                <input className="form-control" type="number" value={options.length} onChange={handleLengthChange} />
+                <input className="form-control" id="passwordLength" type="number" value={options.length} onChange={handleLengthChange} />
             </div>
             <div className="form-check">
-                <input className="form-check-input" type="checkbox" name="includeUppercase" checked={options.includeUppercase} onChange={handleOptionChange} />
-                <label className="form-check-label">
+                <input className="form-check-input" type="checkbox" id="includeUppercase" checked={options.includeUppercase} onChange={handleOptionChange} />
+                <label className="form-check-label" htmlFor="includeUppercase">
                     Include Uppercase Letters
                 </label>
             </div>
             <div className="form-check">
-                <input className="form-check-input" type="checkbox" name="includeLowercase" checked={options.includeLowercase} onChange={handleOptionChange} />
-                <label className="form-check-label">
+                <input className="form-check-input" type="checkbox" id="includeLowercase" checked={options.includeLowercase} onChange={handleOptionChange} />
+                <label className="form-check-label" htmlFor="includeLowercase">
                     Include Lowercase Letters
                 </label>
             </div>
             <div className="form-check">
-                <input className="form-check-input" type="checkbox" name="includeNumbers" checked={options.includeNumbers} onChange={handleOptionChange} />
-                <label className="form-check-label">
+                <input className="form-check-input" type="checkbox" id="includeNumbers" checked={options.includeNumbers} onChange={handleOptionChange} />
+                <label className="form-check-label" htmlFor="includeNumbers">
                     Include Numbers
                 </label>
             </div>
             <div className="form-check">
-                <input className="form-check-input" type="checkbox" name="includeSymbols" checked={options.includeSymbols} onChange={handleOptionChange} />
-                <label className="form-check-label">
+                <input className="form-check-input" type="checkbox" id="includeSymbols" checked={options.includeSymbols} onChange={handleOptionChange} />
+                <label className="form-check-label" htmlFor="includeSymbols">
                     Include Symbols
                 </label>
             </div>
             {options.includeSymbols && (
                 <div className="input-group" role="group">
-                    <input className="form-control" type="text" name="customSymbols" value={options.customSymbols} onChange={handleSymbolChange} />
+                    <input className="form-control" type="text" value={options.customSymbols} onChange={handleSymbolChange} />
                     <button className="btn btn-secondary" onClick={handleResetSymbolsClick}><i className="bi bi-arrow-counterclockwise" />&nbsp;Reset</button>
                 </div>
             )}
