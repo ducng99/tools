@@ -22,10 +22,12 @@ export function generatePassword(options: PasswordOptions) {
         chars += symbolChars;
     }
 
+    const randomTypedArray = new Uint32Array(1);
+
     // Generate password
     let password = '';
     for (let i = 0; i < options.length; i++) {
-        const randomIndex = Math.floor(Math.random() * chars.length);
+        const randomIndex = crypto.getRandomValues(randomTypedArray)[0] % chars.length;
         password += chars[randomIndex];
     }
 
