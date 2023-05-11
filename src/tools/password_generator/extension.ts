@@ -1,13 +1,4 @@
-export interface PasswordOptions {
-    length: number;
-    includeUppercase: boolean;
-    includeLowercase: boolean;
-    includeNumbers: boolean;
-    includeSymbols: boolean;
-    customSymbols: string;
-}
-
-export const DEFAULT_SYMBOLS = '!@#$%^&*()_-+=';
+import { DEFAULT_SYMBOLS, type PasswordOptions } from './store';
 
 export function generatePassword(options: PasswordOptions) {
     // Define character sets

@@ -1,6 +1,7 @@
 import { type ChangeEvent, useEffect, useRef, useState } from 'react';
-import { DEFAULT_SYMBOLS, generatePassword, type PasswordOptions } from './extension';
+import { generatePassword } from './extension';
 import { Tooltip } from 'bootstrap';
+import { DEFAULT_SYMBOLS, useStore } from './store';
 
 function PasswordGenerator() {
     const passwordCopyButtonRef = useRef<HTMLButtonElement>(null);
@@ -8,16 +9,11 @@ function PasswordGenerator() {
     const passwordCopyTooltipTimeout = useRef<number>(0);
 
     const [password, setPassword] = useState<string>('');
-    const [options, setOptions] = useState<PasswordOptions>({
-        length: 16,
-        includeUppercase: true,
-        includeLowercase: true,
-        includeNumbers: true,
-        includeSymbols: true,
-        customSymbols: DEFAULT_SYMBOLS
-    });
+    const options = useStore();
 
     useEffect(() => {
+        document.title = 'Password Generator';
+
         if (passwordCopyButtonRef.current) {
             const tooltip = new Tooltip(passwordCopyButtonRef.current, {
                 title: 'Copied!',
@@ -30,31 +26,19 @@ function PasswordGenerator() {
 
     const handleOptionChange = (event: ChangeEvent<HTMLInputElement>) => {
         const { name, checked } = event.target;
-        setOptions((prevOptions) => ({
-            ...prevOptions,
-            [name]: checked
-        }));
+        options.updateOptions({ [name]: checked });
     };
 
     const handleLengthChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setOptions((prevOptions) => ({
-            ...prevOptions,
-            length: Number(event.target.value)
-        }));
+        options.updateOptions({ length: parseInt(event.target.value) });
     };
 
     const handleSymbolChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setOptions((prevOptions) => ({
-            ...prevOptions,
-            customSymbols: event.target.value
-        }));
+        options.updateOptions({ customSymbols: event.target.value });
     };
 
     const handleResetSymbolsClick = () => {
-        setOptions((prevOptions) => ({
-            ...prevOptions,
-            customSymbols: DEFAULT_SYMBOLS
-        }));
+        options.updateOptions({ customSymbols: DEFAULT_SYMBOLS });
     };
 
     const handleGenerateClick = () => {
