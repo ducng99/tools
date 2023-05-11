@@ -1,9 +1,13 @@
-import { type ChangeEvent, type FormEvent, useState } from 'react';
+import { type ChangeEvent, type FormEvent, useState, useEffect } from 'react';
 import * as csv from 'csv-parse/browser/esm/sync';
 
 export default function CSV_Display_Table() {
     const [csvText, setCsvText] = useState('');
     const [processedData, setProcessedData] = useState<any[][]>([]);
+
+    useEffect(() => {
+        document.title = 'CSV Display Table';
+    }, []);
 
     function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
         if (event.target.files && event.target.files.length > 0) {

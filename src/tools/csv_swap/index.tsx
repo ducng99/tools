@@ -1,9 +1,13 @@
-import { type ChangeEvent, type FormEvent, useState } from 'react';
+import { type ChangeEvent, type FormEvent, useState, useEffect } from 'react';
 import { swapColumnsRows } from './extension';
 
 function CSV_Swap() {
     const [csvText, setCsvText] = useState('');
     const [csvTextOutput, setCsvTextOutput] = useState('');
+
+    useEffect(() => {
+        document.title = 'CSV Column Swapper';
+    }, []);
 
     function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
         if (event.target.files && event.target.files.length > 0) {
