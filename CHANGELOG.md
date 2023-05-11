@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.5] - 2023-05-11
+
+### 🐛 Bug Fixes
+
+- *(password_generator)* Click on label does not focus input
+
+### ⚙️ Miscellaneous Tasks
+
+- *(deploy)* Cache packages and use built-in yarn
+
 ## [1.2.4] - 2023-05-11
 
 ### ⛰️  Features
