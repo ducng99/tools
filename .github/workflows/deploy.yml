@@ -19,23 +19,12 @@ concurrency:
 jobs:
   build:
     permissions:
-      actions: write
       contents: read
 
     name: Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-      - name: Does this commit has tag?
-        run: |
-          git fetch -p --unshallow --tags -q
-          if ! git show-ref --tags | grep -q "${{ github.sha }}"; then
-            gh run cancel ${{ github.run_id }}
-            gh run watch ${{ github.run_id }}
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
