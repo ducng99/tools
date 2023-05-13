@@ -1,10 +1,11 @@
 import { DEFAULT_SYMBOLS, type PasswordOptions } from './store';
 
+// Define character sets
+const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
+const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const numberChars = '0123456789';
+
 export function generatePassword(options: PasswordOptions) {
-    // Define character sets
-    const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
-    const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const numberChars = '0123456789';
     const symbolChars = options.customSymbols || DEFAULT_SYMBOLS;
 
     // Initialize character set to use
