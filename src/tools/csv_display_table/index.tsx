@@ -1,12 +1,15 @@
 import { type ChangeEvent, useState, useEffect, useRef } from 'react';
 import * as csv from 'csv-parse/browser/esm/sync';
+import { useLoaderData } from 'react-router-dom';
 
-export default function CSV_Display_Table() {
+export function Component() {
+    const { title } = useLoaderData() as { title: string };
+
     const csvTextboxRef = useRef<HTMLTextAreaElement>(null);
     const [processedData, setProcessedData] = useState<string[][]>([]);
 
     useEffect(() => {
-        document.title = 'CSV Display Table';
+        document.title = title;
     }, []);
 
     function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
@@ -28,17 +31,17 @@ export default function CSV_Display_Table() {
 
     return (
         <div className="container mt-5">
-            <h1>CSV Display Table</h1>
+            <h1>{title}</h1>
 
             <div className="mb-3">
                 <div className="form-group">
-                    <label htmlFor="csv-input">Upload a CSV file or paste CSV text:</label>
+                    <label className="form-label" htmlFor="csv-input">Upload a CSV file or paste CSV text:</label>
                     <input type="file" className="form-control" id="csv-input" onChange={handleFileChange} />
                 </div>
                 <div className="form-group my-3">
-                    <textarea className="form-control" placeholder="Or paste CSV text here" ref={csvTextboxRef}></textarea>
+                    <textarea className="form-control" placeholder="Or paste CSV text here" rows={10} ref={csvTextboxRef}></textarea>
                 </div>
-                <button type="submit" className="btn btn-primary" onClick={handleSubmit}>Display ✨</button>
+                <button type="button" className="btn btn-primary" onClick={handleSubmit}>Display ✨</button>
             </div>
 
             <table className="table table-striped table-bordered">

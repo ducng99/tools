@@ -2,10 +2,13 @@ import { type ChangeEvent, useEffect, useRef, useState } from 'react';
 import { generatePassword } from './extension';
 import { Tooltip } from 'bootstrap';
 import { DEFAULT_SYMBOLS, useStore } from './store';
+import { useLoaderData } from 'react-router-dom';
 
-function PasswordGenerator() {
+export function Component() {
+    const { title } = useLoaderData() as { title: string };
+
     const passwordCopyButtonRef = useRef<HTMLButtonElement>(null);
-    const [passwordCopyTooltip, setPasswordCopyTooltip] = useState<Tooltip | null>(null);
+    const passwordCopyTooltip = useRef<Tooltip | null>(null);
     const passwordCopyTooltipTimeout = useRef<number>(0);
 
     const [password, setPassword] = useState<string>('');
@@ -13,15 +16,13 @@ function PasswordGenerator() {
     const options = useStore();
 
     useEffect(() => {
-        document.title = 'Password Generator';
+        document.title = title;
 
         if (passwordCopyButtonRef.current) {
-            const tooltip = new Tooltip(passwordCopyButtonRef.current, {
+            passwordCopyTooltip.current = new Tooltip(passwordCopyButtonRef.current, {
                 title: 'Copied!',
                 trigger: 'manual'
             });
-
-            setPasswordCopyTooltip(tooltip);
         }
     }, []);
 
@@ -50,10 +51,10 @@ function PasswordGenerator() {
         if (password) {
             clearTimeout(passwordCopyTooltipTimeout.current);
             navigator.clipboard.writeText(password).then(() => {
-                passwordCopyTooltip?.show();
+                passwordCopyTooltip.current?.show();
 
                 const timeout = setTimeout(() => {
-                    passwordCopyTooltip?.hide();
+                    passwordCopyTooltip.current?.hide();
                 }, 1000);
 
                 passwordCopyTooltipTimeout.current = timeout;
@@ -67,7 +68,7 @@ function PasswordGenerator() {
 
     return (
         <div className="container mt-5">
-            <h1>Password Generator</h1>
+            <h1>{title}</h1>
             <div className="mb-3">
                 <label className="form-label" htmlFor="passwordLength">
                     Password Length:
@@ -101,7 +102,7 @@ function PasswordGenerator() {
             {options.includeSymbols && (
                 <div className="input-group" role="group">
                     <input className="form-control" type="text" value={options.customSymbols} onChange={handleSymbolChange} />
-                    <button className="btn btn-secondary" onClick={handleResetSymbolsClick}><i className="bi bi-arrow-counterclockwise" />&nbsp;Reset</button>
+                    <button className="btn btn-secondary" onClick={handleResetSymbolsClick}><i className="bi bi-arrow-counterclockwise" /><span className="d-none d-md-inline">&nbsp;Reset</span></button>
                 </div>
             )}
 
@@ -109,11 +110,9 @@ function PasswordGenerator() {
 
             <div className="input-group" role="group">
                 <input className="form-control" type={(isPasswordReveal ? 'text' : 'password')} value={password} onChange={(event) => { setPassword(event.currentTarget.value); }} />
-                <button className="btn btn-secondary" onClick={handleRevealPassword}><i className={'bi bi-eye-' + (isPasswordReveal ? 'fill' : 'slash')} />&nbsp;Reveal</button>
-                <button className="btn btn-secondary" onClick={handleCopyPassword} ref={passwordCopyButtonRef}><i className="bi bi-clipboard-fill" />&nbsp;Copy</button>
+                <button className="btn btn-secondary" onClick={handleRevealPassword}><i className={'bi bi-eye-' + (isPasswordReveal ? 'fill' : 'slash')} /><span className="d-none d-md-inline">&nbsp;Reveal</span></button>
+                <button className="btn btn-secondary" onClick={handleCopyPassword} ref={passwordCopyButtonRef}><i className="bi bi-clipboard-fill" /><span className="d-none d-md-inline">&nbsp;Copy</span></button>
             </div>
         </div>
     );
 }
-
-export default PasswordGenerator;

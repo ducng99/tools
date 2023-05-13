@@ -1,12 +1,15 @@
-import { type ChangeEvent, type FormEvent, useState, useEffect } from 'react';
+import { type ChangeEvent, useState, useEffect, useRef } from 'react';
 import { swapColumnsRows } from './extension';
+import { useLoaderData } from 'react-router-dom';
 
-function CSV_Swap() {
-    const [csvText, setCsvText] = useState('');
+export function Component() {
+    const { title } = useLoaderData() as { title: string };
+
+    const csvTextboxRef = useRef<HTMLTextAreaElement>(null);
     const [csvTextOutput, setCsvTextOutput] = useState('');
 
     useEffect(() => {
-        document.title = 'CSV Column Swapper';
+        document.title = title;
     }, []);
 
     function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
@@ -14,39 +17,34 @@ function CSV_Swap() {
             const file = event.target.files[0];
             const reader = new FileReader();
             reader.onload = (e) => {
-                setCsvText(e.target?.result as string);
+                if (csvTextboxRef.current) {
+                    csvTextboxRef.current.value = e.target?.result as string;
+                }
             };
             reader.readAsText(file);
         }
     }
 
-    function handlePaste(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-        setCsvText(event.currentTarget.value);
-    }
-
-    function handleSubmit(event: FormEvent<HTMLFormElement>) {
-        event.preventDefault();
-        setCsvTextOutput(swapColumnsRows(csvText));
+    function handleSubmit() {
+        setCsvTextOutput(swapColumnsRows(csvTextboxRef.current?.value ?? ''));
     }
 
     return (
         <div className="container mt-5">
-            <h1>CSV Column Swapper</h1>
+            <h1>{title}</h1>
 
-            <form className="mb-3" onSubmit={handleSubmit}>
+            <div className="mb-3">
                 <div className="form-group">
-                    <label htmlFor="csv-input">Upload a CSV file or paste CSV text:</label>
+                    <label className="form-label" htmlFor="csv-input">Upload a CSV file or paste CSV text:</label>
                     <input type="file" className="form-control" id="csv-input" onChange={handleFileChange} />
                 </div>
                 <div className="form-group my-3">
-                    <textarea className="form-control" placeholder="Or paste CSV text here" onChange={handlePaste} value={csvText}></textarea>
+                    <textarea className="form-control" placeholder="Or paste CSV text here" rows={10} ref={csvTextboxRef}></textarea>
                 </div>
-                <button type="submit" className="btn btn-primary">Swap Columns and Rows</button>
-            </form>
+                <button type="button" className="btn btn-primary" onClick={handleSubmit}>Swap Columns and Rows</button>
+            </div>
 
             <textarea className="form-control" rows={10} value={csvTextOutput} readOnly />
         </div>
     );
 }
-
-export default CSV_Swap;
