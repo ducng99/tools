@@ -22,14 +22,9 @@ export function generatePassword(options: PasswordOptions) {
         chars += symbolChars;
     }
 
-    const randomTypedArray = new Uint32Array(1);
+    const randomTypedArray = new Uint32Array(options.length);
 
-    // Generate password
-    let password = '';
-    for (let i = 0; i < options.length; i++) {
-        const randomIndex = crypto.getRandomValues(randomTypedArray)[0] % chars.length;
-        password += chars[randomIndex];
-    }
-
-    return password;
+    return [...crypto.getRandomValues(randomTypedArray)]
+        .map(value => chars[value % chars.length])
+        .join('');
 }
