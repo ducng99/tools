@@ -2,8 +2,11 @@ import { type ChangeEvent, useEffect, useRef, useState } from 'react';
 import { generatePassword } from './extension';
 import { Tooltip } from 'bootstrap';
 import { DEFAULT_SYMBOLS, useStore } from './store';
+import { useLoaderData } from 'react-router-dom';
 
-function PasswordGenerator() {
+export function Component() {
+    const { title } = useLoaderData() as { title: string };
+
     const passwordCopyButtonRef = useRef<HTMLButtonElement>(null);
     const [passwordCopyTooltip, setPasswordCopyTooltip] = useState<Tooltip | null>(null);
     const passwordCopyTooltipTimeout = useRef<number>(0);
@@ -13,7 +16,7 @@ function PasswordGenerator() {
     const options = useStore();
 
     useEffect(() => {
-        document.title = 'Password Generator';
+        document.title = title;
 
         if (passwordCopyButtonRef.current) {
             const tooltip = new Tooltip(passwordCopyButtonRef.current, {
@@ -67,7 +70,7 @@ function PasswordGenerator() {
 
     return (
         <div className="container mt-5">
-            <h1>Password Generator</h1>
+            <h1>{title}</h1>
             <div className="mb-3">
                 <label className="form-label" htmlFor="passwordLength">
                     Password Length:
@@ -115,5 +118,3 @@ function PasswordGenerator() {
         </div>
     );
 }
-
-export default PasswordGenerator;

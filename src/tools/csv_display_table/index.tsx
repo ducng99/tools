@@ -1,12 +1,15 @@
 import { type ChangeEvent, useState, useEffect, useRef } from 'react';
 import * as csv from 'csv-parse/browser/esm/sync';
+import { useLoaderData } from 'react-router-dom';
 
-export default function CSV_Display_Table() {
+export function Component() {
+    const { title } = useLoaderData() as { title: string };
+
     const csvTextboxRef = useRef<HTMLTextAreaElement>(null);
     const [processedData, setProcessedData] = useState<string[][]>([]);
 
     useEffect(() => {
-        document.title = 'CSV Display Table';
+        document.title = title;
     }, []);
 
     function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
@@ -28,7 +31,7 @@ export default function CSV_Display_Table() {
 
     return (
         <div className="container mt-5">
-            <h1>CSV Display Table</h1>
+            <h1>{title}</h1>
 
             <div className="mb-3">
                 <div className="form-group">

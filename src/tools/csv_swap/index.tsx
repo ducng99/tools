@@ -1,12 +1,15 @@
 import { type ChangeEvent, type FormEvent, useState, useEffect, useRef } from 'react';
 import { swapColumnsRows } from './extension';
+import { useLoaderData } from 'react-router-dom';
 
-function CSV_Swap() {
+export function Component() {
+    const { title } = useLoaderData() as { title: string };
+
     const csvTextboxRef = useRef<HTMLTextAreaElement>(null);
     const [csvTextOutput, setCsvTextOutput] = useState('');
 
     useEffect(() => {
-        document.title = 'CSV Column Swapper';
+        document.title = title;
     }, []);
 
     function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
@@ -29,7 +32,7 @@ function CSV_Swap() {
 
     return (
         <div className="container mt-5">
-            <h1>CSV Column Swapper</h1>
+            <h1>{title}</h1>
 
             <form className="mb-3" onSubmit={handleSubmit}>
                 <div className="form-group">
@@ -46,5 +49,3 @@ function CSV_Swap() {
         </div>
     );
 }
-
-export default CSV_Swap;
