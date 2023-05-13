@@ -1,8 +1,8 @@
-import { type ChangeEvent, type FormEvent, useState, useEffect } from 'react';
+import { type ChangeEvent, type FormEvent, useState, useEffect, useRef } from 'react';
 import { swapColumnsRows } from './extension';
 
 function CSV_Swap() {
-    const [csvText, setCsvText] = useState('');
+    const csvTextboxRef = useRef<HTMLTextAreaElement>(null);
     const [csvTextOutput, setCsvTextOutput] = useState('');
 
     useEffect(() => {
@@ -14,19 +14,17 @@ function CSV_Swap() {
             const file = event.target.files[0];
             const reader = new FileReader();
             reader.onload = (e) => {
-                setCsvText(e.target?.result as string);
+                if (csvTextboxRef.current) {
+                    csvTextboxRef.current.value = e.target?.result as string;
+                }
             };
             reader.readAsText(file);
         }
     }
 
-    function handlePaste(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-        setCsvText(event.currentTarget.value);
-    }
-
     function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        setCsvTextOutput(swapColumnsRows(csvText));
+        setCsvTextOutput(swapColumnsRows(csvTextboxRef.current?.value ?? ''));
     }
 
     return (
@@ -39,7 +37,7 @@ function CSV_Swap() {
                     <input type="file" className="form-control" id="csv-input" onChange={handleFileChange} />
                 </div>
                 <div className="form-group my-3">
-                    <textarea className="form-control" placeholder="Or paste CSV text here" onChange={handlePaste} value={csvText}></textarea>
+                    <textarea className="form-control" placeholder="Or paste CSV text here" rows={10} ref={csvTextboxRef}></textarea>
                 </div>
                 <button type="submit" className="btn btn-primary">Swap Columns and Rows</button>
             </form>
