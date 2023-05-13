@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.6] - 2023-05-13
+
+### ⛰️  Features
+
+- *(password_generator)* Now make sure all requirements are met
+- Added new loading state
+
+### 🐛 Bug Fixes
+
+- Fixed Sidebar incorrect nav link styling
+- Fixed navbar collapse on mobile
+
+### 🚜 Refactor
+
+- *(csv_swap)* Reduce usage of `useState`
+- Dynamic tools in sidebar and router
+- Cleanup `generatePassword()` function
+
+### 🎨 Styling
+
+- *(password_generator)* Hide buttons' labels for mobile
+
 ## [1.2.5] - 2023-05-11
 
 ### 🐛 Bug Fixes
