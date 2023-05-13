@@ -14,12 +14,12 @@ export const ToolsInfo: IToolInfo = [
     {
         id: 'csv_display_table',
         name: 'CSV Display Table',
-        element: CSV_Swap
+        element: CSV_Display_Table
     },
     {
         id: 'csv_swap',
         name: 'CSV Swap',
-        element: CSV_Display_Table
+        element: CSV_Swap
     },
     {
         id: 'password_generator',
