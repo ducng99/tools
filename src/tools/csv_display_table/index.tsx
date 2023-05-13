@@ -39,7 +39,7 @@ export function Component() {
                     <input type="file" className="form-control" id="csv-input" onChange={handleFileChange} />
                 </div>
                 <div className="form-group my-3">
-                    <textarea className="form-control" placeholder="Or paste CSV text here" ref={csvTextboxRef}></textarea>
+                    <textarea className="form-control" placeholder="Or paste CSV text here" rows={10} ref={csvTextboxRef}></textarea>
                 </div>
                 <button type="submit" className="btn btn-primary" onClick={handleSubmit}>Display ✨</button>
             </div>
