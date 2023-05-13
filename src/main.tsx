@@ -14,9 +14,7 @@ const router = createHashRouter([
         element: <App />,
         children: ToolsInfo.map(tool => ({
             path: tool.id,
-            loader: async () => {
-                return { title: tool.name };
-            },
+            loader: async () => ({ title: tool.name }),
             lazy: tool.element
         }))
     }

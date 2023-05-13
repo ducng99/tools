@@ -7,9 +7,9 @@ function App() {
 
     return (
         <div className="container-fluid">
-            <div className="row">
+            <div className="row flex-column flex-md-row min-vh-100">
                 <Sidebar />
-                <div className="col vh-100">
+                <div className="col">
                     {
                         navigation.state === 'loading' && <Loading />
                     }

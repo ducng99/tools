@@ -35,13 +35,13 @@ export function Component() {
 
             <div className="mb-3">
                 <div className="form-group">
-                    <label htmlFor="csv-input">Upload a CSV file or paste CSV text:</label>
+                    <label className="form-label" htmlFor="csv-input">Upload a CSV file or paste CSV text:</label>
                     <input type="file" className="form-control" id="csv-input" onChange={handleFileChange} />
                 </div>
                 <div className="form-group my-3">
                     <textarea className="form-control" placeholder="Or paste CSV text here" rows={10} ref={csvTextboxRef}></textarea>
                 </div>
-                <button type="submit" className="btn btn-primary" onClick={handleSubmit}>Display ✨</button>
+                <button type="button" className="btn btn-primary" onClick={handleSubmit}>Display ✨</button>
             </div>
 
             <table className="table table-striped table-bordered">

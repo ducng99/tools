@@ -1,4 +1,4 @@
-import { type ChangeEvent, type FormEvent, useState, useEffect, useRef } from 'react';
+import { type ChangeEvent, useState, useEffect, useRef } from 'react';
 import { swapColumnsRows } from './extension';
 import { useLoaderData } from 'react-router-dom';
 
@@ -25,8 +25,7 @@ export function Component() {
         }
     }
 
-    function handleSubmit(event: FormEvent<HTMLFormElement>) {
-        event.preventDefault();
+    function handleSubmit() {
         setCsvTextOutput(swapColumnsRows(csvTextboxRef.current?.value ?? ''));
     }
 
@@ -34,16 +33,16 @@ export function Component() {
         <div className="container mt-5">
             <h1>{title}</h1>
 
-            <form className="mb-3" onSubmit={handleSubmit}>
+            <div className="mb-3">
                 <div className="form-group">
-                    <label htmlFor="csv-input">Upload a CSV file or paste CSV text:</label>
+                    <label className="form-label" htmlFor="csv-input">Upload a CSV file or paste CSV text:</label>
                     <input type="file" className="form-control" id="csv-input" onChange={handleFileChange} />
                 </div>
                 <div className="form-group my-3">
                     <textarea className="form-control" placeholder="Or paste CSV text here" rows={10} ref={csvTextboxRef}></textarea>
                 </div>
-                <button type="submit" className="btn btn-primary">Swap Columns and Rows</button>
-            </form>
+                <button type="button" className="btn btn-primary" onClick={handleSubmit}>Swap Columns and Rows</button>
+            </div>
 
             <textarea className="form-control" rows={10} value={csvTextOutput} readOnly />
         </div>
