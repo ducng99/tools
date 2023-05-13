@@ -8,21 +8,19 @@ import Loading from './Loading';
 import('bootstrap/dist/css/bootstrap.min.css');
 import('bootstrap-icons/font/bootstrap-icons.css');
 
-const router = createHashRouter(
-    [
-        {
-            path: '/',
-            element: <App />,
-            children: ToolsInfo.map((info) => ({
-                path: info.id,
-                loader: async () => {
-                    return { title: info.name };
-                },
-                lazy: info.element
-            }))
-        }
-    ]
-);
+const router = createHashRouter([
+    {
+        path: '/',
+        element: <App />,
+        children: ToolsInfo.map(tool => ({
+            path: tool.id,
+            loader: async () => {
+                return { title: tool.name };
+            },
+            lazy: tool.element
+        }))
+    }
+]);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
