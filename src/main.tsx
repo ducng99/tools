@@ -1,35 +1,21 @@
-import React, { lazy, Suspense } from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import { createHashRouter, RouterProvider } from 'react-router-dom';
 import App from './App';
-import { ToolsIds } from './tools/ToolsIDs';
+import { ToolsInfo } from './tools/ToolsInfo';
 
 import('bootstrap/dist/css/bootstrap.min.css');
 import('bootstrap-icons/font/bootstrap-icons.css');
-
-const CSV_Swap = lazy(async () => await import('./tools/csv_swap'));
-const CSV_Display_Table = lazy(async () => await import('./tools/csv_display_table'));
-const PasswordGenerator = lazy(async () => await import('./tools/password_generator'));
 
 const router = createHashRouter(
     [
         {
             path: '/',
             element: <App />,
-            children: [
-                {
-                    path: ToolsIds.CSV_Swap,
-                    element: <CSV_Swap />
-                },
-                {
-                    path: ToolsIds.CSV_Display_Table,
-                    element: <CSV_Display_Table />
-                },
-                {
-                    path: ToolsIds.Password_Generator,
-                    element: <PasswordGenerator />
-                }
-            ]
+            children: ToolsInfo.map((info) => ({
+                path: info.id,
+                element: <info.element />
+            }))
         }
     ]
 );

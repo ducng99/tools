@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ToolsIds } from '../tools/ToolsIDs';
+import { ToolsInfo } from '../tools/ToolsInfo';
 
 import('./Sidebar.css');
 import('bootstrap/js/dist/collapse');
@@ -16,21 +16,15 @@ export default function Sidebar() {
                 </div>
 
                 <ul className="nav nav-pills flex-column mb-sm-auto mb-0 align-items-start collapse navbar-collapse w-100" id="menu">
-                    <li className="nav-item">
-                        <Link to={ToolsIds.CSV_Swap} className="nav-link align-middle px-0">
-                            <span className="ms-1">CSV Swap</span>
-                        </Link>
-                    </li>
-                    <li className="nav-item">
-                        <Link to={ToolsIds.CSV_Display_Table} className="nav-link align-middle px-0">
-                            <span className="ms-1">CSV Display table</span>
-                        </Link>
-                    </li>
-                    <li className="nav-item">
-                        <Link to={ToolsIds.Password_Generator} className="nav-link align-middle px-0">
-                            <span className="ms-1">Password Generator</span>
-                        </Link>
-                    </li>
+                    {
+                        ToolsInfo.map((info) =>
+                            <li className="nav-item" key={info.id}>
+                                <Link to={info.id} className="nav-link align-middle px-0">
+                                    <span className="ms-1">{info.name}</span>
+                                </Link>
+                            </li>
+                        )
+                    }
                     <div className="d-md-none mb-3 w-100">
                         <hr />
                         <small>© 2022 - {new Date().getFullYear()} Thomas Nguyen</small>
