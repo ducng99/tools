@@ -8,7 +8,7 @@ export function Component() {
     const { title } = useLoaderData() as { title: string };
 
     const passwordCopyButtonRef = useRef<HTMLButtonElement>(null);
-    const [passwordCopyTooltip, setPasswordCopyTooltip] = useState<Tooltip | null>(null);
+    const passwordCopyTooltip = useRef<Tooltip | null>(null);
     const passwordCopyTooltipTimeout = useRef<number>(0);
 
     const [password, setPassword] = useState<string>('');
@@ -19,12 +19,10 @@ export function Component() {
         document.title = title;
 
         if (passwordCopyButtonRef.current) {
-            const tooltip = new Tooltip(passwordCopyButtonRef.current, {
+            passwordCopyTooltip.current = new Tooltip(passwordCopyButtonRef.current, {
                 title: 'Copied!',
                 trigger: 'manual'
             });
-
-            setPasswordCopyTooltip(tooltip);
         }
     }, []);
 
@@ -53,10 +51,10 @@ export function Component() {
         if (password) {
             clearTimeout(passwordCopyTooltipTimeout.current);
             navigator.clipboard.writeText(password).then(() => {
-                passwordCopyTooltip?.show();
+                passwordCopyTooltip.current?.show();
 
                 const timeout = setTimeout(() => {
-                    passwordCopyTooltip?.hide();
+                    passwordCopyTooltip.current?.hide();
                 }, 1000);
 
                 passwordCopyTooltipTimeout.current = timeout;
