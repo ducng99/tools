@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.7+patch1] - 2023-05-14
+
+### 🐛 Bug Fixes
+
+- Fixed incorrect header when one row has more columns
+
 ## [1.2.7] - 2023-05-14
 
 ### ⛰️  Features
