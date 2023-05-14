@@ -1,7 +1,7 @@
 import { type ChangeEvent, useState, useEffect, useRef, useMemo } from 'react';
 import { parse as csvParse } from 'csv-parse/browser/esm/sync';
 import { useLoaderData } from 'react-router-dom';
-import { type ColumnDef, useReactTable, getCoreRowModel, getPaginationRowModel, flexRender } from '@tanstack/react-table';
+import { type ColumnDef, useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
 
 export function Component() {
     const { title } = useLoaderData() as { title: string };
