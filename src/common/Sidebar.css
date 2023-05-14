@@ -1,3 +1,9 @@
 .navbar-collapse {
 	flex-basis: auto !important;
 }
+
+#sidebar {
+	max-height: 100vh;
+	position: sticky;
+	top: 0;
+}
