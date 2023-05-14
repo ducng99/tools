@@ -4,8 +4,6 @@ import SidebarFooter from './SidebarFooter';
 import { useEffect, useRef } from 'react';
 import { type Collapse } from 'bootstrap';
 
-import('./Sidebar.css');
-
 export default function Sidebar() {
     const sidebarContentRef = useRef<HTMLDivElement>(null);
     const sidebarCollapseRef = useRef<Collapse | null>(null);

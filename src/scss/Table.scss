@@ -1,0 +1,10 @@
+table .sticky-top {
+    // Excludes navbar height for mobile
+    top: 3.5em;
+
+    @include media-breakpoint-up(md) {
+        & {
+            top: 0;
+        }
+    }
+}

@@ -1,15 +1,15 @@
 import { type ChangeEvent, useState, useEffect, useRef, useMemo } from 'react';
 import { parse as csvParse } from 'csv-parse/browser/esm/sync';
 import { useLoaderData } from 'react-router-dom';
-import { type ColumnDef, useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
+import { type ColumnDef, useReactTable, getCoreRowModel, flexRender, getPaginationRowModel } from '@tanstack/react-table';
 
 export function Component() {
     const { title } = useLoaderData() as { title: string };
 
     const csvTextboxRef = useRef<HTMLTextAreaElement>(null);
     const [processedData, setProcessedData] = useState<string[][]>([]);
-    const [isFirstRowHeader, setIsFirstRowHeader] = useState<boolean>(false);
-    const [isFirstRowSticky, setIsFirstRowSticky] = useState<boolean>(false);
+    const [isFirstRowHeader, setIsFirstRowHeader] = useState<boolean>(true);
+    const [isFirstRowSticky, setIsFirstRowSticky] = useState<boolean>(true);
 
     useEffect(() => {
         document.title = title;
@@ -74,32 +74,107 @@ export function Component() {
         data: tableData,
         columns: tableHeaders,
         // Pipeline
-        getCoreRowModel: getCoreRowModel()
+        getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        initialState: {
+            pagination: {
+                pageIndex: 0,
+                pageSize: 20
+            }
+        }
     });
+
+    const setTablePageIndex = (index: number) => {
+        if (index >= 0 && index < table.getPageCount()) {
+            table.setPageIndex(index);
+        }
+    };
+
+    const setTablePageSize = (size: number) => {
+        if (size > 0) {
+            table.setPageSize(size);
+        }
+    };
+
+    const currentPageIndex = table.getState().pagination.pageIndex;
 
     return (
         <div className="container mt-5">
             <h1>{title}</h1>
 
             <div className="mb-3">
-                <div className="form-group">
+                <div>
                     <label className="form-label" htmlFor="csv-input">Upload a CSV file or paste CSV text:</label>
                     <input type="file" className="form-control" id="csv-input" onChange={handleFileChange} />
                 </div>
-                <div className="form-group my-3">
+                <div className="my-3">
                     <textarea className="form-control" placeholder="Or paste CSV text here" rows={10} ref={csvTextboxRef}></textarea>
                 </div>
                 <button type="button" className="btn btn-primary" onClick={handleSubmit}>Display ✨</button>
             </div>
 
-            <div className="border p-3 my-3 rounded">
-                <div className="form-check form-switch">
-                    <input className="form-check-input" type="checkbox" id="is-first-row-header" checked={isFirstRowHeader} onChange={() => { setIsFirstRowHeader(state => !state); }} />
-                    <label className="form-check-label" htmlFor="is-first-row-header">First row is header</label>
+            <div className="container">
+                <div className="row border p-3 my-3 rounded">
+                    <div className="col-12 col-md-6 form-check form-switch">
+                        <input className="form-check-input" type="checkbox" id="is-first-row-header" checked={isFirstRowHeader} onChange={() => { setIsFirstRowHeader(state => !state); }} />
+                        <label className="form-check-label" htmlFor="is-first-row-header">First row is header</label>
+                    </div>
+                    <div className="col-12 col-md-6 form-check form-switch">
+                        <input className="form-check-input" type="checkbox" id="is-first-row-sticky" checked={isFirstRowSticky} onChange={() => { setIsFirstRowSticky(state => !state); }} />
+                        <label className="form-check-label" htmlFor="is-first-row-sticky">First row is sticky</label>
+                    </div>
                 </div>
-                <div className="form-check form-switch">
-                    <input className="form-check-input" type="checkbox" id="is-first-row-sticky" checked={isFirstRowSticky} onChange={() => { setIsFirstRowSticky(state => !state); }} />
-                    <label className="form-check-label" htmlFor="is-first-row-sticky">First row is sticky</label>
+            </div>
+
+            <div className={'row mb-3' + (table.getPageCount() == 0 ? ' d-none' : '')}>
+                <div className="col d-flex">
+                    <nav aria-label="Table pages">
+                        <ul className="pagination m-0">
+                            <li className={'page-item' + (table.getCanPreviousPage() ? '' : ' disabled')}>
+                                <button className="page-link" onClick={() => { table.setPageIndex(0); }}>
+                                    <i className="bi bi-chevron-double-left" />
+                                    <span className="d-none d-md-inline">&nbsp;First</span>
+                                </button>
+                            </li>
+                            <li className={'page-item' + (table.getCanPreviousPage() ? '' : ' disabled')}>
+                                <button className="page-link" onClick={() => { table.previousPage(); }}>
+                                    <i className="bi bi-chevron-left" />
+                                    <span className="d-none d-md-inline">&nbsp;Previous</span>
+                                </button>
+                            </li>
+                        </ul>
+                    </nav>
+                    <div className="input-group mx-1 w-fit-content h-fit-content">
+                        <span className="input-group-text">Page</span>
+                        <input type="number" className="form-control" id="table-current-page" size={3} value={currentPageIndex + 1} onChange={(e) => { setTablePageIndex(parseInt(e.target.value) - 1); }} />
+                        <span className="input-group-text">/&nbsp;{table.getPageCount()}</span>
+                    </div>
+                    <nav aria-label="Table pages">
+                        <ul className="pagination m-0">
+                            <li className={'page-item ' + (table.getCanNextPage() ? '' : 'disabled')}>
+                                <button className="page-link" onClick={() => { table.nextPage(); }}>
+                                    <span className="d-none d-md-inline">Next&nbsp;</span>
+                                    <i className="bi bi-chevron-right" />
+                                </button>
+                            </li>
+                            <li className={'page-item ' + (table.getCanNextPage() ? '' : 'disabled')}>
+                                <button className="page-link" onClick={() => { table.setPageIndex(table.getPageCount() - 1); }}>
+                                    <span className="d-none d-md-inline">Last&nbsp;</span>
+                                    <i className="bi bi-chevron-double-right" />
+                                </button>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <div className="col d-flex justify-content-end align-items-center mt-3 mt-md-0">
+                    <span>Show&nbsp;</span>
+                    <select className="d-inline-block form-select w-fit-content h-fit-content" aria-label="Show rows per page" value={table.getState().pagination.pageSize} onChange={(e) => { setTablePageSize(parseInt(e.currentTarget.value)); }}>
+                        {[10, 20, 50, 100, 200, 500, 1000, 5000, tableData.length].map(value => (
+                            <option key={value} value={value}>{value === tableData.length ? 'All' : value}</option>
+                        ))}
+                    </select>
+                    &nbsp;rows
                 </div>
             </div>
 
