@@ -34,11 +34,11 @@ export function Component() {
             <h1>{title}</h1>
 
             <div className="mb-3">
-                <div className="form-group">
+                <div>
                     <label className="form-label" htmlFor="csv-input">Upload a CSV file or paste CSV text:</label>
                     <input type="file" className="form-control" id="csv-input" onChange={handleFileChange} />
                 </div>
-                <div className="form-group my-3">
+                <div className="my-3">
                     <textarea className="form-control" placeholder="Or paste CSV text here" rows={10} ref={csvTextboxRef}></textarea>
                 </div>
                 <button type="button" className="btn btn-primary" onClick={handleSubmit}>Swap Columns and Rows</button>
