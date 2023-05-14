@@ -49,11 +49,11 @@ export function Component() {
 
     const handleCopyPassword = () => {
         if (password) {
-            clearTimeout(passwordCopyTooltipTimeout.current);
+            window.clearTimeout(passwordCopyTooltipTimeout.current);
             navigator.clipboard.writeText(password).then(() => {
                 passwordCopyTooltip.current?.show();
 
-                const timeout = setTimeout(() => {
+                const timeout = window.setTimeout(() => {
                     passwordCopyTooltip.current?.hide();
                 }, 1000);
 
