@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.7] - 2023-05-14
+
+### ⛰️  Features
+
+- *(csv_display_table)* Implemented React Table 🎉
+
+### 🐛 Bug Fixes
+
+- Fixed sidebar once again
+
+### 🎨 Styling
+
+- Move bootstrap to custom scss file
+
+### ⚙️ Miscellaneous Tasks
+
+- *(deploy)* Added lint check before build
+
 ## [1.2.6] - 2023-05-13
 
 ### ⛰️  Features
