@@ -5,7 +5,7 @@ import App from './App';
 import { ToolsInfo } from './tools/ToolsInfo';
 import Loading from './Loading';
 
-import('bootstrap/dist/css/bootstrap.min.css');
+import('./scss/styles.scss');
 import('bootstrap-icons/font/bootstrap-icons.css');
 
 const router = createHashRouter([
