@@ -10,9 +10,16 @@ export function Component() {
     const [processedData, setProcessedData] = useState<string[][]>([]);
     const [isFirstRowHeader, setIsFirstRowHeader] = useState<boolean>(true);
     const [isFirstRowSticky, setIsFirstRowSticky] = useState<boolean>(true);
+    const [isTabbleFixed, setIsTableFixed] = useState<boolean>(true);
+    const tableFixedInfoRef = useRef<HTMLSpanElement | null>(null);
 
     useEffect(() => {
         document.title = title;
+
+        (async () => {
+            const Tooltip = (await import('bootstrap/js/dist/tooltip')).default;
+            new Tooltip(tableFixedInfoRef.current as HTMLElement);
+        })();
     }, []);
 
     function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
@@ -115,13 +122,20 @@ export function Component() {
 
             <div className="container">
                 <div className="row border p-3 my-3 rounded">
-                    <div className="col-12 col-md-6 form-check form-switch">
+                    <div className="col-12 col-md-4 form-check form-switch">
                         <input className="form-check-input" type="checkbox" id="is-first-row-header" checked={isFirstRowHeader} onChange={() => { setIsFirstRowHeader(state => !state); }} />
                         <label className="form-check-label" htmlFor="is-first-row-header">First row is header</label>
                     </div>
-                    <div className="col-12 col-md-6 form-check form-switch">
+                    <div className="col-12 col-md-4 form-check form-switch">
                         <input className="form-check-input" type="checkbox" id="is-first-row-sticky" checked={isFirstRowSticky} onChange={() => { setIsFirstRowSticky(state => !state); }} />
                         <label className="form-check-label" htmlFor="is-first-row-sticky">First row is sticky</label>
+                    </div>
+                    <div className="col-12 col-md-4 form-check form-switch">
+                        <input className="form-check-input" type="checkbox" id="is-table-fixed" checked={isTabbleFixed} onChange={() => { setIsTableFixed(state => !state); }} />
+                        <label className="form-check-label" htmlFor="is-table-fixed">Word-wrap cell content&nbsp;</label>
+                        <span className="bg-dark text-light inline-circle" data-bs-toggle="tooltip" data-bs-title="If disabled, the table can be scrolled horizontally if it's too long" aria-label="Word wrap info" ref={tableFixedInfoRef}>
+                            <i className="bi bi-info" />
+                        </span>
                     </div>
                 </div>
             </div>
@@ -178,48 +192,50 @@ export function Component() {
                 </div>
             </div>
 
-            <table className="table table-striped table-bordered">
-                {
-                    isFirstRowHeader && (
-                        <thead>
-                            {
-                                table.getHeaderGroups().map(headerGroup => (
-                                    <tr className={ isFirstRowSticky ? 'sticky-top bg-white' : ''} key={headerGroup.id}>
-                                        {headerGroup.headers.map(header => (
-                                            <th key={header.id} colSpan={header.colSpan}>
+            <div className="table-responsive">
+                <table className={'table table-striped table-bordered' + (isTabbleFixed ? ' table-fixed' : '')}>
+                    {
+                        isFirstRowHeader && (
+                            <thead>
+                                {
+                                    table.getHeaderGroups().map(headerGroup => (
+                                        <tr className={ isFirstRowSticky ? 'sticky-top bg-white' : ''} key={headerGroup.id}>
+                                            {headerGroup.headers.map(header => (
+                                                <th key={header.id} colSpan={header.colSpan}>
+                                                    {flexRender(
+                                                        header.column.columnDef.header,
+                                                        header.getContext()
+                                                    )}
+                                                </th>
+                                            ))}
+                                        </tr>
+                                    ))
+                                }
+                            </thead>
+                        )
+                    }
+                    <tbody className={isFirstRowHeader ? 'table-group-divider' : ''}>
+                        {
+                            table.getRowModel().rows.map(row => {
+                                if (isFirstRowHeader && row.index === 0) return null;
+
+                                return (
+                                    <tr className={isFirstRowSticky && row.index === 0 ? 'sticky-top bg-white' : ''} key={row.id}>
+                                        {row.getVisibleCells().map(cell => (
+                                            <td key={cell.id}>
                                                 {flexRender(
-                                                    header.column.columnDef.header,
-                                                    header.getContext()
+                                                    cell.column.columnDef.cell,
+                                                    cell.getContext()
                                                 )}
-                                            </th>
+                                            </td>
                                         ))}
                                     </tr>
-                                ))
-                            }
-                        </thead>
-                    )
-                }
-                <tbody className={isFirstRowHeader ? 'table-group-divider' : ''}>
-                    {
-                        table.getRowModel().rows.map(row => {
-                            if (isFirstRowHeader && row.index === 0) return null;
-
-                            return (
-                                <tr className={isFirstRowSticky && row.index === 0 ? 'sticky-top bg-white' : ''} key={row.id}>
-                                    {row.getVisibleCells().map(cell => (
-                                        <td key={cell.id}>
-                                            {flexRender(
-                                                cell.column.columnDef.cell,
-                                                cell.getContext()
-                                            )}
-                                        </td>
-                                    ))}
-                                </tr>
-                            );
-                        })
-                    }
-                </tbody>
-            </table>
+                                );
+                            })
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 }

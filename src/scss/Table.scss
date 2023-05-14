@@ -8,3 +8,8 @@ table .sticky-top {
         }
     }
 }
+
+.table-fixed {
+    table-layout: fixed;
+    overflow-wrap: break-word;
+}
