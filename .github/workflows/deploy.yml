@@ -32,6 +32,9 @@ jobs:
           node-version: 18.x
           cache: yarn
 
+      - name: Lint check
+        run: yarn lint
+
       - name: Run install
         run: yarn install --frozen-lockfile
 
