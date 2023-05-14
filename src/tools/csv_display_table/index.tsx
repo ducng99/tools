@@ -36,13 +36,19 @@ export function Component() {
 
     const tableHeaders = useMemo<Array<ColumnDef<object>>>(() => {
         if (processedData.length > 0) {
-            // Get longest row (most columns) and use that as the header
-            return processedData.reduce((a, b) => a.length - b.length > 0 ? a : b).map((cell, i) => (
-                {
-                    header: cell,
+            // Get longest row (most columns) and use that as the number of columns
+            const numColumns = processedData.reduce((a, b) => a.length - b.length > 0 ? a : b).length;
+
+            const headers: Array<ColumnDef<object>> = [];
+
+            for (let i = 0; i < numColumns; i++) {
+                headers.push({
+                    header: processedData[0][i] ?? '',
                     accessorKey: `col${i}`
-                }
-            ));
+                });
+            }
+
+            return headers;
         }
 
         return [];
