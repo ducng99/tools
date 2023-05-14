@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.8] - 2023-05-14
+
+### ⛰️  Features
+
+- *(csv_display_table)* Added pagination to table
+
 ## [1.2.7+patch1] - 2023-05-14
 
 ### 🐛 Bug Fixes
