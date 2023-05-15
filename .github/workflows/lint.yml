@@ -1,0 +1,36 @@
+name: Check ESLint
+
+on:
+  push:
+    paths: ['src/**/*.{js,jsx,ts,tsx}']
+  pull_request:
+    paths: ['src/**/*.{js,jsx,ts,tsx}']
+
+  workflow_dispatch:
+
+jobs:
+  linting:    
+    permissions:
+      contents: read
+
+    strategy:
+      matrix:
+        node-version: [16, 18, 20]
+        os: [windows-2022, windows-2019, ubuntu-22.04, ubuntu-20.04, macos-13, macos-12, macos-11]
+
+    name: Build
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: yarn
+
+      - name: Run install
+        run: yarn install --frozen-lockfile
+
+      - name: Lint check
+        run: yarn lint
