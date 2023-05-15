@@ -1,3 +1,13 @@
+## [1.2.9] - 2023-05-15
+
+### ⛰️  Features
+
+- *(csv_display_table)* Added word-wrap for table
+
+### ⚙️ Miscellaneous Tasks
+
+- *(lint)* Added lint check workflow
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
