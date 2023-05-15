@@ -36,6 +36,7 @@
     "eslint-plugin-n": "^15.0.0",
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-react": "^7.32.2",
+    "nanospinner": "^1.1.0",
     "typescript": "*",
     "vite": "^4.3.5"
   }
