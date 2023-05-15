@@ -9,7 +9,8 @@
         "standard-with-typescript"
     ],
     "ignorePatterns": [
-        "vite-env.d.ts"
+        "vite-env.d.ts",
+        "vite.config.ts"
     ],
     "overrides": [],
     "parserOptions": {
