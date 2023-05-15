@@ -1,5 +1,9 @@
 # Tools ¯\\_(ツ)_/¯
 
+[![Build & Deploy static content to Pages](https://github.com/ducng99/tools/actions/workflows/deploy.yml/badge.svg)](https://github.com/ducng99/tools/actions/workflows/deploy.yml)
+[![Check ESLint](https://github.com/ducng99/tools/actions/workflows/lint.yml/badge.svg)](https://github.com/ducng99/tools/actions/workflows/lint.yml)
+[![CodeQL](https://github.com/ducng99/tools/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/ducng99/tools/actions/workflows/github-code-scanning/codeql)
+
 A React app containing various very-simple tools.
 
 Created by me 👨‍💻, or AI 🤖
