@@ -9,11 +9,14 @@
     "build:prod": "tsc && vite build --base=/tools/",
     "preview": "vite preview",
     "lint": "eslint ./src",
-    "lint:fix": "eslint --fix ./src"
+    "lint:fix": "eslint --fix ./src",
+    "test:server": "vite & wait-on http://localhost:5173",
+    "test:run": "cypress run"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.7",
     "@tanstack/react-table": "^8.9.1",
+    "@vitejs/plugin-react": "^4.0.0",
     "bootstrap": "^5.2.3",
     "bootstrap-icons": "^1.10.5",
     "csv-parse": "^5.3.10",
@@ -22,6 +25,8 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.11.1",
     "sass": "^1.62.1",
+    "typescript": "*",
+    "vite": "^4.3.5",
     "zustand": "^4.3.8"
   },
   "devDependencies": {
@@ -29,7 +34,7 @@
     "@types/react": "^18.2.6",
     "@types/react-dom": "^18.2.4",
     "@typescript-eslint/eslint-plugin": "^5.43.0",
-    "@vitejs/plugin-react": "^4.0.0",
+    "cypress": "^12.12.0",
     "eslint": "^8.0.1",
     "eslint-config-standard-with-typescript": "^34.0.1",
     "eslint-plugin-import": "^2.25.2",
@@ -37,7 +42,6 @@
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-react": "^7.32.2",
     "nanospinner": "^1.1.0",
-    "typescript": "*",
-    "vite": "^4.3.5"
+    "wait-on": "^7.0.1"
   }
 }
