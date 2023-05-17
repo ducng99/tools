@@ -6,6 +6,10 @@ const fileContentTests = [
 ];
 
 describe('CSV Swap', () => {
+    before(() => {
+        cy.wait(5000);
+    });
+
     beforeEach(() => {
         cy.visit('csv_swap');
     });
