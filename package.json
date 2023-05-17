@@ -10,8 +10,7 @@
     "preview": "vite preview",
     "lint": "eslint ./src",
     "lint:fix": "eslint --fix ./src",
-    "test:server": "vite & wait-on http://localhost:5173",
-    "test:run": "cypress run"
+    "test": "cypress run"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.7",
@@ -41,7 +40,6 @@
     "eslint-plugin-n": "^15.0.0",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-react": "^7.32.2",
-    "nanospinner": "^1.1.0",
-    "wait-on": "^7.0.1"
+    "nanospinner": "^1.1.0"
   }
 }
