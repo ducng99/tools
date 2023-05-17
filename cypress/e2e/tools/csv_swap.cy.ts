@@ -6,13 +6,12 @@ const fileContentTests = [
 ];
 
 describe('CSV Swap', () => {
-    before(() => {
-        cy.visit('csv_swap');
-        cy.wait(15000);
-    });
-
     beforeEach(() => {
         cy.visit('csv_swap');
+        cy.get('#csv-file-upload', { timeout: 15000 });
+        cy.get('#csv-textbox', { timeout: 15000 });
+        cy.get('#trigger-button', { timeout: 15000 });
+        cy.get('#output-textbox', { timeout: 15000 });
     });
 
     fileContentTests.forEach((fileContent, index) => {
