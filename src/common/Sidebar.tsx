@@ -9,10 +9,12 @@ export default function Sidebar() {
     const sidebarCollapseRef = useRef<Collapse | null>(null);
 
     useEffect(() => {
-        (async () => {
-            const Collapse = (await import('bootstrap/js/dist/collapse')).default;
-            sidebarCollapseRef.current = new Collapse(sidebarContentRef.current as HTMLDivElement, { toggle: false });
-        })();
+        if (sidebarCollapseRef.current) {
+            (async () => {
+                const Collapse = (await import('bootstrap/js/dist/collapse')).default;
+                sidebarCollapseRef.current = new Collapse(sidebarContentRef.current as HTMLDivElement, { toggle: false });
+            })();
+        }
     }, []);
 
     const hideSidebar = () => {
