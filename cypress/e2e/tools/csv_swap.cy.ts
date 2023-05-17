@@ -7,7 +7,8 @@ const fileContentTests = [
 
 describe('CSV Swap', () => {
     before(() => {
-        cy.wait(5000);
+        cy.visit('csv_swap');
+        cy.wait(15000);
     });
 
     beforeEach(() => {
