@@ -1,3 +1,4 @@
+import { escapeRegExp } from '../../Utils';
 import { DEFAULT_SYMBOLS, type PasswordOptions } from './store';
 
 // Define character sets
@@ -23,30 +24,33 @@ export function generatePassword(options: PasswordOptions): string {
         chars += symbolChars;
     }
 
-    // Generate password
-    const randomTypedArray = new Uint32Array(options.length);
+    let password = '';
+    let passwordPasses = 4;
 
-    const password = [...crypto.getRandomValues(randomTypedArray)]
-        .map(value => chars[value % chars.length])
-        .join('');
+    do {
+        // Generate password
+        const randomTypedArray = new Uint32Array(options.length);
 
-    // Final check to make sure password meets requirements
-    if (options.includeLowercase && !password.match(/[a-z]/)) {
-        return generatePassword(options);
-    }
-    if (options.includeUppercase && !password.match(/[A-Z]/)) {
-        return generatePassword(options);
-    }
-    if (options.includeNumbers && !password.match(/[0-9]/)) {
-        return generatePassword(options);
-    }
-    if (options.includeSymbols && !password.match(new RegExp(`[${escapeRegExp(symbolChars)}]`))) {
-        return generatePassword(options);
-    }
+        password = [...crypto.getRandomValues(randomTypedArray)]
+            .map(value => chars[value % chars.length])
+            .join('');
+
+        passwordPasses = 4;
+
+        // Check to make sure password meets requirements
+        if (options.includeLowercase && !password.match(/[a-z]/)) {
+            passwordPasses--;
+        }
+        if (options.includeUppercase && !password.match(/[A-Z]/)) {
+            passwordPasses--;
+        }
+        if (options.includeNumbers && !password.match(/[0-9]/)) {
+            passwordPasses--;
+        }
+        if (options.includeSymbols && !password.match(new RegExp(`[${escapeRegExp(symbolChars)}]`))) {
+            passwordPasses--;
+        }
+    } while (passwordPasses < 4 && passwordPasses < password.length);
 
     return password;
-}
-
-function escapeRegExp(string: string) {
-    return string.replace(/[.*+?^${}()|[\]\\-]/g, '\\$&'); // $& means the whole matched string
 }

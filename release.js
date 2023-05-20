@@ -77,4 +77,8 @@ readline.question("Do you want to push the changes to GitHub? (y/n) ", answer =>
             process.exit(1);
         }
     }
+
+    readline.close();
+
+    process.exit(0);
 });

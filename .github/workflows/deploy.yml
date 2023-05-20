@@ -35,10 +35,7 @@ jobs:
           cache: yarn
 
       - name: Run install
-        run: yarn install --frozen-lockfile
-
-      - name: Lint check
-        run: yarn lint
+        run: yarn install --frozen-lockfile --prod
 
       - name: Build static files
         run: yarn build:prod

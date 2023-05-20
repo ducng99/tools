@@ -2,14 +2,19 @@ name: Check ESLint
 
 on:
   push:
-    paths: ['src/**/*.{js,jsx,ts,tsx}']
+    paths:
+      - "src/**/*.{js,jsx,ts,tsx}"
+      - ".eslintrc.json"
+      - "tsconfig.json"
+      - "package.json"
+      - "yarn.lock"
+
   pull_request:
-    paths: ['src/**/*.{js,jsx,ts,tsx}']
 
   workflow_dispatch:
 
 jobs:
-  linting:    
+  linting:
     permissions:
       contents: read
 
