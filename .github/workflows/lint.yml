@@ -2,6 +2,8 @@ name: Check ESLint
 
 on:
   push:
+    branches:
+      - main
     paths:
       - "src/**/*.{js,jsx,ts,tsx}"
       - ".eslintrc.json"
