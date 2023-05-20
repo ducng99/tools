@@ -5,14 +5,14 @@ import { argv } from 'process';
 import { execSync } from 'child_process';
 import { createSpinner } from 'nanospinner';
 import { createInterface } from 'readline';
-import * as utils from 'util';
+import util from 'util';
 
 const readline = createInterface({
     input: process.stdin,
     output: process.stdout
 });
 
-const question = utils.promisify(readline.question);
+const question = util.promisify(readline.question).bind(readline);
 
 if (argv.length < 3) {
     console.log('Usage: node release.js <version>');
@@ -110,3 +110,4 @@ catch (err) {
     readline.close();
 
     process.exit(0);
+}
