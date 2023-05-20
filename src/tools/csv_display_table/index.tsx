@@ -1,11 +1,8 @@
 import { type ChangeEvent, useState, useEffect, useRef, useMemo } from 'react';
 import { parse as csvParse } from 'csv-parse/browser/esm/sync';
-import { useLoaderData } from 'react-router-dom';
 import { type ColumnDef, useReactTable, getCoreRowModel, flexRender, getPaginationRowModel } from '@tanstack/react-table';
 
 export function Component() {
-    const { title } = useLoaderData() as { title: string };
-
     const csvTextboxRef = useRef<HTMLTextAreaElement>(null);
     const [processedData, setProcessedData] = useState<string[][]>([]);
     const [isFirstRowHeader, setIsFirstRowHeader] = useState<boolean>(true);
@@ -14,8 +11,6 @@ export function Component() {
     const tableFixedInfoRef = useRef<HTMLSpanElement | null>(null);
 
     useEffect(() => {
-        document.title = title;
-
         (async () => {
             const Tooltip = (await import('bootstrap/js/dist/tooltip')).default;
             new Tooltip(tableFixedInfoRef.current as HTMLElement);
@@ -107,7 +102,7 @@ export function Component() {
 
     return (
         <div className="container mt-5">
-            <h1>{title}</h1>
+            <h1>{document.title}</h1>
 
             <div className="mb-3">
                 <div>
