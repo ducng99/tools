@@ -1,16 +1,9 @@
-import { type ChangeEvent, useState, useEffect, useRef } from 'react';
+import { type ChangeEvent, useRef } from 'react';
 import { swapColumnsRows } from './extension';
-import { useLoaderData } from 'react-router-dom';
 
 export function Component() {
-    const { title } = useLoaderData() as { title: string };
-
     const csvTextboxRef = useRef<HTMLTextAreaElement>(null);
-    const [csvTextOutput, setCsvTextOutput] = useState('');
-
-    useEffect(() => {
-        document.title = title;
-    }, []);
+    const csvTextOutputRef = useRef<HTMLTextAreaElement>(null);
 
     function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
         if (event.target.files && event.target.files.length > 0) {
@@ -26,14 +19,14 @@ export function Component() {
     }
 
     function handleSubmit() {
-        if (csvTextboxRef.current?.value) {
-            setCsvTextOutput(swapColumnsRows(csvTextboxRef.current.value));
+        if (csvTextOutputRef.current && csvTextboxRef.current?.value) {
+            csvTextOutputRef.current.value = swapColumnsRows(csvTextboxRef.current.value);
         }
     }
 
     return (
         <div className="container mt-5">
-            <h1>{title}</h1>
+            <h1>{document.title}</h1>
 
             <div className="mb-3">
                 <div>
@@ -46,7 +39,7 @@ export function Component() {
                 <button type="button" className="btn btn-primary" id="trigger-button" onClick={handleSubmit}>Swap Columns and Rows</button>
             </div>
 
-            <textarea className="form-control" id="output-textbox" rows={10} value={csvTextOutput} readOnly />
+            <textarea className="form-control" id="output-textbox" rows={10} readOnly ref={csvTextOutputRef} />
         </div>
     );
 }

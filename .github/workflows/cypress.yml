@@ -10,6 +10,10 @@ on:
       - "cypress.config.ts"
 
   pull_request:
+    paths:
+      - "src/*"
+      - "cypress/*"
+      - "cypress.config.ts"
 
   workflow_dispatch:
 

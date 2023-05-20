@@ -2,11 +2,8 @@ import { type ChangeEvent, useEffect, useRef, useState } from 'react';
 import { generatePassword } from './extension';
 import { Tooltip } from 'bootstrap';
 import { DEFAULT_SYMBOLS, useStore } from './store';
-import { useLoaderData } from 'react-router-dom';
 
 export function Component() {
-    const { title } = useLoaderData() as { title: string };
-
     const passwordCopyButtonRef = useRef<HTMLButtonElement>(null);
     const passwordCopyTooltip = useRef<Tooltip | null>(null);
     const passwordCopyTooltipTimeout = useRef<number>(0);
@@ -16,8 +13,6 @@ export function Component() {
     const options = useStore();
 
     useEffect(() => {
-        document.title = title;
-
         if (passwordCopyButtonRef.current) {
             passwordCopyTooltip.current = new Tooltip(passwordCopyButtonRef.current, {
                 title: 'Copied!',
@@ -68,7 +63,7 @@ export function Component() {
 
     return (
         <div className="container mt-5">
-            <h1>{title}</h1>
+            <h1>{document.title}</h1>
             <div className="mb-3">
                 <label className="form-label" htmlFor="passwordLength">
                     Password Length:

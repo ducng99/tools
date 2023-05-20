@@ -1,3 +1,13 @@
+## [1.3.0] - 2023-05-20
+
+### ⛰️  Features
+
+- Added QR code reader (1st QR utility)
+
+### ⚡ Performance
+
+- Moved set page title to loader
+
 ## [1.2.10] - 2023-05-20
 
 ### 🐛 Bug Fixes

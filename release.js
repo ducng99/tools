@@ -5,11 +5,14 @@ import { argv } from 'process';
 import { execSync } from 'child_process';
 import { createSpinner } from 'nanospinner';
 import { createInterface } from 'readline';
+import util from 'util';
 
 const readline = createInterface({
     input: process.stdin,
     output: process.stdout
 });
+
+const question = util.promisify(readline.question).bind(readline);
 
 if (argv.length < 3) {
     console.log('Usage: node release.js <version>');
@@ -64,12 +67,14 @@ try {
     process.exit(1);
 }
 
-readline.question("Do you want to push the changes to GitHub? (y/n) ", answer => {
-    if (answer.toLowerCase() === 'y') {
+try {
+    let answer = await question("Do you want to push the commits to GitHub? (Y/n) ");
+
+    if (!answer || answer.toLowerCase() === 'y') {
         // Push changes to GitHub
         spinner = createSpinner("Pushing changes to GitHub").start();
         try {
-            execSync('git push origin main --tags');
+            execSync('git push');
             spinner.success({ text: "Changes pushed to GitHub" });
         }
         catch (err) {
@@ -77,8 +82,32 @@ readline.question("Do you want to push the changes to GitHub? (y/n) ", answer =>
             process.exit(1);
         }
     }
+}
+catch (err) {
+    console.log(err);
+}
+
+try {
+    answer = await question("Do you want to push new tag? (y/n) ");
+
+    if (answer.toLowerCase() === 'y') {
+        // Push tag to GitHub
+        spinner = createSpinner("Pushing tag to GitHub").start();
+        try {
+            execSync(`git push origin v${version}`);
+            spinner.success({ text: "Tag pushed to GitHub" });
+        }
+        catch (err) {
+            spinner.error({ text: "Failed to push tag to GitHub" });
+            process.exit(1);
+        }
+    }
+}
+catch (err) {
+    console.log(err);
+
 
     readline.close();
 
     process.exit(0);
-});
+}

@@ -7,6 +7,7 @@ type IToolInfo = Array<{
 const CSV_Swap = () => import('./csv_swap');
 const CSV_Display_Table = () => import('./csv_display_table');
 const PasswordGenerator = () => import('./password_generator');
+const QRCodeUtilities = () => import('./qr_code_utils');
 
 export const ToolsInfo: IToolInfo = [
     {
@@ -23,5 +24,10 @@ export const ToolsInfo: IToolInfo = [
         id: 'password_generator',
         name: 'Password Generator',
         element: PasswordGenerator
+    },
+    {
+        id: 'qr_code_utils',
+        name: 'QR Code Utilities',
+        element: QRCodeUtilities
     }
 ];
