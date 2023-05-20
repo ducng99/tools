@@ -1,3 +1,24 @@
+## [1.2.10] - 2023-05-20
+
+### 🐛 Bug Fixes
+
+- *(password_generator)* Fixed infinite loop
+
+### 🧪 Testing
+
+- Implemented Cypress tests and CI
+
+### ⚙️ Miscellaneous Tasks
+
+- *(deps)* Updated dependencies
+- *(deps-dev)* Bump vite from 4.3.5 to 4.3.6
+- *(deps-dev)* Bump vite from 4.3.5 to 4.3.6
+- *(lint)* Expand Lint workflow trigger paths
+
+### Signed-off-by
+
+- Dependabot[bot] <support@github.com>
+
 ## [1.2.9] - 2023-05-15
 
 ### ⛰️  Features
