@@ -101,15 +101,15 @@ export function Component() {
             </div>
             {options.includeSymbols && (
                 <div className="input-group" role="group">
-                    <input className="form-control" type="text" value={options.customSymbols} onChange={handleSymbolChange} />
+                    <input className="form-control" id="customSymbols" type="text" value={options.customSymbols} onChange={handleSymbolChange} />
                     <button className="btn btn-secondary" onClick={handleResetSymbolsClick}><i className="bi bi-arrow-counterclockwise" /><span className="d-none d-md-inline">&nbsp;Reset</span></button>
                 </div>
             )}
 
-            <button className="btn btn-primary my-3" onClick={handleGenerateClick}>Generate Password</button>
+            <button className="btn btn-primary my-3" id="generateButton" onClick={handleGenerateClick}>Generate Password</button>
 
             <div className="input-group" role="group">
-                <input className="form-control" type={(isPasswordReveal ? 'text' : 'password')} value={password} onChange={(event) => { setPassword(event.currentTarget.value); }} />
+                <input className="form-control" id="passwordOutput" type={(isPasswordReveal ? 'text' : 'password')} value={password} onChange={(event) => { setPassword(event.currentTarget.value); }} />
                 <button className="btn btn-secondary" onClick={handleRevealPassword}><i className={'bi bi-eye-' + (isPasswordReveal ? 'fill' : 'slash')} /><span className="d-none d-md-inline">&nbsp;Reveal</span></button>
                 <button className="btn btn-secondary" onClick={handleCopyPassword} ref={passwordCopyButtonRef}><i className="bi bi-clipboard-fill" /><span className="d-none d-md-inline">&nbsp;Copy</span></button>
             </div>

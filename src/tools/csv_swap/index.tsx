@@ -26,7 +26,9 @@ export function Component() {
     }
 
     function handleSubmit() {
-        setCsvTextOutput(swapColumnsRows(csvTextboxRef.current?.value ?? ''));
+        if (csvTextboxRef.current?.value) {
+            setCsvTextOutput(swapColumnsRows(csvTextboxRef.current.value));
+        }
     }
 
     return (
@@ -35,16 +37,16 @@ export function Component() {
 
             <div className="mb-3">
                 <div>
-                    <label className="form-label" htmlFor="csv-input">Upload a CSV file or paste CSV text:</label>
-                    <input type="file" className="form-control" id="csv-input" onChange={handleFileChange} />
+                    <label className="form-label" htmlFor="csv-file-upload">Upload a CSV file or paste CSV text:</label>
+                    <input type="file" className="form-control" id="csv-file-upload" onChange={handleFileChange} />
                 </div>
                 <div className="my-3">
-                    <textarea className="form-control" placeholder="Or paste CSV text here" rows={10} ref={csvTextboxRef}></textarea>
+                    <textarea className="form-control" id="csv-textbox" placeholder="Or paste CSV text here" rows={10} ref={csvTextboxRef}></textarea>
                 </div>
-                <button type="button" className="btn btn-primary" onClick={handleSubmit}>Swap Columns and Rows</button>
+                <button type="button" className="btn btn-primary" id="trigger-button" onClick={handleSubmit}>Swap Columns and Rows</button>
             </div>
 
-            <textarea className="form-control" rows={10} value={csvTextOutput} readOnly />
+            <textarea className="form-control" id="output-textbox" rows={10} value={csvTextOutput} readOnly />
         </div>
     );
 }

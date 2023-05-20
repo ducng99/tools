@@ -1,0 +1,37 @@
+name: Cypress CI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "src/*"
+      - "cypress/*"
+      - "cypress.config.ts"
+
+  pull_request:
+
+  workflow_dispatch:
+
+jobs:
+  cypress:
+    permissions:
+      contents: read
+
+    # Cypress browsers matrix
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [electron, chrome, firefox]
+
+    name: Cypress Run
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run Cypress
+        uses: cypress-io/github-action@v5
+        timeout-minutes: 3
+        with:
+          start: yarn dev
+          browser: ${{ matrix.browser }}
