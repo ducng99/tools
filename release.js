@@ -68,7 +68,7 @@ try {
 }
 
 try {
-    let answer = await question("Do you want to push the commits to GitHub? (Y/n) ");
+    const answer = await question("Do you want to push the commits to GitHub? (Y/n) ");
 
     if (!answer || answer.toLowerCase() === 'y') {
         // Push changes to GitHub
@@ -88,7 +88,7 @@ catch (err) {
 }
 
 try {
-    answer = await question("Do you want to push new tag? (y/n) ");
+    const answer = await question("Do you want to push new tag? (y/n) ");
 
     if (answer.toLowerCase() === 'y') {
         // Push tag to GitHub
@@ -105,9 +105,7 @@ try {
 }
 catch (err) {
     console.log(err);
-
-
-    readline.close();
-
-    process.exit(0);
 }
+
+readline.close();
+process.exit(0);
