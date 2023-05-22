@@ -1,3 +1,9 @@
+## [1.3.1] - 2023-05-22
+
+### 🐛 Bug Fixes
+
+- Fixed QR read on SVG image
+
 ## [1.3.0] - 2023-05-20
 
 ### ⛰️  Features
