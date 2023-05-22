@@ -14,3 +14,9 @@
     justify-content: center;
     align-items: center;
 }
+
+@for $i from 0 through 10 {
+    .maxh-#{$i}0vh {
+        max-height: #{$i}0vh;
+    }
+}
