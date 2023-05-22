@@ -3,15 +3,16 @@ import ZXing from '../../libs/zxing/zxing';
 
 export function Component() {
     const qrFileUploadRef = useRef<HTMLInputElement>(null);
-    const qrImageRef = useRef<HTMLImageElement>(null);
-    const qrFileRef = useRef<File | null>(null);
+    const qrImageDisplayRef = useRef<HTMLImageElement>(null);
+    const qrImageDataRef = useRef<ArrayBuffer | null>(null);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
     const outputTextboxRef = useRef<HTMLTextAreaElement>(null);
 
     const zxing = useRef<any>(null);
 
     useEffect(() => {
         zxing.current = ZXing().then(function (instance: any) {
-            zxing.current = instance; // this line is supposedly not required but with current emsdk it is :-/
+            zxing.current = instance;
         });
     }, []);
 
@@ -19,13 +20,9 @@ export function Component() {
         if (event.target.files && event.target.files.length > 0) {
             const file = event.target.files[0];
 
-            qrFileRef.current = file;
-
-            if (qrImageRef.current) {
-                qrImageRef.current.src = window.URL.createObjectURL(file);
+            if (qrImageDisplayRef.current) {
+                qrImageDisplayRef.current.src = window.URL.createObjectURL(file);
             }
-
-            processQRImage();
         }
     }
 
@@ -39,22 +36,38 @@ export function Component() {
                         if (qrFileUploadRef.current) {
                             qrFileUploadRef.current.value = '';
                         }
-                        qrFileRef.current = file;
 
-                        if (qrImageRef.current) {
-                            qrImageRef.current.src = window.URL.createObjectURL(file);
+                        if (qrImageDisplayRef.current) {
+                            qrImageDisplayRef.current.src = window.URL.createObjectURL(file);
                         }
-
-                        processQRImage();
                     }
                 }
             }
         }
     }
 
+    function updateCanvas() {
+        const context = canvasRef.current?.getContext('2d');
+        if (canvasRef.current && context && qrImageDisplayRef.current) {
+            canvasRef.current.width = qrImageDisplayRef.current.width;
+            canvasRef.current.height = qrImageDisplayRef.current.height;
+            context.fillStyle = 'white';
+            context.fillRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+            context.imageSmoothingEnabled = false;
+            context.drawImage(qrImageDisplayRef.current, 0, 0, qrImageDisplayRef.current.width, qrImageDisplayRef.current.height);
+            canvasRef.current?.toBlob((blob) => {
+                blob?.arrayBuffer().then((buffer) => {
+                    qrImageDataRef.current = buffer;
+
+                    processQRImage();
+                }).catch(() => {});
+            }, 'image/jpg');
+        }
+    }
+
     function processQRImage() {
-        qrFileRef.current?.arrayBuffer().then((arrBuffer) => {
-            const fileData = new Uint8Array(arrBuffer);
+        if (qrImageDataRef.current) {
+            const fileData = new Uint8Array(qrImageDataRef.current);
 
             const buffer = zxing.current._malloc(fileData.length);
             zxing.current.HEAPU8.set(fileData, buffer);
@@ -64,28 +77,29 @@ export function Component() {
             if (outputTextboxRef.current) {
                 outputTextboxRef.current.value = result.text;
             }
-        }).catch((error) => {
-            console.error(error);
-        });
+        }
     }
 
     return (
         <div className="container mt-5" onPaste={handlePaste}>
             <h1>{document.title}</h1>
 
-            <div className="mb-3">
-                <div>
-                    <label className="form-label" htmlFor="qr-image-file-upload">Select an image or drag it here:</label>
-                    <input type="file" className="form-control" id="qr-image-file-upload" onChange={handleFileChange} ref={qrFileUploadRef} />
-                    <small>Or paste the image on this page (NOT a file)</small>
-                </div>
-                <div className="my-3 text-center">
-                    <img className="maxh-50" src="" alt="<QR image will be displayed here>" id="qr-image" ref={qrImageRef} />
-                </div>
-                <button type="button" className="btn btn-primary" id="trigger-button" onClick={processQRImage}>See 👀</button>
+            <div>
+                <label className="form-label" htmlFor="qr-image-file-upload">Select an image or drag it here:</label>
+                <input type="file" className="form-control" id="qr-image-file-upload" onChange={handleFileChange} ref={qrFileUploadRef} />
+                <small>Or simply paste the image on this page! (Don&apos;t paste a file)</small>
             </div>
 
-            <textarea className="form-control" id="output-textbox" rows={10} readOnly ref={outputTextboxRef} />
+            <button type="button" className="btn btn-primary mt-3" id="trigger-button" onClick={processQRImage}>See 👀</button>
+
+            <textarea className="form-control mt-3" id="output-textbox" rows={10} readOnly ref={outputTextboxRef} />
+
+            <div className="mt-3 text-center">
+                <img className="maxh-30vh" src="" alt="<QR image will be displayed here>" id="qr-image" onLoad={updateCanvas} ref={qrImageDisplayRef} />
+                <div className="d-none">
+                    <canvas ref={canvasRef}></canvas>
+                </div>
+            </div>
         </div>
     );
 }
