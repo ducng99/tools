@@ -1,12 +1,13 @@
 # Tools ¯\\_(ツ)_/¯
 
-[![Build & Deploy static content to Pages](https://github.com/ducng99/tools/actions/workflows/deploy.yml/badge.svg)](https://github.com/ducng99/tools/actions/workflows/deploy.yml)
+[![Build & Deploy](https://github.com/ducng99/tools/actions/workflows/deploy.yml/badge.svg)](https://github.com/ducng99/tools/actions/workflows/deploy.yml)
 [![Check ESLint](https://github.com/ducng99/tools/actions/workflows/lint.yml/badge.svg)](https://github.com/ducng99/tools/actions/workflows/lint.yml)
 [![CodeQL](https://github.com/ducng99/tools/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/ducng99/tools/actions/workflows/github-code-scanning/codeql)
+[![Cypress CI](https://github.com/ducng99/tools/actions/workflows/cypress.yml/badge.svg)](https://github.com/ducng99/tools/actions/workflows/cypress.yml)
 
-A React app containing various very-simple tools.
+A React app containing various very-simple client-side tools. Created by me 👨‍💻, or AI 🤖
 
-Created by me 👨‍💻, or AI 🤖
+No tracking, no cookies, no data send out. All processing is in browser. All tools can work offline.
 
 See all: https://static.ducng.dev/tools
 
@@ -24,3 +25,12 @@ Does what it says 🤷‍♂️
 A simple password generator using Crypto API (it's just a random number generator 🤷‍♂️).
 
 Different options are available with providing your own list of characters.
+
+### QR code utilities
+#### QR Reader
+
+Reads QR code/barcode image and output its content.
+
+# License
+- [Zxing-C++](https://github.com/zxing-cpp/zxing-cpp) library [license](https://github.com/zxing-cpp/zxing-cpp/blob/master/LICENSE)
+- This project's code under [MIT license](LICENSE)
