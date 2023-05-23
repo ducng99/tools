@@ -27,18 +27,7 @@
 
 - *(deps)* Bump vite from 4.3.7 to 4.3.8
 - *(deps)* Bump react-router-dom from 6.11.1 to 6.11.2
-- *(deps)* Bump vite from 4.3.7 to 4.3.8
-- *(deps)* Bump react-router-dom from 6.11.1 to 6.11.2
-- *(deps)* Bump react-router-dom from 6.11.1 to 6.11.2
 - *(deps-dev)* Bump eslint from 8.40.0 to 8.41.0
-- *(deps-dev)* Bump eslint from 8.40.0 to 8.41.0
-- *(deps-dev)* Bump eslint from 8.40.0 to 8.41.0
-
-### Signed-off-by
-
-- Dependabot[bot] <support@github.com>
-- Dependabot[bot] <support@github.com>
-- Dependabot[bot] <support@github.com>
 
 ## [1.3.1] - 2023-05-22
 
