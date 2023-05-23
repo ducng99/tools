@@ -26,10 +26,10 @@ A simple password generator using Crypto API (it's just a random number generato
 
 Different options are available with providing your own list of characters.
 
-### QR code utilities
-#### QR Reader
+### Barcode utilities
+#### Barcode Reader
 
-Reads QR code/barcode image and output its content.
+Reads QR code/barcode image and output its content. Using Zxing library
 
 # License
 - [Zxing-C++](https://github.com/zxing-cpp/zxing-cpp) library [license](https://github.com/zxing-cpp/zxing-cpp/blob/master/LICENSE)
