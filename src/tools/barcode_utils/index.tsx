@@ -1,18 +1,20 @@
 import { type ChangeEvent, type ClipboardEvent, useRef, useEffect } from 'react';
-import ZXing from '../../libs/zxing/zxing';
 
 export function Component() {
     const barcodeFileUploadRef = useRef<HTMLInputElement>(null);
     const barcodeImageDisplayRef = useRef<HTMLImageElement>(null);
-    const barcodeImageDataRef = useRef<ArrayBuffer | null>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const outputTextboxRef = useRef<HTMLTextAreaElement>(null);
 
     const zxing = useRef<any>(null);
 
     useEffect(() => {
-        zxing.current = ZXing().then(function (instance: any) {
-            zxing.current = instance;
+        import('../../libs/zxing/zxing').then(ZXing => {
+            zxing.current = ZXing.default().then(function (instance: any) {
+                zxing.current = instance;
+            });
+        }).catch(() => {
+            console.error('Failed to load ZXing library!');
         });
     }, []);
 
@@ -47,7 +49,7 @@ export function Component() {
     }
 
     function updateCanvas() {
-        const context = canvasRef.current?.getContext('2d');
+        const context = canvasRef.current?.getContext('2d', { alpha: false });
         if (canvasRef.current && context && barcodeImageDisplayRef.current) {
             canvasRef.current.width = barcodeImageDisplayRef.current.width;
             canvasRef.current.height = barcodeImageDisplayRef.current.height;
@@ -57,17 +59,15 @@ export function Component() {
             context.drawImage(barcodeImageDisplayRef.current, 0, 0, barcodeImageDisplayRef.current.width, barcodeImageDisplayRef.current.height);
             canvasRef.current?.toBlob((blob) => {
                 blob?.arrayBuffer().then((buffer) => {
-                    barcodeImageDataRef.current = buffer;
-
-                    processBarcodeData();
+                    processBarcodeData(buffer);
                 }).catch(() => {});
             }, 'image/jpg');
         }
     }
 
-    function processBarcodeData() {
-        if (barcodeImageDataRef.current) {
-            const fileData = new Uint8Array(barcodeImageDataRef.current);
+    function processBarcodeData(barcodeImageData: ArrayBuffer | null) {
+        if (barcodeImageData) {
+            const fileData = new Uint8Array(barcodeImageData);
 
             const buffer = zxing.current._malloc(fileData.length);
             zxing.current.HEAPU8.set(fileData, buffer);
@@ -90,7 +90,7 @@ export function Component() {
                 <small>Or simply paste the image on this page! (Don&apos;t paste a file)</small>
             </div>
 
-            <button type="button" className="btn btn-primary mt-3" id="trigger-button" onClick={processBarcodeData}>See 👀</button>
+            <button type="button" className="btn btn-primary mt-3" id="trigger-button" onClick={updateCanvas}>See 👀</button>
 
             <textarea className="form-control mt-3" id="output-textbox" rows={5} readOnly ref={outputTextboxRef} />
 
