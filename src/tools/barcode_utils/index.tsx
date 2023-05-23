@@ -2,9 +2,9 @@ import { type ChangeEvent, type ClipboardEvent, useRef, useEffect } from 'react'
 import ZXing from '../../libs/zxing/zxing';
 
 export function Component() {
-    const qrFileUploadRef = useRef<HTMLInputElement>(null);
-    const qrImageDisplayRef = useRef<HTMLImageElement>(null);
-    const qrImageDataRef = useRef<ArrayBuffer | null>(null);
+    const barcodeFileUploadRef = useRef<HTMLInputElement>(null);
+    const barcodeImageDisplayRef = useRef<HTMLImageElement>(null);
+    const barcodeImageDataRef = useRef<ArrayBuffer | null>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const outputTextboxRef = useRef<HTMLTextAreaElement>(null);
 
@@ -20,8 +20,8 @@ export function Component() {
         if (event.target.files && event.target.files.length > 0) {
             const file = event.target.files[0];
 
-            if (qrImageDisplayRef.current) {
-                qrImageDisplayRef.current.src = window.URL.createObjectURL(file);
+            if (barcodeImageDisplayRef.current) {
+                barcodeImageDisplayRef.current.src = window.URL.createObjectURL(file);
             }
         }
     }
@@ -33,12 +33,12 @@ export function Component() {
                 if (items[i].type.includes('image')) {
                     const file = items[i].getAsFile();
                     if (file) {
-                        if (qrFileUploadRef.current) {
-                            qrFileUploadRef.current.value = '';
+                        if (barcodeFileUploadRef.current) {
+                            barcodeFileUploadRef.current.value = '';
                         }
 
-                        if (qrImageDisplayRef.current) {
-                            qrImageDisplayRef.current.src = window.URL.createObjectURL(file);
+                        if (barcodeImageDisplayRef.current) {
+                            barcodeImageDisplayRef.current.src = window.URL.createObjectURL(file);
                         }
                     }
                 }
@@ -48,26 +48,26 @@ export function Component() {
 
     function updateCanvas() {
         const context = canvasRef.current?.getContext('2d');
-        if (canvasRef.current && context && qrImageDisplayRef.current) {
-            canvasRef.current.width = qrImageDisplayRef.current.width;
-            canvasRef.current.height = qrImageDisplayRef.current.height;
+        if (canvasRef.current && context && barcodeImageDisplayRef.current) {
+            canvasRef.current.width = barcodeImageDisplayRef.current.width;
+            canvasRef.current.height = barcodeImageDisplayRef.current.height;
             context.fillStyle = 'white';
             context.fillRect(0, 0, canvasRef.current.width, canvasRef.current.height);
             context.imageSmoothingEnabled = false;
-            context.drawImage(qrImageDisplayRef.current, 0, 0, qrImageDisplayRef.current.width, qrImageDisplayRef.current.height);
+            context.drawImage(barcodeImageDisplayRef.current, 0, 0, barcodeImageDisplayRef.current.width, barcodeImageDisplayRef.current.height);
             canvasRef.current?.toBlob((blob) => {
                 blob?.arrayBuffer().then((buffer) => {
-                    qrImageDataRef.current = buffer;
+                    barcodeImageDataRef.current = buffer;
 
-                    processQRImage();
+                    processBarcodeData();
                 }).catch(() => {});
             }, 'image/jpg');
         }
     }
 
-    function processQRImage() {
-        if (qrImageDataRef.current) {
-            const fileData = new Uint8Array(qrImageDataRef.current);
+    function processBarcodeData() {
+        if (barcodeImageDataRef.current) {
+            const fileData = new Uint8Array(barcodeImageDataRef.current);
 
             const buffer = zxing.current._malloc(fileData.length);
             zxing.current.HEAPU8.set(fileData, buffer);
@@ -85,17 +85,17 @@ export function Component() {
             <h1>{document.title}</h1>
 
             <div>
-                <label className="form-label" htmlFor="qr-image-file-upload">Select an image or drag it here:</label>
-                <input type="file" className="form-control" id="qr-image-file-upload" onChange={handleFileChange} ref={qrFileUploadRef} />
+                <label className="form-label" htmlFor="barcode-image-file-upload">Select an image or drag it here:</label>
+                <input type="file" className="form-control" id="barcode-image-file-upload" onChange={handleFileChange} ref={barcodeFileUploadRef} />
                 <small>Or simply paste the image on this page! (Don&apos;t paste a file)</small>
             </div>
 
-            <button type="button" className="btn btn-primary mt-3" id="trigger-button" onClick={processQRImage}>See 👀</button>
+            <button type="button" className="btn btn-primary mt-3" id="trigger-button" onClick={processBarcodeData}>See 👀</button>
 
-            <textarea className="form-control mt-3" id="output-textbox" rows={10} readOnly ref={outputTextboxRef} />
+            <textarea className="form-control mt-3" id="output-textbox" rows={5} readOnly ref={outputTextboxRef} />
 
             <div className="mt-3 text-center">
-                <img className="maxh-30vh" src="" alt="<QR image will be displayed here>" id="qr-image" onLoad={updateCanvas} ref={qrImageDisplayRef} />
+                <img className="maxh-30vh" src="" alt="<Image will be displayed here>" id="barcode-image" onLoad={updateCanvas} ref={barcodeImageDisplayRef} />
                 <div className="d-none">
                     <canvas ref={canvasRef}></canvas>
                 </div>
