@@ -5,14 +5,14 @@ on:
     branches:
       - main
     paths:
-      - "src/*"
-      - "cypress/*"
+      - "src/**"
+      - "cypress/**"
       - "cypress.config.ts"
 
   pull_request:
     paths:
-      - "src/*"
-      - "cypress/*"
+      - "src/**"
+      - "cypress/**"
       - "cypress.config.ts"
 
   workflow_dispatch:
