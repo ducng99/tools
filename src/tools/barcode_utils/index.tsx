@@ -48,7 +48,24 @@ export function Component() {
         }
     }
 
+    function handleFileDrop(event: DragEvent) {
+        event.preventDefault();
+
+        const files = event.dataTransfer?.files;
+        if (files && files.length > 0) {
+            const file = files[0];
+
+            if (barcodeImageDisplayRef.current) {
+                barcodeImageDisplayRef.current.src = window.URL.createObjectURL(file);
+            }
+        }
+    }
+
     function updateCanvas() {
+        if (outputTextboxRef.current) {
+            outputTextboxRef.current.value = '';
+        }
+
         const context = canvasRef.current?.getContext('2d', { alpha: false });
         if (canvasRef.current && context && barcodeImageDisplayRef.current) {
             canvasRef.current.width = barcodeImageDisplayRef.current.width;
@@ -60,8 +77,16 @@ export function Component() {
             canvasRef.current?.toBlob((blob) => {
                 blob?.arrayBuffer().then((buffer) => {
                     processBarcodeData(buffer);
-                }).catch(() => {});
+                }).catch(() => {
+                    if (outputTextboxRef.current) {
+                        outputTextboxRef.current.value = 'Error: Cannot read image data!';
+                    }
+                });
             }, 'image/jpg');
+        } else {
+            if (outputTextboxRef.current) {
+                outputTextboxRef.current.value = 'Error: Cannot read image data!';
+            }
         }
     }
 
@@ -75,13 +100,19 @@ export function Component() {
             zxing._free(buffer);
 
             if (outputTextboxRef.current) {
-                outputTextboxRef.current.value = result.text;
+                if (result.error) {
+                    outputTextboxRef.current.value = result.error;
+                } else if (!result.text) {
+                    outputTextboxRef.current.value = 'Error: Cannot read barcode from image!';
+                } else {
+                    outputTextboxRef.current.value = result.text;
+                }
             }
         }
     }
 
     return (
-        <div className="container mt-5" onPaste={handlePaste}>
+        <div className="container mt-5" onPaste={handlePaste} onDrop={handleFileDrop} onDragOver={(e) => { e.preventDefault(); }}>
             <h1>{document.title}</h1>
 
             <div>
