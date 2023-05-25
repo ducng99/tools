@@ -1,22 +1,22 @@
-import { type ChangeEvent, type ClipboardEvent, useRef, useEffect } from 'react';
+import { type ChangeEvent, type ClipboardEvent, useRef, type DragEvent } from 'react';
+
+let zxing: any = null;
+
+import('../../libs/zxing/zxing').then(ZXing => {
+    zxing = ZXing.default().then(function (instance: any) {
+        zxing = instance;
+    }).catch(() => {
+        console.error('Failed when loading ZXing library!');
+    });
+}).catch(() => {
+    console.error('Failed when loading ZXing library!');
+});
 
 export function Component() {
     const barcodeFileUploadRef = useRef<HTMLInputElement>(null);
     const barcodeImageDisplayRef = useRef<HTMLImageElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const outputTextboxRef = useRef<HTMLTextAreaElement>(null);
-
-    const zxing = useRef<any>(null);
-
-    useEffect(() => {
-        import('../../libs/zxing/zxing').then(ZXing => {
-            zxing.current = ZXing.default().then(function (instance: any) {
-                zxing.current = instance;
-            });
-        }).catch(() => {
-            console.error('Failed to load ZXing library!');
-        });
-    }, []);
 
     function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
         if (event.target.files && event.target.files.length > 0) {
@@ -69,10 +69,10 @@ export function Component() {
         if (barcodeImageData) {
             const fileData = new Uint8Array(barcodeImageData);
 
-            const buffer = zxing.current._malloc(fileData.length);
-            zxing.current.HEAPU8.set(fileData, buffer);
-            const result = zxing.current.readBarcodeFromImage(buffer, fileData.length, true, '');
-            zxing.current._free(buffer);
+            const buffer = zxing._malloc(fileData.length);
+            zxing.HEAPU8.set(fileData, buffer);
+            const result = zxing.readBarcodeFromImage(buffer, fileData.length, true, '');
+            zxing._free(buffer);
 
             if (outputTextboxRef.current) {
                 outputTextboxRef.current.value = result.text;
