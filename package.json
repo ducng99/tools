@@ -13,7 +13,7 @@
     "test": "cypress run"
   },
   "dependencies": {
-    "@popperjs/core": "^2.11.7",
+    "@popperjs/core": "^2.11.8",
     "@tanstack/react-table": "^8.9.1",
     "@types/bootstrap": "^5.2.6",
     "@types/react": "^18.2.6",
