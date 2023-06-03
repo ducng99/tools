@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export const DEFAULT_SYMBOLS = '!@#$%^&*()_-+=';
+export const DEFAULT_SYMBOLS = '!@#$%^&*()_-+=[]{};:\'",<.>/?';
 
 export interface PasswordOptions {
     length: number;
