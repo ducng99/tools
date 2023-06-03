@@ -11,6 +11,8 @@ No tracking, no cookies, no data send out. All processing is in browser. All too
 
 See all: https://static.ducng.dev/tools
 
+*This is literally just a playground where I implement all the things I'm learning ¯\\_(ツ)_/¯*
+
 ## Tools
 ### CSV Display in table
 
