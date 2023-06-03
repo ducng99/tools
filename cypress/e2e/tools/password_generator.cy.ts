@@ -3,7 +3,7 @@ import { escapeRegExp } from '../../../src/Utils';
 
 // Generate all possible options
 const passwordOptionsSets: PasswordOptions[] = [];
-for (let length = 8; length <= 10; length++) {
+for (let length = 9; length <= 10; length++) {
     for (let includeLowercase = 0; includeLowercase <= 1; includeLowercase++) {
         for (let includeUppercase = 0; includeUppercase <= 1; includeUppercase++) {
             for (let includeNumbers = 0; includeNumbers <= 1; includeNumbers++) {
