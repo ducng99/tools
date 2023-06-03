@@ -1,3 +1,22 @@
+## [1.3.3] - 2023-06-03
+
+### 🐛 Bug Fixes
+
+- Fixed Cypress CI not triggering
+
+### 🚜 Refactor
+
+- Rename "QR code utilities" to "Barcode utilities"
+
+### ⚙️ Miscellaneous Tasks
+
+- *(deps)* Bump vite from 4.3.7 to 4.3.8
+- *(deps)* Bump react-router-dom from 6.11.1 to 6.11.2
+- *(deps)* Bump vite from 4.3.8 to 4.3.9
+- *(deps)* Bump @popperjs/core from 2.11.7 to 2.11.8
+- *(deps)* Bump csv-parse from 5.3.10 to 5.4.0
+- *(deps-dev)* Bump @typescript-eslint/eslint-plugin
+
 ## [1.3.2] - 2023-05-23
 
 ### 🚜 Refactor
