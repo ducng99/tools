@@ -1,3 +1,26 @@
+## [1.3.4] - 2023-06-03
+
+### ⛰️  Features
+
+- *(barcode_utils)* Added drag & drop file
+
+### 🚜 Refactor
+
+- Move ZXing library load outside of component
+
+### 🧪 Testing
+
+- *(barcode_utils)* Added tests for barcode scanner
+- *(password_generator)* Reduce number of tests
+
+### ⚙️ Miscellaneous Tasks
+
+- *(deps)* Bump vite from 4.3.8 to 4.3.9
+- *(deps)* Bump @popperjs/core from 2.11.7 to 2.11.8
+- *(deps)* Bump csv-parse from 5.3.10 to 5.4.0
+- *(deps-dev)* Bump cypress from 12.12.0 to 12.13.0
+- *(password_generator)* Extended default password symbols
+
 ## [1.3.3] - 2023-06-03
 
 ### 🐛 Bug Fixes
