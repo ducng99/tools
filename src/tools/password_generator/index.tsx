@@ -1,6 +1,6 @@
 import { type ChangeEvent, useEffect, useRef, useState } from 'react';
 import { generatePassword } from './extension';
-import { Tooltip } from 'bootstrap';
+import { type Tooltip } from 'bootstrap';
 import { DEFAULT_SYMBOLS, useStore } from './store';
 
 export function Component() {
@@ -13,12 +13,13 @@ export function Component() {
     const options = useStore();
 
     useEffect(() => {
-        if (passwordCopyButtonRef.current) {
-            passwordCopyTooltip.current = new Tooltip(passwordCopyButtonRef.current, {
+        (async () => {
+            const Tooltip = (await import('bootstrap/js/dist/tooltip')).default;
+            passwordCopyTooltip.current = new Tooltip(passwordCopyButtonRef.current as HTMLButtonElement, {
                 title: 'Copied!',
                 trigger: 'manual'
             });
-        }
+        })();
     }, []);
 
     const handleOptionChange = (event: ChangeEvent<HTMLInputElement>) => {
