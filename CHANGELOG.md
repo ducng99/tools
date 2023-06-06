@@ -1,3 +1,22 @@
+## [1.4.0] - 2023-06-06
+
+### ⛰️  Features
+
+- Added color modes support from Bootstrap 5.3
+
+### 🐛 Bug Fixes
+
+- Added missing bootstrap scss file
+
+### ⚙️ Miscellaneous Tasks
+
+- *(deps)* Bump bootstrap from 5.2.3 to 5.3.0
+- *(deps)* Bump @types/react from 18.2.6 to 18.2.8
+- *(deps-dev)* Bump eslint from 8.41.0 to 8.42.0
+- *(deps-dev)* Bump @typescript-eslint/eslint-plugin
+- *(deps-dev)* Bump eslint-config-standard-with-typescript
+- Use dynamic import for bootstrap component
+
 ## [1.3.4] - 2023-06-03
 
 ### ⛰️  Features
