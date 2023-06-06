@@ -1,20 +1,22 @@
 import { NavLink } from 'react-router-dom';
 import { ToolsInfo } from '../tools/ToolsInfo';
 import SidebarFooter from './SidebarFooter';
-import { useEffect, useRef } from 'react';
+import { lazy, useEffect, useRef } from 'react';
 import { type Collapse } from 'bootstrap';
+
+import('bootstrap/js/dist/dropdown');
+
+const ThemeToggle = lazy(() => import('./ThemeToggle'));
 
 export default function Sidebar() {
     const sidebarContentRef = useRef<HTMLDivElement>(null);
     const sidebarCollapseRef = useRef<Collapse | null>(null);
 
     useEffect(() => {
-        if (sidebarCollapseRef.current) {
-            (async () => {
-                const Collapse = (await import('bootstrap/js/dist/collapse')).default;
-                sidebarCollapseRef.current = new Collapse(sidebarContentRef.current as HTMLDivElement, { toggle: false });
-            })();
-        }
+        (async () => {
+            const Collapse = (await import('bootstrap/js/dist/collapse')).default;
+            sidebarCollapseRef.current = new Collapse(sidebarContentRef.current as HTMLDivElement, { toggle: false });
+        })();
     }, []);
 
     const hideSidebar = () => {
@@ -26,13 +28,16 @@ export default function Sidebar() {
     };
 
     return (
-        <div className="navbar navbar-expand-md navbar-dark bg-dark col-12 col-md-3 col-xl-2" id="sidebar">
+        <div className="navbar navbar-expand-md col-12 col-md-3 col-xl-2" id="sidebar">
             <div className="container-fluid flex-column align-items-start h-100">
-                <div className="d-flex">
+                <div className="d-flex align-items-center w-100">
                     <button className="navbar-toggler me-3" type="button" onClick={toggleSidebar} aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon"></span>
                     </button>
                     <div className="navbar-brand">Tools</div>
+                    <div className="ms-auto nav-item dropdown">
+                        <ThemeToggle />
+                    </div>
                 </div>
 
                 <div className="collapse navbar-collapse flex-column align-items-start w-100" id="sidebarContent" ref={sidebarContentRef}>
@@ -47,7 +52,7 @@ export default function Sidebar() {
                             )
                         }
                     </ul>
-                    <div className="mt-auto text-white w-100">
+                    <div className="mt-auto w-100">
                         <SidebarFooter />
                     </div>
                 </div>
