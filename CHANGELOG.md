@@ -1,3 +1,9 @@
+## [1.4.1] - 2023-06-06
+
+### 🐛 Bug Fixes
+
+- Fixed sidebar entry incorrect active colour
+
 ## [1.4.0] - 2023-06-06
 
 ### ⛰️  Features
