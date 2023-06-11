@@ -23,6 +23,7 @@ export default function BarcodeReader() {
 
     const barcodeVideoRef = useRef<HTMLVideoElement>(null);
     const cameraStreamRef = useRef<MediaStream | null>(null);
+    const lastCameraFrameProcessedRef = useRef<number>(performance.now());
 
     const helperCanvasRef = useRef<HTMLCanvasElement>(null);
     const outputTextboxRef = useRef<HTMLTextAreaElement>(null);
@@ -118,7 +119,13 @@ export default function BarcodeReader() {
 
     function processVideoFrame() {
         if (openCamera && barcodeVideoRef.current) {
-            updateCanvas(barcodeVideoRef.current);
+            const now = performance.now();
+
+            if (now - lastCameraFrameProcessedRef.current >= 1000) {
+                lastCameraFrameProcessedRef.current = now;
+                updateCanvas(barcodeVideoRef.current);
+            }
+
             requestAnimationFrame(processVideoFrame);
         }
     }
