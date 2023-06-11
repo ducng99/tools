@@ -172,12 +172,12 @@ export default function BarcodeReader() {
             <div>
                 <label className="form-label" htmlFor="barcode-image-file-upload">Select an image or drag it here:</label>
                 <input type="file" className="form-control" id="barcode-image-file-upload" onChange={handleFileChange} ref={barcodeFileUploadRef} />
+            </div>
+            <div className="mt-2">
                 <small>Or open your camera to scan the barcode</small><br/>
-
-                <div>
-                    <button className="btn btn-primary mt-1" onClick={() => { setOpenCamera(state => !state); }}>📷 {openCamera ? 'Close' : 'Open'} camera</button>
-                    {
-                        openCamera &&
+                <button className="btn btn-primary mt-1" onClick={() => { setOpenCamera(state => !state); }}>📷 {openCamera ? 'Close' : 'Open'} camera</button>
+                {
+                    openCamera &&
                         <>
                             <select className="mt-3 form-select" onChange={(e) => { setSelectedCamera(e.currentTarget.value); }}>
                                 <option value="" selected>Default camera</option>
@@ -191,8 +191,9 @@ export default function BarcodeReader() {
                                     : <div className="mt-3 alert alert-danger">Your browser does not support camera streaming!</div>
                             }
                         </>
-                    }
-                </div>
+                }
+            </div>
+            <div className="mt-2">
                 <small>Or simply paste the image on this page! (Don&apos;t paste a file though, you can drag & drop it)</small>
             </div>
 
