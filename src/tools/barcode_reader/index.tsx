@@ -13,7 +13,7 @@ import('../../libs/zxing/zxing').then(ZXing => {
     console.error('Failed when loading ZXing library!');
 });
 
-export default function BarcodeReader() {
+export function Component() {
     const [openCamera, setOpenCamera] = useState(false);
     const [selectedCamera, setSelectedCamera] = useState<string>('');
     const [cameraDevices, setCameraDevices] = useState<MediaDeviceInfo[]>([]);
@@ -173,8 +173,8 @@ export default function BarcodeReader() {
     }, [openCamera, selectedCamera]);
 
     return (
-        <div className="mt-3" onPaste={handlePaste} onDrop={handleFileDrop} onDragOver={(e) => { e.preventDefault(); }}>
-            <h2>Barcode Reader</h2>
+        <div className="container mt-5" onPaste={handlePaste} onDrop={handleFileDrop} onDragOver={(e) => { e.preventDefault(); }}>
+            <h1>{document.title}</h1>
 
             <div>
                 <label className="form-label" htmlFor="barcode-image-file-upload">Select an image or drag it here:</label>
@@ -182,7 +182,7 @@ export default function BarcodeReader() {
             </div>
             <div className="mt-2">
                 <small>Or open your camera to scan the barcode</small><br/>
-                <button className="btn btn-primary mt-1" onClick={() => { setOpenCamera(state => !state); }}>📷 {openCamera ? 'Close' : 'Open'} camera</button>
+                <button className="btn btn-primary mt-1" onClick={() => { setOpenCamera(state => !state); }}>{openCamera ? 'Close' : 'Open'} camera 📷</button>
                 {
                     openCamera &&
                         <>

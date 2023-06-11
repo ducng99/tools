@@ -7,7 +7,7 @@ type IToolInfo = Array<{
 const CSV_Swap = () => import('./csv_swap');
 const CSV_Display_Table = () => import('./csv_display_table');
 const PasswordGenerator = () => import('./password_generator');
-const BarcodeUtilities = () => import('./barcode_utils');
+const BarcodeReader = () => import('./barcode_reader');
 
 export const ToolsInfo: IToolInfo = [
     {
@@ -26,8 +26,8 @@ export const ToolsInfo: IToolInfo = [
         element: PasswordGenerator
     },
     {
-        id: 'barcode_utils',
-        name: 'Barcode Utilities',
-        element: BarcodeUtilities
+        id: 'barcode_reader',
+        name: 'Barcode Reader',
+        element: BarcodeReader
     }
 ];
