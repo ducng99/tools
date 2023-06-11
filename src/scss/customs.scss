@@ -21,6 +21,10 @@
     }
 }
 
+.maxw-100 {
+    max-width: 100%;
+}
+
 #sidebar-indicator {
     &::before {
         content: "navbar at the top";

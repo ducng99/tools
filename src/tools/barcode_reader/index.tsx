@@ -212,7 +212,7 @@ export function Component() {
             </div>
 
             <div className="mt-3 text-center">
-                <img className="max-vh-30" src="" alt="<Image will be displayed here>" id="barcode-image" onLoad={(e) => { updateCanvas(e.currentTarget); }} ref={barcodeImageDisplayRef} />
+                <img className="max-vh-30 maxw-100" src="" alt="<Image will be displayed here>" id="barcode-image" onLoad={(e) => { updateCanvas(e.currentTarget); }} ref={barcodeImageDisplayRef} />
                 <div className="d-none">
                     <canvas ref={helperCanvasRef}></canvas>
                 </div>
