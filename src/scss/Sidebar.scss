@@ -8,17 +8,6 @@
     top: 0;
     z-index: 1021;
 
-    @include media-breakpoint-up(md) {
-        &::after {
-            content: "";
-            border-right: 1px solid var(--bs-border-color);
-            position: absolute;
-            top: 1rem;
-            bottom: 1rem;
-            right: 0;
-        }
-    }
-
     #sidebarContent {
         .nav-link > span {
             display: inline-flex;
