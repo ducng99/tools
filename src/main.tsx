@@ -4,6 +4,7 @@ import { createHashRouter, RouterProvider } from 'react-router-dom';
 import App from './App';
 import { ToolsInfo } from './tools/ToolsInfo';
 import Loading from './Loading';
+import ErrorPage from './ErrorPage';
 
 import('./scss/styles.scss');
 import('bootstrap-icons/font/bootstrap-icons.css');
@@ -12,14 +13,24 @@ const router = createHashRouter([
     {
         path: '/',
         element: <App />,
-        children: ToolsInfo.map(tool => ({
-            path: tool.id,
-            loader: async () => {
-                document.title = tool.name;
-                return null;
+        errorElement: <ErrorPage />,
+        children: [
+            {
+                errorElement: <ErrorPage />,
+                children: ToolsInfo.map(tool => ({
+                    path: tool.id,
+                    loader: async () => {
+                        document.title = tool.name;
+                        return null;
+                    },
+                    lazy: tool.element
+                }))
             },
-            lazy: tool.element
-        }))
+            {
+                path: '*',
+                lazy: () => import('./NotFound')
+            }
+        ]
     }
 ]);
 

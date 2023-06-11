@@ -1,7 +1,7 @@
 type IToolInfo = Array<{
     id: string;
     name: string;
-    element: any;
+    element: () => Promise<any>;
 }>;
 
 const CSV_Swap = () => import('./csv_swap');
