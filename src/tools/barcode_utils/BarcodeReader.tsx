@@ -187,7 +187,7 @@ export default function BarcodeReader() {
                             </select>
                             {
                                 navigator.mediaDevices
-                                    ? <><video className="mt-3 maxh-80vh w-100" id="barcode-video" autoPlay playsInline ref={barcodeVideoRef}></video><br/></>
+                                    ? <><video className="mt-3 max-vh-80 w-100" id="barcode-video" autoPlay playsInline ref={barcodeVideoRef}></video><br/></>
                                     : <div className="mt-3 alert alert-danger">Your browser does not support camera streaming!</div>
                             }
                         </>
@@ -205,7 +205,7 @@ export default function BarcodeReader() {
             </div>
 
             <div className="mt-3 text-center">
-                <img className="maxh-30vh" src="" alt="<Image will be displayed here>" id="barcode-image" onLoad={(e) => { updateCanvas(e.currentTarget); }} ref={barcodeImageDisplayRef} />
+                <img className="max-vh-30" src="" alt="<Image will be displayed here>" id="barcode-image" onLoad={(e) => { updateCanvas(e.currentTarget); }} ref={barcodeImageDisplayRef} />
                 <div className="d-none">
                     <canvas ref={helperCanvasRef}></canvas>
                 </div>
