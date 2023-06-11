@@ -20,3 +20,15 @@
         max-height: #{$i}0vh;
     }
 }
+
+#sidebar-indicator {
+    &::before {
+        content: "navbar at the top";
+    }
+
+    @include media-breakpoint-up(md) {
+        &::before {
+            content: "sidebar on the left";
+        }
+    }
+}

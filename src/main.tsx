@@ -17,18 +17,24 @@ const router = createHashRouter([
         children: [
             {
                 errorElement: <ErrorPage />,
-                children: ToolsInfo.map(tool => ({
-                    path: tool.id,
-                    loader: async () => {
-                        document.title = tool.name;
-                        return null;
+                children: [
+                    {
+                        index: true,
+                        lazy: () => import('./tools')
                     },
-                    lazy: tool.element
-                }))
-            },
-            {
-                path: '*',
-                lazy: () => import('./NotFound')
+                    ...ToolsInfo.map(tool => ({
+                        path: tool.id,
+                        loader: async () => {
+                            document.title = tool.name;
+                            return null;
+                        },
+                        lazy: tool.element
+                    })),
+                    {
+                        path: '*',
+                        lazy: () => import('./NotFound')
+                    }
+                ]
             }
         ]
     }
