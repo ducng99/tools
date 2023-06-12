@@ -153,7 +153,7 @@ export function Component() {
                             </li>
                         </ul>
                     </nav>
-                    <div className="input-group mx-1 w-fit-content h-fit-content">
+                    <div className="input-group mx-1 maxw-fit maxh-fit">
                         <span className="input-group-text">Page</span>
                         <input type="number" className="form-control" id="table-current-page" size={3} value={currentPageIndex + 1} onChange={(e) => { setTablePageIndex(parseInt(e.target.value) - 1); }} />
                         <span className="input-group-text">/&nbsp;{table.getPageCount()}</span>
@@ -178,7 +178,7 @@ export function Component() {
 
                 <div className="col d-flex justify-content-end align-items-center mt-3 mt-md-0">
                     <span>Show&nbsp;</span>
-                    <select className="d-inline-block form-select w-fit-content h-fit-content" aria-label="Show rows per page" value={table.getState().pagination.pageSize} onChange={(e) => { setTablePageSize(parseInt(e.currentTarget.value)); }}>
+                    <select className="d-inline-block form-select maxw-fit maxh-fit" aria-label="Show rows per page" value={table.getState().pagination.pageSize} onChange={(e) => { setTablePageSize(parseInt(e.currentTarget.value)); }}>
                         {[10, 20, 50, 100, 200, 500, 1000, 5000, tableData.length].map(value => (
                             <option key={value} value={value}>{value === tableData.length ? 'All' : value}</option>
                         ))}

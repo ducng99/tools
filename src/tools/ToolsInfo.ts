@@ -8,6 +8,7 @@ const CSV_Swap = () => import('./csv_swap');
 const CSV_Display_Table = () => import('./csv_display_table');
 const PasswordGenerator = () => import('./password_generator');
 const BarcodeReader = () => import('./barcode_reader');
+const BarcodeWriter = () => import('./barcode_writer');
 
 export const ToolsInfo: IToolInfo = [
     {
@@ -29,5 +30,10 @@ export const ToolsInfo: IToolInfo = [
         id: 'barcode_reader',
         name: 'Barcode Reader',
         element: BarcodeReader
+    },
+    {
+        id: 'barcode_writer',
+        name: 'Barcode Writer',
+        element: BarcodeWriter
     }
 ];

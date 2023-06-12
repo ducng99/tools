@@ -1,9 +1,8 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createHashRouter, RouterProvider } from 'react-router-dom';
 import App from './App';
 import { ToolsInfo } from './tools/ToolsInfo';
-import Loading from './Loading';
 import ErrorPage from './ErrorPage';
 
 import('./scss/styles.scss');
@@ -42,8 +41,6 @@ const router = createHashRouter([
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
-        <Suspense fallback={<Loading />}>
-            <RouterProvider router={router} />
-        </Suspense>
+        <RouterProvider router={router} />
     </React.StrictMode>
 );

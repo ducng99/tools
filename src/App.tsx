@@ -11,7 +11,9 @@ function App() {
                 <Sidebar />
                 <div className="col">
                     {
-                        navigation.state === 'loading' ? <Loading /> : <Outlet />
+                        navigation.state === 'loading'
+                            ? <Loading />
+                            : <Outlet />
                     }
                 </div>
             </div>

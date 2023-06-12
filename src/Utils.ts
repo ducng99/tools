@@ -19,3 +19,7 @@ export function clampWidthHeight(width: number, height: number, maxWidth: number
 
     return [width, height];
 }
+
+export function escapeMeCardValue(value: string) {
+    return value.replaceAll(/[\\;,":]/g, '\\$&');
+}
