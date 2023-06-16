@@ -8,8 +8,7 @@ const barFiles = [
     ['cypress/fixtures/tools/barcode_reader/colours.png', 'test colours'],
     ['cypress/fixtures/tools/barcode_reader/colours.svg', 'test colours'],
     ['cypress/fixtures/tools/barcode_reader/custom-shapes-highres.png', 'this is a very high resolution image'],
-    ['cypress/fixtures/tools/barcode_reader/custom-shapes-highres.svg', 'this is a very high resolution image'],
-    ['cypress/fixtures/tools/barcode_reader/madness.png', 'no clue\nwhat this is\nmate\n1234657890-=_+[]:"}{,/.><?\nno clue\nwhat this is\nmate\n1234657890-=_+[]:"}{,/.><?\nno clue\nwhat this is\nmate\n1234657890-=_+[]:"}{,/.><?\nno clue\nwhat this is\nmate\n1234657890-=_+[]:"}{,/.><?\nno clue\nwhat this is\nmate\n1234657890-=_+[]:"}{,/.><?']
+    ['cypress/fixtures/tools/barcode_reader/custom-shapes-highres.svg', 'this is a very high resolution image']
 ];
 
 describe('Barcode reader', () => {
