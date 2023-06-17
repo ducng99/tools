@@ -29,12 +29,11 @@ A simple password generator using Crypto API (it's just a random number generato
 
 Different options are available including providing your own list of characters.
 
-### Barcode utilities
-#### Barcode Reader
+### Barcode Reader
 
 Reads QR code/barcode from image or camera and output its content. Using Zxing library
 
-#### Barcode Writer
+### Barcode Writer
 
 Create QR code/barcode image from text, URL, WiFi,...
 
