@@ -118,7 +118,7 @@ export function Component() {
                         <button className="nav-link" onClick={changeBarcodeInputType} data-input-type='bitcoin'>Bitcoin</button>
                     </li> */}
                 </ul>
-                <div className="tab-content my-2" id="myTabContent">
+                <div className="tab-content my-2" id="barcode-input-type-container">
                     <Suspense fallback={<Loading />}>{inputElement}</Suspense>
                 </div>
             </div>
