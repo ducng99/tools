@@ -1,31 +1,30 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { toFirstUpperCase } from '../Utils';
 
 type ColourScheme = 'light' | 'dark' | 'auto';
 
+const getStoredTheme = () => localStorage.getItem('theme') as ColourScheme | null;
+const setStoredTheme = (theme: ColourScheme) => { localStorage.setItem('theme', theme); };
+
+const getPreferredTheme = () => {
+    const storedTheme = getStoredTheme();
+    if (storedTheme) {
+        return storedTheme;
+    }
+
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+};
+
+const setTheme = (theme: ColourScheme) => {
+    if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-bs-theme', 'dark');
+    } else {
+        document.documentElement.setAttribute('data-bs-theme', theme);
+    }
+};
+
 export default function ThemeToggle() {
-    const getStoredTheme = useCallback(() => localStorage.getItem('theme') as ColourScheme | null, []);
-    const setStoredTheme = useCallback((theme: ColourScheme) => { localStorage.setItem('theme', theme); }, []);
-
-    const getPreferredTheme = () => {
-        const storedTheme = getStoredTheme();
-        if (storedTheme) {
-            return storedTheme;
-        }
-
-        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    };
-
     const [currentTheme, setCurrentTheme] = useState<ColourScheme>(getPreferredTheme());
-    const dropdownToggleRef = useRef<HTMLButtonElement>(null);
-
-    const setTheme = (theme: ColourScheme) => {
-        if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.documentElement.setAttribute('data-bs-theme', 'dark');
-        } else {
-            document.documentElement.setAttribute('data-bs-theme', theme);
-        }
-    };
 
     useEffect(() => {
         setTheme(getPreferredTheme());
@@ -66,7 +65,7 @@ export default function ThemeToggle() {
 
     return (
         <>
-            <button className="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false" ref={dropdownToggleRef}>
+            <button className="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 {currentThemeIcon}
             </button>
             <ul className="dropdown-menu dropdown-menu-end shadow">

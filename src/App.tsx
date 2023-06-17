@@ -11,9 +11,10 @@ function App() {
                 <Sidebar />
                 <div className="col">
                     {
-                        navigation.state === 'loading' && <Loading />
+                        navigation.state === 'loading'
+                            ? <Loading />
+                            : <Outlet />
                     }
-                    <Outlet />
                 </div>
             </div>
         </div>

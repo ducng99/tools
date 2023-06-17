@@ -28,7 +28,7 @@ export default function Sidebar() {
     };
 
     return (
-        <div className="navbar navbar-expand-md col-12 col-md-3 col-xl-2" id="sidebar">
+        <div className="navbar navbar-expand-md bg-body-tertiary col-12 col-md-3 col-xl-2" id="sidebar">
             <div className="container-fluid flex-column align-items-start h-100">
                 <div className="d-flex align-items-center w-100">
                     <button className="navbar-toggler me-3" type="button" onClick={toggleSidebar} aria-label="Toggle navigation">

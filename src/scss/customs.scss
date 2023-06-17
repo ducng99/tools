@@ -1,9 +1,9 @@
-.w-fit-content {
-    width: fit-content;
+.maxw-fit {
+    max-width: fit-content;
 }
 
-.h-fit-content {
-    height: fit-content;
+.maxh-fit {
+    max-height: fit-content;
 }
 
 .inline-circle {
@@ -16,7 +16,23 @@
 }
 
 @for $i from 0 through 10 {
-    .maxh-#{$i}0vh {
+    .max-vh-#{$i}0 {
         max-height: #{$i}0vh;
+    }
+}
+
+.maxw-100 {
+    max-width: 100%;
+}
+
+#sidebar-indicator {
+    &::before {
+        content: "navbar at the top";
+    }
+
+    @include media-breakpoint-up(md) {
+        &::before {
+            content: "sidebar on the left";
+        }
     }
 }
