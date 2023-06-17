@@ -1,25 +1,3 @@
-## [1.4.2] - 2023-06-17
-
-### ⛰️  Features
-
-- *(barcode_utils)* Added camera support for barcode reader
-- Added error handling routes
-- Added Barcode Writer tool
-
-### 🎨 Styling
-
-- Added hover effect for sidebar entries
-- Use conventional sidebar/navbar colour
-- Fixed loading page has overflow
-
-### 🧪 Testing
-
-- *(barcode_reader)* Remove madness test - inconsistent
-
-### ⚙️ Miscellaneous Tasks
-
-- *(deps)* Upgraded dependencies
-
 ## [1.4.1] - 2023-06-06
 
 ### 🐛 Bug Fixes
