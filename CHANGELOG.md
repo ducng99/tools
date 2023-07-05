@@ -1,3 +1,23 @@
+## [1.5.1] - 2023-07-05
+
+### ⚙️ Miscellaneous Tasks
+
+- *(deps)* Bump @types/react-dom from 18.2.4 to 18.2.6
+- *(deps)* Bump typescript from 5.0.4 to 5.1.3
+- *(deps)* Bump @types/react from 18.2.12 to 18.2.13
+- *(deps)* Bump @vitejs/plugin-react from 4.0.0 to 4.0.1
+- *(deps)* Bump react-router-dom from 6.13.0 to 6.14.0
+- *(deps)* Bump @types/react from 18.2.13 to 18.2.14
+- *(deps)* Bump react-router-dom from 6.14.0 to 6.14.1
+- *(deps)* Bump typescript from 5.1.3 to 5.1.6
+- *(deps-dev)* Bump @typescript-eslint/eslint-plugin
+- *(deps-dev)* Bump eslint from 8.42.0 to 8.43.0
+- *(deps-dev)* Bump cypress from 12.14.0 to 12.15.0
+- *(deps-dev)* Bump @typescript-eslint/eslint-plugin
+- *(deps-dev)* Bump cypress from 12.15.0 to 12.16.0
+- *(deps-dev)* Bump eslint from 8.43.0 to 8.44.0
+- *(dev-deps)* Bump eslint-config-standard-with-typescript to 36.0.0
+
 ## [1.5.0] - 2023-06-17
 
 ### ⛰️  Features
