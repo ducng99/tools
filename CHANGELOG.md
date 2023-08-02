@@ -1,3 +1,17 @@
+## [1.5.2] - 2023-08-02
+
+### ⚙️ Miscellaneous Tasks
+
+- *(deps)* Bump @tanstack/react-table from 8.9.2 to 8.9.3
+- *(deps)* Bump @vitejs/plugin-react from 4.0.1 to 4.0.3
+- *(deps)* Bump sass from 1.63.4 to 1.63.6
+- *(deps)* Bump semver from 6.3.0 to 6.3.1
+- *(deps)* Bump vite from 4.3.9 to 4.4.7
+- *(deps)* Bump @types/react from 18.2.14 to 18.2.17
+- *(deps)* Bump zustand from 4.3.8 to 4.4.0
+- *(deps-dev)* Bump cypress from 12.16.0 to 12.17.1
+- *(deps-dev)* Bump eslint-config-standard-with-typescript
+
 ## [1.5.1] - 2023-07-05
 
 ### ⚙️ Miscellaneous Tasks
