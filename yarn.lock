@@ -1141,10 +1141,10 @@ csv-parse@^5.5.0:
   resolved "https://registry.yarnpkg.com/csv-parse/-/csv-parse-5.5.0.tgz#2313421e69b650dae32a79ac884b20b21ca1d9da"
   integrity sha512-RxruSK3M4XgzcD7Trm2wEN+SJ26ChIb903+IWxNOcB5q4jT2Cs+hFr6QP39J05EohshRFEvyzEBoZ/466S2sbw==
 
-csv-stringify@^6.4.0:
-  version "6.4.0"
-  resolved "https://registry.npmjs.org/csv-stringify/-/csv-stringify-6.4.0.tgz"
-  integrity sha512-HQsw0QXiN5fdlO+R8/JzCZnR3Fqp8E87YVnhHlaPtNGJjt6ffbV0LpOkieIb1x6V1+xt878IYq77SpXHWAqKkA==
+csv-stringify@^6.4.2:
+  version "6.4.2"
+  resolved "https://registry.yarnpkg.com/csv-stringify/-/csv-stringify-6.4.2.tgz#209cb17ab5520f51bd5a7edeb06ed6d4c322fce3"
+  integrity sha512-DXIdnnCUQYjDKTu6TgCSzRDiAuLxDjhl4ErFP9FGMF3wzBGOVMg9bZTLaUcYtuvhXgNbeXPKeaRfpgyqE4xySw==
 
 cypress@^12.17.3:
   version "12.17.3"
