@@ -1,5 +1,5 @@
-import { type ChangeEvent } from 'react';
-import { type BarcodeInputProps } from '..';
+import type { BarcodeInputProps } from "..";
+import type { ChangeEvent } from "../../../utils";
 
 export default function InputNormalText({ updateText }: BarcodeInputProps) {
     function onChange(event: ChangeEvent<HTMLTextAreaElement>) {

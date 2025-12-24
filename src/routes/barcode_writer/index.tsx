@@ -1,101 +1,105 @@
-import { Suspense, lazy, useMemo, useRef, useState } from "react";
-import Loading from "../../components/common/Loading";
-import type { Dispatch, MouseEvent, SetStateAction } from "react";
+import { createFileRoute } from "@tanstack/solid-router";
+import { createSignal } from "solid-js";
+import { Dynamic } from "solid-js/web";
+import { writeBarcode } from "zxing-wasm";
+import InputURL from "./-input_types/InputURL";
+import InputWiFiConfig from "./-input_types/InputWiFiConfig";
+import InputEmail from "./-input_types/InputEmail";
+import InputNormalText from "./-input_types/InputNormalText";
+import type { WriteInputBarcodeFormat } from "zxing-wasm";
+import type { JSX } from "solid-js";
 
-const InputURL = lazy(() => import("./input_types/InputURL"));
-const InputWiFiConfig = lazy(() => import("./input_types/InputWiFiConfig"));
-const InputNormalText = lazy(() => import("./input_types/InputNormalText"));
-const InputEmail = lazy(() => import("./input_types/InputEmail"));
-
-type BarcodeInputType = "url" | "wifi" | "text" | "mail" | "phone" | "sms" | "bitcoin";
+type BarcodeInputType = "url" | "wifi" | "text" | "mail";
 
 export interface BarcodeInputProps {
-    updateText: Dispatch<SetStateAction<string>>;
+    updateText: (text: string) => void;
 }
 
-export function Component() {
-    const [barcodeInputType, setBarcodeInputType] = useState<BarcodeInputType>("url");
-    const [barcodeInputText, setBarcodeInputText] = useState<string>("");
-    const barcodeFormatRef = useRef<HTMLSelectElement>(null);
-    const barcodeEncodingRef = useRef<HTMLSelectElement>(null);
-    const barcodeECCLevelRef = useRef<HTMLSelectElement>(null);
-    const barcodeQuietZoneRef = useRef<HTMLInputElement>(null);
-    const barcodeWidthRef = useRef<HTMLInputElement>(null);
-    const barcodeHeightRef = useRef<HTMLInputElement>(null);
-    const barcodeOutputImageRef = useRef<HTMLImageElement>(null);
+export const Route = createFileRoute("/barcode_writer/")({
+    head: () => ({
+        meta: [
+            {
+                title: "Barcode Writer",
+            },
+        ],
+    }),
+    component: ToolComponent,
+    ssr: false,
+});
+
+const inputComponents: Record<BarcodeInputType, ({ updateText }: BarcodeInputProps) => JSX.Element> = {
+    url: InputURL,
+    wifi: InputWiFiConfig,
+    mail: InputEmail,
+    text: InputNormalText,
+};
+
+function ToolComponent() {
+    const [barcodeInputType, setBarcodeInputType] = createSignal<BarcodeInputType>("url");
+    const [barcodeInputText, setBarcodeInputText] = createSignal<string>("");
+    let barcodeFormatRef: HTMLSelectElement | undefined;
+    let barcodeOutputImageRef: HTMLImageElement | undefined;
 
     function generateBarcode() {
-        if (barcodeInputText
-            && barcodeFormatRef.current?.value
-            && barcodeEncodingRef.current?.value
-            && barcodeECCLevelRef.current?.value
-            && barcodeQuietZoneRef.current?.value
-            && barcodeWidthRef.current?.value
-            && barcodeHeightRef.current?.value
+        if (barcodeInputText()
+            && barcodeFormatRef?.value
         ) {
-            const text = barcodeInputText;
-            const format = barcodeFormatRef.current.value;
-            const charset = barcodeEncodingRef.current.value;
-            const margin = parseInt(barcodeQuietZoneRef.current.value);
-            const width = parseInt(barcodeWidthRef.current.value);
-            const height = parseInt(barcodeHeightRef.current.value);
-            const eccLevel = parseInt(barcodeECCLevelRef.current.value);
+            const text = barcodeInputText();
+            const format = barcodeFormatRef.value as WriteInputBarcodeFormat;
 
-            const result = zxing.generateBarcode(text, format, charset, margin, width, height, eccLevel);
-
-            if (result.image) {
-                if (barcodeOutputImageRef.current) {
-                    barcodeOutputImageRef.current.src = window.URL.createObjectURL(new Blob([result.image], { type: "image/png" }));
+            writeBarcode(text, { format }).then((result) => {
+                if (result.svg) {
+                    if (barcodeOutputImageRef) {
+                        barcodeOutputImageRef.src = `data:image/svg+xml,${encodeURIComponent(result.svg)}`;
+                    }
                 }
-            }
+            }).catch((error) => {
+                console.error("Error generating barcode:", error);
+            });
         }
     }
-
-    function changeBarcodeInputType(event: MouseEvent<HTMLButtonElement>) {
-        const type = event.currentTarget.getAttribute("data-input-type") as BarcodeInputType;
-        setBarcodeInputType(type);
-
-        event.currentTarget.parentElement?.parentElement?.querySelectorAll(".active").forEach((element) => {
-            element.classList.remove("active");
-            element.removeAttribute("aria-current");
-        });
-
-        event.currentTarget.classList.add("active");
-        event.currentTarget.setAttribute("aria-current", "page");
-    }
-
-    const inputElement = useMemo(() => {
-        switch (barcodeInputType) {
-            case "url":
-                return <InputURL updateText={setBarcodeInputText} />;
-            case "wifi":
-                return <InputWiFiConfig updateText={setBarcodeInputText} />;
-            case "text":
-                return <InputNormalText updateText={setBarcodeInputText} />;
-            case "mail":
-                return <InputEmail updateText={setBarcodeInputText} />;
-            default:
-                return <></>;
-        }
-    }, [barcodeInputType]);
 
     return (
         <div class="container mt-5">
-            <h1></h1>
+            <h1>Barcode Writer</h1>
 
             <div>
                 <ul class="nav nav-tabs">
                     <li class="nav-item">
-                        <button class="nav-link active" onClick={changeBarcodeInputType} data-input-type="url" aria-current="page">URL</button>
+                        <button
+                            classList={{ "nav-link": true, "active": barcodeInputType() === "url" }}
+                            onClick={() => setBarcodeInputType("url")}
+                            aria-current={barcodeInputType() === "url" ? "page" : undefined}
+                        >
+                            URL
+                        </button>
                     </li>
                     <li class="nav-item">
-                        <button class="nav-link" onClick={changeBarcodeInputType} data-input-type="wifi">Wi-Fi</button>
+                        <button
+                            classList={{ "nav-link": true, "active": barcodeInputType() === "wifi" }}
+                            onClick={() => setBarcodeInputType("wifi")}
+                            aria-current={barcodeInputType() === "wifi" ? "page" : undefined}
+                        >
+                            Wi-Fi
+                        </button>
                     </li>
                     <li class="nav-item">
-                        <button class="nav-link" onClick={changeBarcodeInputType} data-input-type="text">Text</button>
+                        <button
+                            classList={{ "nav-link": true, "active": barcodeInputType() === "text" }}
+                            onClick={() => setBarcodeInputType("text")}
+                            aria-current={barcodeInputType() === "text" ? "page" : undefined}
+                        >
+                            Text
+                        </button>
                     </li>
                     <li class="nav-item">
-                        <button class="nav-link" onClick={changeBarcodeInputType} data-input-type="mail">Email</button>
+                        <button
+                            classList={{ "nav-link": true, "active": barcodeInputType() === "mail" }}
+                            onClick={() => setBarcodeInputType("mail")}
+                            aria-current={barcodeInputType() === "mail" ? "page" : undefined}
+                        >
+                            Email
+                        </button>
                     </li>
                     {/* <li class="nav-item">
                         <button class="nav-link" onClick={changeBarcodeInputType} data-input-type='phone'>Phone</button>
@@ -108,14 +112,14 @@ export function Component() {
                     </li> */}
                 </ul>
                 <div class="tab-content my-2" id="barcode-input-type-container">
-                    <Suspense fallback={<Loading />}>{inputElement}</Suspense>
+                    <Dynamic component={inputComponents[barcodeInputType()]} updateText={setBarcodeInputText} />
                 </div>
             </div>
             <hr />
 
             <div>
                 <label class="form-label" for="barcode-writer-format">Format:</label>
-                <select class="form-select" id="barcode-writer-format" defaultValue="QRCode" ref={barcodeFormatRef}>
+                <select class="form-select" id="barcode-writer-format" ref={barcodeFormatRef}>
                     <option value="Aztec">Aztec</option>
                     <option value="Codabar">Codabar</option>
                     <option value="Code39">Code 39</option>
@@ -126,14 +130,14 @@ export function Component() {
                     <option value="EAN13">EAN-13</option>
                     <option value="ITF">ITF</option>
                     <option value="PDF417">PDF417</option>
-                    <option value="QRCode">QR Code</option>
+                    <option value="QRCode" selected>QR Code</option>
                     <option value="UPCA">UPC-A</option>
                     <option value="UPCE">UPC-E</option>
                 </select>
             </div>
 
             <button class="btn btn-primary mt-3" onClick={generateBarcode}>
-                Generate
+                {"Generate "}
                 <i class="bi bi-qr-code" />
             </button>
 
@@ -145,7 +149,7 @@ export function Component() {
                     <div id="advancedOptions" class="accordion-collapse collapse" data-bs-parent="#advancedOptionsContainer">
                         <div class="accordion-body">
                             <div class="row">
-                                <div class="col-12 col-md-6">
+                                {/* <div class="col-12 col-md-6">
                                     <label for="barcode-writer-charset">Encoding:</label>
                                     <select class="form-select" id="barcode-writer-charset" defaultValue="UTF-8" ref={barcodeEncodingRef}>
                                         <option value="Cp437">Cp437</option>
@@ -179,11 +183,11 @@ export function Component() {
                                         <option value="GBK">GBK</option>
                                         <option value="EUC-KR">EUC-KR</option>
                                     </select>
-                                </div>
-                                <div class="col-12 col-md-6">
+                                </div> */}
+                                {/* <div class="col-12 col-md-6">
                                     <label for="barcode-writer-ecclevel">ECC Level:</label>
-                                    <select class="form-select" id="barcode-writer-ecclevel" defaultValue="-1" ref={barcodeECCLevelRef}>
-                                        <option value="-1">Default</option>
+                                    <select class="form-select" id="barcode-writer-ecclevel" ref={barcodeECCLevelRef}>
+                                        <option value="" selected>Default</option>
                                         <option value="0">0</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
@@ -194,9 +198,9 @@ export function Component() {
                                         <option value="7">7</option>
                                         <option value="8">8</option>
                                     </select>
-                                </div>
+                                </div> */}
                             </div>
-                            <div class="row">
+                            {/* <div class="row">
                                 <div class="col-12 col-md-4">
                                     <label for="barcode-writer-margin">Quiet Zone:</label>
                                     <input class="form-control" id="barcode-writer-margin" type="number" defaultValue="10" ref={barcodeQuietZoneRef} />
@@ -209,7 +213,7 @@ export function Component() {
                                     <label for="barcode-writer-height">Image Height:</label>
                                     <input class="form-control" id="barcode-writer-height" type="number" defaultValue="512" ref={barcodeHeightRef} />
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>
@@ -217,7 +221,7 @@ export function Component() {
 
             <label class="form-label mt-3">Output:</label>
             <div class="text-center">
-                <img class="max-vh-30 maxw-100" src="" alt="<Output image will be displayed here>" id="barcode-output-image" ref={barcodeOutputImageRef} />
+                <img class="max-vh-30 w-100" style={{ "object-fit": "contain" }} src="" alt="<Output image will be displayed here>" id="barcode-output-image" ref={barcodeOutputImageRef} />
             </div>
         </div>
     );

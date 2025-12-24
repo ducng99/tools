@@ -1,37 +1,36 @@
-import { useRef } from 'react';
-import { type BarcodeInputProps } from '..';
+import type { BarcodeInputProps } from "..";
 
 export default function InputEmail({ updateText }: BarcodeInputProps) {
-    const recipientRef = useRef<HTMLInputElement>(null);
-    const ccRef = useRef<HTMLInputElement>(null);
-    const bccRef = useRef<HTMLInputElement>(null);
-    const subjectRef = useRef<HTMLInputElement>(null);
-    const bodyRef = useRef<HTMLTextAreaElement>(null);
+    let recipientRef: HTMLInputElement | undefined;
+    let ccRef: HTMLInputElement | undefined;
+    let bccRef: HTMLInputElement | undefined;
+    let subjectRef: HTMLInputElement | undefined;
+    let bodyRef: HTMLTextAreaElement | undefined;
 
     function onChange() {
-        if (recipientRef.current?.value && ccRef.current && bccRef.current && subjectRef.current && bodyRef.current) {
-            let output = `mailto:${recipientRef.current.value}`;
+        if (recipientRef?.value && ccRef && bccRef && subjectRef && bodyRef) {
+            let output = `mailto:${recipientRef.value}`;
 
             const params = [];
 
-            if (ccRef.current.value) {
-                params.push(`cc=${encodeURIComponent(ccRef.current.value)}`);
+            if (ccRef.value) {
+                params.push(`cc=${encodeURIComponent(ccRef.value)}`);
             }
 
-            if (bccRef.current.value) {
-                params.push(`bcc=${encodeURIComponent(bccRef.current.value)}`);
+            if (bccRef.value) {
+                params.push(`bcc=${encodeURIComponent(bccRef.value)}`);
             }
 
-            if (subjectRef.current.value) {
-                params.push(`subject=${encodeURIComponent(subjectRef.current.value)}`);
+            if (subjectRef.value) {
+                params.push(`subject=${encodeURIComponent(subjectRef.value)}`);
             }
 
-            if (bodyRef.current.value) {
-                params.push(`body=${encodeURIComponent(bodyRef.current.value)}`);
+            if (bodyRef.value) {
+                params.push(`body=${encodeURIComponent(bodyRef.value)}`);
             }
 
             if (params.length > 0) {
-                output += `?${params.join('&')}`;
+                output += `?${params.join("&")}`;
             }
 
             updateText(output);

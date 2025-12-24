@@ -37,6 +37,12 @@ export default function Sidebar() {
                 <div class="collapse navbar-collapse flex-column align-items-start w-100" id="sidebarContent" ref={sidebarContentRef}>
                     <ul class="navbar-nav flex-column">
                         <li class="nav-item">
+                            <Link to="/barcode_reader" class="nav-link" onClick={hideSidebar}>
+                                <span class="ms-1">Barcode reader</span>
+                            </Link>
+                            <Link to="/barcode_writer" class="nav-link" onClick={hideSidebar}>
+                                <span class="ms-1">Barcode writer</span>
+                            </Link>
                             <Link to="/password_generator" class="nav-link" onClick={hideSidebar}>
                                 <span class="ms-1">Password generator</span>
                             </Link>
