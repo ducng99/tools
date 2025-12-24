@@ -6,10 +6,10 @@ on:
       - main
     paths:
       - "src/**/*.{js,jsx,ts,tsx}"
-      - ".eslintrc.json"
+      - "eslint.config.{js,mjs}"
       - "tsconfig.json"
       - "package.json"
-      - "yarn.lock"
+      - "bun.lock"
 
   pull_request:
 
@@ -23,16 +23,13 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: yarn
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
 
       - name: Run install
-        run: yarn install --frozen-lockfile
+        run: bun install --frozen-lockfile
 
       - name: Lint check
-        run: yarn lint
+        run: bun run lint
