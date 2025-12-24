@@ -24,7 +24,6 @@ export const Route = createFileRoute("/barcode_writer/")({
         ],
     }),
     component: ToolComponent,
-    ssr: false,
 });
 
 const inputComponents: Record<BarcodeInputType, ({ updateText }: BarcodeInputProps) => JSX.Element> = {

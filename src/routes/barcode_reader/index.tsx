@@ -13,7 +13,6 @@ export const Route = createFileRoute("/barcode_reader/")({
         ],
     }),
     component: ToolComponent,
-    ssr: false,
 });
 
 function ToolComponent() {

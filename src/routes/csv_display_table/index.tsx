@@ -15,7 +15,6 @@ export const Route = createFileRoute("/csv_display_table/")({
         ],
     }),
     component: ToolComponent,
-    ssr: false,
 });
 
 function ToolComponent() {
