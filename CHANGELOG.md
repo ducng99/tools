@@ -1,3 +1,20 @@
+## [2.0.0] - 2025-12-24
+
+### ⚙️ Miscellaneous Tasks
+
+- *(actions)* Updated actions for v2
+- *(deps)* Bump more dependencies
+- *(deps)* Bump csv-parse from 5.4.0 to 5.5.0
+- *(deps)* Bump csv-stringify from 6.4.0 to 6.4.2
+- *(deps)* Bump zustand from 4.4.0 to 4.4.1
+- *(deps)* Bump softprops/action-gh-release from 1 to 2
+- *(deps)* Bump orhun/git-cliff-action from 2 to 4
+- *(deps)* Bump actions/checkout from 4 to 6
+- *(deps)* Bump all packages
+- *(deps-dev)* Bump eslint from 8.46.0 to 8.48.0
+- *(deps-dev)* Bump eslint-plugin-n from 15.7.0 to 16.0.2
+- Updated the whole stack
+
 ## [1.5.2] - 2023-08-02
 
 ### ⚙️ Miscellaneous Tasks
