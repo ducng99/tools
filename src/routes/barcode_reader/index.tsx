@@ -138,7 +138,6 @@ function ToolComponent() {
     }
 
     createEffect(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (openCamera() && navigator.mediaDevices) {
             navigator.mediaDevices.enumerateDevices().then((devices) => {
                 setCameraDevices(devices.filter(device => device.kind === "videoinput"));
@@ -155,7 +154,6 @@ function ToolComponent() {
             });
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (openCamera() && navigator.mediaDevices) {
             const videoConstraints: MediaTrackConstraints = {};
 
