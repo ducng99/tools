@@ -1,11 +1,20 @@
 import { escapeRegExp } from "../../utils";
-import { DEFAULT_SYMBOLS } from "./-store";
-import type { PasswordOptions } from "./-store";
 
 // Define character sets
 const lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
 const uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const numberChars = "0123456789";
+
+export const DEFAULT_SYMBOLS = "!@#$%^&*()_-+=[]{};:'\",<.>/?";
+
+export interface PasswordOptions {
+    length: number;
+    includeUppercase: boolean;
+    includeLowercase: boolean;
+    includeNumbers: boolean;
+    includeSymbols: boolean;
+    customSymbols: string;
+}
 
 export function generatePassword(options: PasswordOptions): string {
     const symbolChars = options.customSymbols || DEFAULT_SYMBOLS;

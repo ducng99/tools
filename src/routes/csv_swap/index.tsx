@@ -10,10 +10,10 @@ export const Route = createFileRoute("/csv_swap/")({
             },
         ],
     }),
-    component: Component,
+    component: ToolComponent,
 });
 
-function Component() {
+function ToolComponent() {
     let csvTextboxRef: HTMLTextAreaElement | undefined;
     let csvTextOutputRef: HTMLTextAreaElement | undefined;
 

@@ -1,8 +1,8 @@
 import { Tooltip } from "bootstrap";
 import { createFileRoute } from "@tanstack/solid-router";
 import { createEffect, createSignal } from "solid-js";
-import { generatePassword } from "./-extension";
-import { DEFAULT_SYMBOLS, PasswordOptionsStore, updateOptions } from "./-store";
+import { DEFAULT_SYMBOLS, generatePassword } from "./-extension";
+import { useOptions } from "./-store";
 import type { ChangeEvent } from "../../utils";
 
 export const Route = createFileRoute("/password_generator/")({
@@ -13,23 +13,25 @@ export const Route = createFileRoute("/password_generator/")({
             },
         ],
     }),
-    component: Component,
+    component: ToolComponent,
 });
 
-function Component() {
+function ToolComponent() {
     let passwordCopyButtonRef: HTMLButtonElement | undefined;
     let passwordCopyTooltip: Tooltip | undefined;
     let passwordCopyTooltipTimeout = 0;
 
     const [password, setPassword] = createSignal<string>("");
-    const [isPasswordReveal, setIsPasswordReveal] = createSignal<boolean>(false);
-    const [options] = PasswordOptionsStore;
+    const [shouldRevealPassword, toggleRevealPassword] = createSignal<boolean>(false);
+    const [options, updateOptions] = useOptions();
 
     createEffect(() => {
-        passwordCopyTooltip = new Tooltip(passwordCopyButtonRef as HTMLButtonElement, {
-            title: "Copied!",
-            trigger: "manual",
-        });
+        if (passwordCopyButtonRef) {
+            passwordCopyTooltip = new Tooltip(passwordCopyButtonRef, {
+                title: "Copied!",
+                trigger: "manual",
+            });
+        }
     });
 
     const handleOptionChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -56,11 +58,11 @@ function Component() {
     const handleCopyPassword = () => {
         const _password = password();
         if (_password) {
-            window.clearTimeout(passwordCopyTooltipTimeout);
+            clearTimeout(passwordCopyTooltipTimeout);
             navigator.clipboard.writeText(_password).then(() => {
                 passwordCopyTooltip?.show();
 
-                const timeout = window.setTimeout(() => {
+                const timeout = setTimeout(() => {
                     passwordCopyTooltip?.hide();
                 }, 1000);
 
@@ -70,7 +72,7 @@ function Component() {
     };
 
     const handleRevealPassword = () => {
-        setIsPasswordReveal(state => !state);
+        toggleRevealPassword(state => !state);
     };
 
     return (
@@ -120,9 +122,9 @@ function Component() {
             <button class="btn btn-primary my-3" id="generateButton" onClick={handleGenerateClick}>Generate Password</button>
 
             <div class="input-group" role="group">
-                <input class="form-control" id="passwordOutput" type={(isPasswordReveal() ? "text" : "password")} value={password()} onChange={(event) => { setPassword(event.currentTarget.value); }} />
+                <input class="form-control" id="passwordOutput" type={(shouldRevealPassword() ? "text" : "password")} value={password()} onChange={(event) => { setPassword(event.currentTarget.value); }} />
                 <button class="btn btn-secondary" onClick={handleRevealPassword}>
-                    <i class={"bi bi-eye-" + (isPasswordReveal() ? "fill" : "slash")} />
+                    <i class={"bi bi-eye-" + (shouldRevealPassword() ? "fill" : "slash")} />
                     <span class="d-none d-md-inline">&nbsp;Reveal</span>
                 </button>
                 <button class="btn btn-secondary" onClick={handleCopyPassword} ref={passwordCopyButtonRef}>

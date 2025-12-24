@@ -26,6 +26,11 @@ export const Route = createRootRoute({
         ],
         links: [
             { rel: "stylesheet", href: "https://cdn.jsdelivr.net/npm/bootstrap@5.3/dist/css/bootstrap.min.css" },
+            {
+                rel: "icon",
+                type: "image/svg+xml",
+                href: "/logo.svg",
+            },
         ],
         scripts: [
             { src: "https://cdn.jsdelivr.net/npm/bootstrap@5.3/dist/js/bootstrap.bundle.min.js", type: "text/javascript" },
@@ -34,6 +39,7 @@ export const Route = createRootRoute({
     shellComponent: RootComponent,
     notFoundComponent: NotFoundComponent,
     errorComponent: ErrorComponent,
+    ssr: false,
 });
 
 function RootComponent({ children }: { children: JSX.Element }) {

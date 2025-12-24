@@ -41,6 +41,7 @@ export default [
                     SwitchCase: 1,
                 },
             ],
+            "no-shadow": "off",
         },
     },
 ];
