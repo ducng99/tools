@@ -8,8 +8,8 @@ export default function InputNormalText({ updateText }: BarcodeInputProps) {
 
     return (
         <>
-            <label className="form-label" htmlFor="barcode-text">Text:</label>
-            <textarea className="form-control" id="barcode-text" rows={5} onChange={onChange}></textarea>
+            <label class="form-label" for="barcode-text">Text:</label>
+            <textarea class="form-control" id="barcode-text" rows={5} onChange={onChange}></textarea>
         </>
     );
 }

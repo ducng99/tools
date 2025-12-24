@@ -28,31 +28,31 @@ export default function Sidebar() {
     };
 
     return (
-        <div className="navbar navbar-expand-md bg-body-tertiary col-12 col-md-3 col-xl-2" id="sidebar">
-            <div className="container-fluid flex-column align-items-start h-100">
-                <div className="d-flex align-items-center w-100">
-                    <button className="navbar-toggler me-3" type="button" onClick={toggleSidebar} aria-label="Toggle navigation">
-                        <span className="navbar-toggler-icon"></span>
+        <div class="navbar navbar-expand-md bg-body-tertiary col-12 col-md-3 col-xl-2" id="sidebar">
+            <div class="container-fluid flex-column align-items-start h-100">
+                <div class="d-flex align-items-center w-100">
+                    <button class="navbar-toggler me-3" type="button" onClick={toggleSidebar} aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
                     </button>
-                    <div className="navbar-brand">Tools</div>
-                    <div className="ms-auto nav-item dropdown">
+                    <div class="navbar-brand">Tools</div>
+                    <div class="ms-auto nav-item dropdown">
                         <ThemeToggle />
                     </div>
                 </div>
 
-                <div className="collapse navbar-collapse flex-column align-items-start w-100" id="sidebarContent" ref={sidebarContentRef}>
-                    <ul className="navbar-nav flex-column">
+                <div class="collapse navbar-collapse flex-column align-items-start w-100" id="sidebarContent" ref={sidebarContentRef}>
+                    <ul class="navbar-nav flex-column">
                         {
                             ToolsInfo.map(tool =>
-                                <li className="nav-item" key={tool.id}>
-                                    <NavLink to={tool.id} className="nav-link" onClick={hideSidebar}>
-                                        <span className="ms-1">{tool.name}</span>
+                                <li class="nav-item" key={tool.id}>
+                                    <NavLink to={tool.id} class="nav-link" onClick={hideSidebar}>
+                                        <span class="ms-1">{tool.name}</span>
                                     </NavLink>
                                 </li>
                             )
                         }
                     </ul>
-                    <div className="mt-auto w-100">
+                    <div class="mt-auto w-100">
                         <SidebarFooter />
                     </div>
                 </div>
