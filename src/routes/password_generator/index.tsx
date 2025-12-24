@@ -14,6 +14,7 @@ export const Route = createFileRoute("/password_generator/")({
         ],
     }),
     component: ToolComponent,
+    ssr: false,
 });
 
 function ToolComponent() {

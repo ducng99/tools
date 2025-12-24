@@ -9,7 +9,7 @@
     z-index: 1021;
 
     #sidebarContent {
-        .nav-link > span {
+        .nav-link>span {
             display: inline-flex;
             justify-content: center;
 

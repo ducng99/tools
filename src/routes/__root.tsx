@@ -1,13 +1,20 @@
 import {
+    ClientOnly,
     HeadContent,
+    Outlet,
     Scripts,
     createRootRoute,
 } from "@tanstack/solid-router";
 import { TanStackRouterDevtools } from "@tanstack/solid-router-devtools";
 
-import { HydrationScript } from "solid-js/web";
+import { HydrationScript, Suspense } from "solid-js/web";
+import bootstrapDropdown from "bootstrap/js/dist/dropdown.js?url";
+import styles from "../scss/styles.scss?url";
+import sidebarStyles from "../scss/sidebar.css?url";
 import NotFoundComponent from "../components/common/NotFound";
 import ErrorComponent from "../components/common/ErrorComponent";
+import Loading from "../components/common/Loading";
+import Sidebar from "../components/common/Sidebar";
 import type { JSX } from "solid-js";
 
 export const Route = createRootRoute({
@@ -25,7 +32,9 @@ export const Route = createRootRoute({
             },
         ],
         links: [
-            { rel: "stylesheet", href: "https://cdn.jsdelivr.net/npm/bootstrap@5.3/dist/css/bootstrap.min.css" },
+            { rel: "stylesheet", href: styles },
+            { rel: "stylesheet", href: "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" },
+            { rel: "stylesheet", href: sidebarStyles },
             {
                 rel: "icon",
                 type: "image/svg+xml",
@@ -33,16 +42,16 @@ export const Route = createRootRoute({
             },
         ],
         scripts: [
-            { src: "https://cdn.jsdelivr.net/npm/bootstrap@5.3/dist/js/bootstrap.bundle.min.js", type: "text/javascript" },
+            { src: bootstrapDropdown },
         ],
     }),
-    shellComponent: RootComponent,
+    shellComponent: RootShell,
+    component: RootComponent,
     notFoundComponent: NotFoundComponent,
     errorComponent: ErrorComponent,
-    ssr: false,
 });
 
-function RootComponent({ children }: { children: JSX.Element }) {
+function RootShell({ children }: { children: JSX.Element }) {
     return (
         <html lang="en">
             <head>
@@ -52,15 +61,27 @@ function RootComponent({ children }: { children: JSX.Element }) {
                 <HeadContent />
                 <div class="container-fluid">
                     <div class="row flex-column flex-md-row min-vh-100">
-                        {/* <Sidebar /> */}
-                        <div class="col">
-                            {children}
-                        </div>
+                        {children}
                     </div>
                 </div>
                 <TanStackRouterDevtools />
                 <Scripts />
             </body>
         </html>
+    );
+}
+
+function RootComponent() {
+    return (
+        <>
+            <ClientOnly>
+                <Sidebar />
+            </ClientOnly>
+            <div class="col">
+                <Suspense fallback={<Loading />}>
+                    <Outlet />
+                </Suspense>
+            </div>
+        </>
     );
 }

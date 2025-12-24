@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
-import { toFirstUpperCase } from "../Utils";
+import { For, createSignal, onCleanup } from "solid-js";
+import { toFirstUpperCase } from "../../utils";
 
 type ColourScheme = "light" | "dark" | "auto";
 
 const getStoredTheme = () => localStorage.getItem("theme") as ColourScheme | null;
-const setStoredTheme = (theme: ColourScheme) => { localStorage.setItem("theme", theme); };
+const setStoredTheme = (theme: ColourScheme) => localStorage.setItem("theme", theme);
 
 const getPreferredTheme = () => {
     const storedTheme = getStoredTheme();
@@ -17,32 +17,30 @@ const getPreferredTheme = () => {
 
 const setTheme = (theme: ColourScheme) => {
     if (theme === "auto" && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-        document?.documentElement.setAttribute("data-bs-theme", "dark");
+        document.documentElement.setAttribute("data-bs-theme", "dark");
     }
     else {
-        document?.documentElement.setAttribute("data-bs-theme", theme);
+        document.documentElement.setAttribute("data-bs-theme", theme);
     }
 };
 
 export default function ThemeToggle() {
-    const [currentTheme, setCurrentTheme] = useState<ColourScheme>(getPreferredTheme());
+    const [currentTheme, setCurrentTheme] = createSignal<ColourScheme>(getPreferredTheme());
 
-    useEffect(() => {
-        setTheme(getPreferredTheme());
+    setTheme(getPreferredTheme());
 
-        const onPreferedColorSchemeChange = () => {
-            const storedTheme = getStoredTheme();
-            if (storedTheme !== "light" && storedTheme !== "dark") {
-                setTheme(getPreferredTheme());
-            }
-        };
+    const onPreferedColorSchemeChange = () => {
+        const storedTheme = getStoredTheme();
+        if (storedTheme !== "light" && storedTheme !== "dark") {
+            setTheme(getPreferredTheme());
+        }
+    };
 
-        window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", onPreferedColorSchemeChange);
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", onPreferedColorSchemeChange);
 
-        return () => {
-            window.matchMedia("(prefers-color-scheme: dark)").removeEventListener("change", onPreferedColorSchemeChange);
-        };
-    }, []);
+    onCleanup(() => {
+        window.matchMedia("(prefers-color-scheme: dark)").removeEventListener("change", onPreferedColorSchemeChange);
+    });
 
     const onThemeChangeClick = (theme: ColourScheme) => {
         setTheme(theme);
@@ -62,28 +60,29 @@ export default function ThemeToggle() {
         }
     };
 
-    const currentThemeIcon = useMemo(() => getThemeIcon(currentTheme), [currentTheme]);
+    const currentThemeIcon = () => getThemeIcon(currentTheme());
 
     return (
         <>
             <button class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                {currentThemeIcon}
+                {currentThemeIcon()}
             </button>
             <ul class="dropdown-menu dropdown-menu-end shadow">
-                {
-                    ["light", "dark", "auto"].map(theme => (
-                        <li key={theme}>
-                            <button class={"d-flex dropdown-item rounded-1" + (currentTheme === theme ? " active" : "")} onClick={() => { onThemeChangeClick(theme as ColourScheme); }} role="button">
-                                {getThemeIcon(theme as ColourScheme)}
-                                <span class="ms-2">{toFirstUpperCase(theme)}</span>
-                                {
-                                    currentTheme === theme && <i class="bi bi-check2 ms-auto"></i>
-                                }
-                            </button>
-                        </li>
-                    ),
-                    )
-                }
+                <For each={["light", "dark", "auto"]}>
+                    {
+                        theme => (
+                            <li>
+                                <button class={"d-flex dropdown-item rounded-1" + (currentTheme() === theme ? " active" : "")} onClick={() => { onThemeChangeClick(theme as ColourScheme); }} role="button">
+                                    {getThemeIcon(theme as ColourScheme)}
+                                    <span class="ms-2">{toFirstUpperCase(theme)}</span>
+                                    {
+                                        currentTheme() === theme && <i class="bi bi-check2 ms-auto"></i>
+                                    }
+                                </button>
+                            </li>
+                        )
+                    }
+                </For>
             </ul>
         </>
     );

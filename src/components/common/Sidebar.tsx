@@ -1,30 +1,24 @@
-import { NavLink } from 'react-router-dom';
-import { ToolsInfo } from '../tools/ToolsInfo';
-import SidebarFooter from './SidebarFooter';
-import { lazy, useEffect, useRef } from 'react';
-import { type Collapse } from 'bootstrap';
-
-import('bootstrap/js/dist/dropdown');
-
-const ThemeToggle = lazy(() => import('./ThemeToggle'));
+import { createEffect } from "solid-js";
+import { Collapse } from "bootstrap";
+import { Link } from "@tanstack/solid-router";
+import SidebarFooter from "./SidebarFooter";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Sidebar() {
-    const sidebarContentRef = useRef<HTMLDivElement>(null);
-    const sidebarCollapseRef = useRef<Collapse | null>(null);
+    let sidebarContentRef: HTMLDivElement | undefined;
+    let sidebarCollapseRef: Collapse | undefined;
 
-    useEffect(() => {
-        (async () => {
-            const Collapse = (await import('bootstrap/js/dist/collapse')).default;
-            sidebarCollapseRef.current = new Collapse(sidebarContentRef.current as HTMLDivElement, { toggle: false });
-        })();
-    }, []);
+    createEffect(() => {
+        if (sidebarContentRef)
+            sidebarCollapseRef = new Collapse(sidebarContentRef, { toggle: false });
+    });
 
     const hideSidebar = () => {
-        sidebarCollapseRef.current?.hide();
+        sidebarCollapseRef?.hide();
     };
 
     const toggleSidebar = () => {
-        sidebarCollapseRef.current?.toggle();
+        sidebarCollapseRef?.toggle();
     };
 
     return (
@@ -42,15 +36,14 @@ export default function Sidebar() {
 
                 <div class="collapse navbar-collapse flex-column align-items-start w-100" id="sidebarContent" ref={sidebarContentRef}>
                     <ul class="navbar-nav flex-column">
-                        {
-                            ToolsInfo.map(tool =>
-                                <li class="nav-item" key={tool.id}>
-                                    <NavLink to={tool.id} class="nav-link" onClick={hideSidebar}>
-                                        <span class="ms-1">{tool.name}</span>
-                                    </NavLink>
-                                </li>
-                            )
-                        }
+                        <li class="nav-item">
+                            <Link to="/password_generator" class="nav-link" onClick={hideSidebar}>
+                                <span class="ms-1">Password generator</span>
+                            </Link>
+                            <Link to="/csv_swap" class="nav-link" onClick={hideSidebar}>
+                                <span class="ms-1">CSV Swap</span>
+                            </Link>
+                        </li>
                     </ul>
                     <div class="mt-auto w-100">
                         <SidebarFooter />
