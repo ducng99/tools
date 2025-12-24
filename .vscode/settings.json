@@ -1,6 +1,14 @@
 {
-	"typescript.tsdk": "node_modules\\typescript\\lib",
-	"yaml.schemas": {
-		"https://json.schemastore.org/github-workflow.json": ".github/workflows/deploy.yml"
-	}
+  "files.watcherExclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "search.exclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "files.readonlyInclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
 }

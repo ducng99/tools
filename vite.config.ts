@@ -1,11 +1,20 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite'
+import { devtools } from '@tanstack/devtools-vite'
+import viteTsConfigPaths from 'vite-tsconfig-paths'
 
-// https://vitejs.dev/config/
+import { tanstackStart } from '@tanstack/solid-start/plugin/vite'
+import solidPlugin from 'vite-plugin-solid'
+import { cloudflare } from '@cloudflare/vite-plugin'
+
 export default defineConfig({
-    plugins: [react()],
-    server: {
-        port: 5173,
-        strictPort: true
-    }
-});
+  plugins: [
+    devtools(),
+    cloudflare({ viteEnvironment: { name: 'ssr' } }),
+    // this is the plugin that enables path aliases
+    viteTsConfigPaths({
+      projects: ['./tsconfig.json'],
+    }),
+    tanstackStart(),
+    solidPlugin({ ssr: true }),
+  ],
+})
