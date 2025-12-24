@@ -1,5 +1,5 @@
 export function escapeRegExp(string: string) {
-    return string.replace(/[.*+?^${}()|[\]\\-]/g, '\\$&'); // $& means the whole matched string
+    return string.replace(/[.*+?^${}()|[\]\\-]/g, "\\$&"); // $& means the whole matched string
 }
 
 export function toFirstUpperCase(string: string) {
@@ -21,5 +21,7 @@ export function clampWidthHeight(width: number, height: number, maxWidth: number
 }
 
 export function escapeMeCardValue(value: string) {
-    return value.replaceAll(/[\\;,":]/g, '\\$&');
+    return value.replaceAll(/[\\;,":]/g, "\\$&");
 }
+
+export type ChangeEvent<T extends HTMLElement> = Event & { currentTarget: T };

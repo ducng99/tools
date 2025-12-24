@@ -1,7 +1,6 @@
 //  @ts-check
 
 import { tanstackConfig } from "@tanstack/eslint-config";
-import globals from "globals";
 import pluginJs from "@eslint/js";
 import tseslint from "typescript-eslint";
 import stylistic from "@stylistic/eslint-plugin";

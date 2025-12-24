@@ -20,6 +20,7 @@
     "@tanstack/solid-router-devtools": "^1.133.20",
     "@tanstack/solid-router-ssr-query": "^1.132.25",
     "@tanstack/solid-start": "^1.132.25",
+    "bootstrap": "^5.3.8",
     "solid-js": "^1.9.9",
     "vite": "^7.1.7",
     "vite-tsconfig-paths": "^5.1.4"
@@ -29,6 +30,7 @@
     "@stylistic/eslint-plugin": "^5.6.1",
     "@tanstack/devtools-vite": "^0.3.11",
     "@tanstack/eslint-config": "^0.3.2",
+    "@types/bootstrap": "^5.2.10",
     "globals": "^16.5.0",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.50.1",
