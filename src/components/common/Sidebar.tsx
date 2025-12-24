@@ -37,6 +37,12 @@ export default function Sidebar() {
                 <div class="collapse navbar-collapse flex-column align-items-start w-100" id="sidebarContent" ref={sidebarContentRef}>
                     <ul class="navbar-nav flex-column">
                         <li class="nav-item">
+                            <Link to="/csv_display_table" class="nav-link" onClick={hideSidebar}>
+                                <span class="ms-1">CSV Display in table</span>
+                            </Link>
+                            <Link to="/csv_swap" class="nav-link" onClick={hideSidebar}>
+                                <span class="ms-1">CSV Swap</span>
+                            </Link>
                             <Link to="/barcode_reader" class="nav-link" onClick={hideSidebar}>
                                 <span class="ms-1">Barcode reader</span>
                             </Link>
@@ -45,9 +51,6 @@ export default function Sidebar() {
                             </Link>
                             <Link to="/password_generator" class="nav-link" onClick={hideSidebar}>
                                 <span class="ms-1">Password generator</span>
-                            </Link>
-                            <Link to="/csv_swap" class="nav-link" onClick={hideSidebar}>
-                                <span class="ms-1">CSV Swap</span>
                             </Link>
                         </li>
                     </ul>
