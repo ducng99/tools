@@ -17,4 +17,12 @@ export default defineConfig({
         tanstackStart(),
         solidPlugin({ ssr: true }),
     ],
+    css: {
+        preprocessorOptions: {
+            scss: {
+                quietDeps: true,
+                silenceDeprecations: ["import"],
+            },
+        },
+    },
 });

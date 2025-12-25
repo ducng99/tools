@@ -1,5 +1,6 @@
 import { For, createSignal, onCleanup } from "solid-js";
 import { toFirstUpperCase } from "../../utils";
+import styles from "./ThemeToggle.module.css";
 
 type ColourScheme = "light" | "dark" | "auto";
 
@@ -67,7 +68,7 @@ export default function ThemeToggle() {
             <button class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 {currentThemeIcon()}
             </button>
-            <ul class="dropdown-menu dropdown-menu-end shadow">
+            <ul class={`dropdown-menu dropdown-menu-end shadow ${styles["dropdown-menu"]}`}>
                 <For each={["light", "dark", "auto"]}>
                     {
                         theme => (

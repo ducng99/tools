@@ -1,0 +1,5 @@
+.dropdown-menu {
+    --bs-dropdown-min-width: 8rem;
+    --bs-dropdown-padding-x: 0.25rem;
+    --bs-dropdown-padding-y: 0.25rem;
+}

@@ -1,6 +1,5 @@
-import { Tooltip } from "bootstrap";
 import { createFileRoute } from "@tanstack/solid-router";
-import { createEffect, createSignal } from "solid-js";
+import { createEffect, createSignal, Show } from "solid-js";
 import { DEFAULT_SYMBOLS, generatePassword } from "./-extension";
 import { useOptions } from "./-store";
 import type { ChangeEvent } from "../../utils";
@@ -19,7 +18,7 @@ export const Route = createFileRoute("/password_generator/")({
 
 function ToolComponent() {
     let passwordCopyButtonRef: HTMLButtonElement | undefined;
-    let passwordCopyTooltip: Tooltip | undefined;
+    let passwordCopyTooltip: globalThis.bootstrap.Tooltip | undefined;
     let passwordCopyTooltipTimeout = 0;
 
     const [password, setPassword] = createSignal<string>("");
@@ -28,7 +27,7 @@ function ToolComponent() {
 
     createEffect(() => {
         if (passwordCopyButtonRef) {
-            passwordCopyTooltip = new Tooltip(passwordCopyButtonRef, {
+            passwordCopyTooltip = new globalThis.bootstrap.Tooltip(passwordCopyButtonRef, {
                 title: "Copied!",
                 trigger: "manual",
             });
@@ -110,7 +109,7 @@ function ToolComponent() {
                     Include Symbols
                 </label>
             </div>
-            {options.includeSymbols && (
+            <Show when={options.includeSymbols}>
                 <div class="input-group" role="group">
                     <input class="form-control" id="customSymbols" type="text" value={options.customSymbols} onChange={handleSymbolChange} />
                     <button class="btn btn-secondary" onClick={handleResetSymbolsClick}>
@@ -118,7 +117,7 @@ function ToolComponent() {
                         <span class="d-none d-md-inline">&nbsp;Reset</span>
                     </button>
                 </div>
-            )}
+            </Show>
 
             <button class="btn btn-primary my-3" id="generateButton" onClick={handleGenerateClick}>Generate Password</button>
 

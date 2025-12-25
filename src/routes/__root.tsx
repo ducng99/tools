@@ -8,9 +8,8 @@ import {
 import { TanStackRouterDevtools } from "@tanstack/solid-router-devtools";
 
 import { HydrationScript, Suspense } from "solid-js/web";
-import bootstrapDropdown from "bootstrap/js/dist/dropdown.js?url";
+import bootstrapJs from "bootstrap/dist/js/bootstrap.bundle.min.js?url";
 import styles from "../scss/styles.scss?url";
-import sidebarStyles from "../scss/sidebar.css?url";
 import NotFoundComponent from "../components/common/NotFound";
 import ErrorComponent from "../components/common/ErrorComponent";
 import Loading from "../components/common/Loading";
@@ -34,7 +33,6 @@ export const Route = createRootRoute({
         links: [
             { rel: "stylesheet", href: styles },
             { rel: "stylesheet", href: "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" },
-            { rel: "stylesheet", href: sidebarStyles },
             {
                 rel: "icon",
                 type: "image/svg+xml",
@@ -42,7 +40,7 @@ export const Route = createRootRoute({
             },
         ],
         scripts: [
-            { src: bootstrapDropdown },
+            { src: bootstrapJs },
         ],
     }),
     shellComponent: RootShell,
