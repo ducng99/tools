@@ -7,14 +7,15 @@ A Solid app containing various very-simple client-side tools. Created by me, or 
 
 No tracking, no cookies, no data send out. All processing is done in your browser. All tools can work offline (if all pages are loaded).
 
-See all: https://tools.ducng.dev
+See all: <https://tools.ducng.dev>
 
-*This is just a playground where I implement all the things I ~~'m learning~~ like ¯\\_(ツ)_/¯*
+_This is just a playground where I implement all the things I ~~'m learning~~ like ¯\\_(ツ)_/¯_
 
 ## Tools
-### CSV Display in table
 
-Paste or select a .csv file to dispaly it in a table 🤷‍♂️ with pagination
+### CSV to table
+
+Paste or select a .csv file to dispaly it in a table 🤷‍♂️ with pagination and filtering
 
 ### CSV Swap Columns and rows
 
@@ -34,5 +35,6 @@ Reads QR code/barcode from image or camera and output its content. Using Zxing l
 
 Create QR code/barcode image from text, URL, WiFi,...
 
-# License
+## License
+
 [MIT license](./LICENSE)

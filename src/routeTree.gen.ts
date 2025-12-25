@@ -11,8 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as Password_generatorIndexRouteImport } from './routes/password_generator/index'
+import { Route as Csv_to_tableIndexRouteImport } from './routes/csv_to_table/index'
 import { Route as Csv_swapIndexRouteImport } from './routes/csv_swap/index'
-import { Route as Csv_display_tableIndexRouteImport } from './routes/csv_display_table/index'
 import { Route as Barcode_writerIndexRouteImport } from './routes/barcode_writer/index'
 import { Route as Barcode_readerIndexRouteImport } from './routes/barcode_reader/index'
 
@@ -26,14 +26,14 @@ const Password_generatorIndexRoute = Password_generatorIndexRouteImport.update({
   path: '/password_generator/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Csv_to_tableIndexRoute = Csv_to_tableIndexRouteImport.update({
+  id: '/csv_to_table/',
+  path: '/csv_to_table/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const Csv_swapIndexRoute = Csv_swapIndexRouteImport.update({
   id: '/csv_swap/',
   path: '/csv_swap/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const Csv_display_tableIndexRoute = Csv_display_tableIndexRouteImport.update({
-  id: '/csv_display_table/',
-  path: '/csv_display_table/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const Barcode_writerIndexRoute = Barcode_writerIndexRouteImport.update({
@@ -51,16 +51,16 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/barcode_reader': typeof Barcode_readerIndexRoute
   '/barcode_writer': typeof Barcode_writerIndexRoute
-  '/csv_display_table': typeof Csv_display_tableIndexRoute
   '/csv_swap': typeof Csv_swapIndexRoute
+  '/csv_to_table': typeof Csv_to_tableIndexRoute
   '/password_generator': typeof Password_generatorIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/barcode_reader': typeof Barcode_readerIndexRoute
   '/barcode_writer': typeof Barcode_writerIndexRoute
-  '/csv_display_table': typeof Csv_display_tableIndexRoute
   '/csv_swap': typeof Csv_swapIndexRoute
+  '/csv_to_table': typeof Csv_to_tableIndexRoute
   '/password_generator': typeof Password_generatorIndexRoute
 }
 export interface FileRoutesById {
@@ -68,8 +68,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/barcode_reader/': typeof Barcode_readerIndexRoute
   '/barcode_writer/': typeof Barcode_writerIndexRoute
-  '/csv_display_table/': typeof Csv_display_tableIndexRoute
   '/csv_swap/': typeof Csv_swapIndexRoute
+  '/csv_to_table/': typeof Csv_to_tableIndexRoute
   '/password_generator/': typeof Password_generatorIndexRoute
 }
 export interface FileRouteTypes {
@@ -78,24 +78,24 @@ export interface FileRouteTypes {
     | '/'
     | '/barcode_reader'
     | '/barcode_writer'
-    | '/csv_display_table'
     | '/csv_swap'
+    | '/csv_to_table'
     | '/password_generator'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/barcode_reader'
     | '/barcode_writer'
-    | '/csv_display_table'
     | '/csv_swap'
+    | '/csv_to_table'
     | '/password_generator'
   id:
     | '__root__'
     | '/'
     | '/barcode_reader/'
     | '/barcode_writer/'
-    | '/csv_display_table/'
     | '/csv_swap/'
+    | '/csv_to_table/'
     | '/password_generator/'
   fileRoutesById: FileRoutesById
 }
@@ -103,8 +103,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   Barcode_readerIndexRoute: typeof Barcode_readerIndexRoute
   Barcode_writerIndexRoute: typeof Barcode_writerIndexRoute
-  Csv_display_tableIndexRoute: typeof Csv_display_tableIndexRoute
   Csv_swapIndexRoute: typeof Csv_swapIndexRoute
+  Csv_to_tableIndexRoute: typeof Csv_to_tableIndexRoute
   Password_generatorIndexRoute: typeof Password_generatorIndexRoute
 }
 
@@ -124,18 +124,18 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof Password_generatorIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/csv_to_table/': {
+      id: '/csv_to_table/'
+      path: '/csv_to_table'
+      fullPath: '/csv_to_table'
+      preLoaderRoute: typeof Csv_to_tableIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/csv_swap/': {
       id: '/csv_swap/'
       path: '/csv_swap'
       fullPath: '/csv_swap'
       preLoaderRoute: typeof Csv_swapIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/csv_display_table/': {
-      id: '/csv_display_table/'
-      path: '/csv_display_table'
-      fullPath: '/csv_display_table'
-      preLoaderRoute: typeof Csv_display_tableIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/barcode_writer/': {
@@ -159,8 +159,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   Barcode_readerIndexRoute: Barcode_readerIndexRoute,
   Barcode_writerIndexRoute: Barcode_writerIndexRoute,
-  Csv_display_tableIndexRoute: Csv_display_tableIndexRoute,
   Csv_swapIndexRoute: Csv_swapIndexRoute,
+  Csv_to_tableIndexRoute: Csv_to_tableIndexRoute,
   Password_generatorIndexRoute: Password_generatorIndexRoute,
 }
 export const routeTree = rootRouteImport

@@ -9,12 +9,11 @@
     "preview": "vite preview",
     "test": "vitest run",
     "lint": "eslint",
-    "lint:fix": "eslint --fix",
-    "deploy": "wrangler deploy",
-    "start": "node .output/server/index.mjs"
+    "lint:fix": "eslint --fix"
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.19.0",
+    "@tanstack/match-sorter-utils": "^8.19.4",
     "@tanstack/router-plugin": "^1.143.4",
     "@tanstack/solid-router": "^1.143.4",
     "@tanstack/solid-router-devtools": "^1.143.4",
@@ -26,8 +25,9 @@
     "sass-embedded": "^1.97.1",
     "solid-js": "^1.9.10",
     "vite": "^7.3.0",
+    "vite-plugin-solid": "^2.11.10",
     "vite-tsconfig-paths": "^6.0.3",
-    "zxing-wasm": "^2.2.4"
+    "zxing-wasm": "2.2.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
@@ -35,10 +35,9 @@
     "@tanstack/devtools-vite": "^0.3.12",
     "@types/bootstrap": "^5.2.10",
     "eslint-plugin-import-x": "^4.16.1",
-    "globals": "^16.5.0",
-    "nanospinner": "^1.2.2",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.50.1",
-    "vite-plugin-solid": "^2.11.10"
+    "globals": "^16",
+    "nanospinner": "1.2.2",
+    "typescript": "^5",
+    "typescript-eslint": "^8.50.1"
   }
 }
