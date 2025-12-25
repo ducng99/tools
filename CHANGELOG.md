@@ -1,3 +1,13 @@
+## [2.0.1] - 2025-12-25
+
+### ⚙️ Miscellaneous Tasks
+
+- Allow some pages to have SSR
+
+### Security
+
+- *(password_generator)* Fixed biased random number generator
+
 ## [2.0.0] - 2025-12-24
 
 ### ⚙️ Miscellaneous Tasks
