@@ -1,4 +1,4 @@
-import { escapeRegExp } from "../../utils";
+import { escapeRegExp, getRandomInt } from "../../utils";
 
 // Define character sets
 const lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
@@ -36,13 +36,19 @@ export function generatePassword(options: PasswordOptions): string {
 
     let password = "";
     let passwordPasses = 4;
-    const randomTypedArray = new Uint32Array(options.length);
+
+    // If there are no characters to choose from or non-positive length, return empty
+    if (chars.length === 0 || options.length <= 0) {
+        return "";
+    }
 
     do {
-        // Generate password
-        password = [...crypto.getRandomValues(randomTypedArray)]
-            .map(value => chars[value % chars.length])
-            .join("");
+        // Generate password using unbiased random indices
+        let result = "";
+        for (let i = 0; i < options.length; i++) {
+            result += chars[getRandomInt(chars.length)];
+        }
+        password = result;
 
         passwordPasses = 4;
 
