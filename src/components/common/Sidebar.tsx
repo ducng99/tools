@@ -1,5 +1,5 @@
 import { createEffect } from "solid-js";
-import { Link } from "@tanstack/solid-router";
+import { ClientOnly, Link } from "@tanstack/solid-router";
 import SidebarFooter from "./SidebarFooter";
 import ThemeToggle from "./ThemeToggle";
 import styles from "./Sidebar.module.css";
@@ -30,7 +30,9 @@ export default function Sidebar() {
                     </button>
                     <div class="navbar-brand">Tools</div>
                     <div class="ms-auto nav-item dropdown">
-                        <ThemeToggle />
+                        <ClientOnly>
+                            <ThemeToggle />
+                        </ClientOnly>
                     </div>
                 </div>
 

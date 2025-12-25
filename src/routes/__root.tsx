@@ -1,5 +1,4 @@
 import {
-    ClientOnly,
     HeadContent,
     Outlet,
     Scripts,
@@ -7,12 +6,10 @@ import {
 } from "@tanstack/solid-router";
 import { TanStackRouterDevtools } from "@tanstack/solid-router-devtools";
 
-import { HydrationScript, Suspense } from "solid-js/web";
+import { HydrationScript } from "solid-js/web";
+import themeJs from "../theme?url";
 import bootstrapJs from "bootstrap/dist/js/bootstrap.bundle.min.js?url";
 import styles from "../scss/styles.scss?url";
-import NotFoundComponent from "../components/common/NotFound";
-import ErrorComponent from "../components/common/ErrorComponent";
-import Loading from "../components/common/Loading";
 import Sidebar from "../components/common/Sidebar";
 import type { JSX } from "solid-js";
 
@@ -40,13 +37,12 @@ export const Route = createRootRoute({
             },
         ],
         scripts: [
+            { src: themeJs, type: "module", async: true },
             { src: bootstrapJs },
         ],
     }),
     shellComponent: RootShell,
     component: RootComponent,
-    notFoundComponent: NotFoundComponent,
-    errorComponent: ErrorComponent,
 });
 
 function RootShell({ children }: { children: JSX.Element }) {
@@ -72,13 +68,9 @@ function RootShell({ children }: { children: JSX.Element }) {
 function RootComponent() {
     return (
         <>
-            <ClientOnly>
-                <Sidebar />
-            </ClientOnly>
+            <Sidebar />
             <div class="col max-vh-100 overflow-auto">
-                <Suspense fallback={<Loading />}>
-                    <Outlet />
-                </Suspense>
+                <Outlet />
             </div>
         </>
     );
