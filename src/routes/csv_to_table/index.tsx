@@ -189,8 +189,8 @@ function ToolComponent() {
             </div>
 
             <Show when={processedData().length > 0}>
-                <div class="row mb-3">
-                    <div class="col d-flex">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="d-flex">
                         <nav aria-label="Table pages">
                             <ul class="pagination m-0">
                                 <li classList={{ "page-item": true, "disabled": !table.getCanPreviousPage() }}>
@@ -233,7 +233,7 @@ function ToolComponent() {
                         </nav>
                     </div>
 
-                    <div class="col d-flex justify-content-end align-items-center mt-3 mt-md-0">
+                    <div class="text-nowrap mt-3 mt-md-0">
                         <span>{"Show "}</span>
                         <select class="d-inline-block form-select maxw-fit maxh-fit" aria-label="Show rows per page" value={table.getState().pagination.pageSize} onChange={(e) => { setTablePageSize(parseInt(e.currentTarget.value)); }}>
                             <For each={[20, 50, 100, 200, 500, 1000, 5000, tableData().length]}>
@@ -250,7 +250,7 @@ function ToolComponent() {
                     <input type="text" class="form-control" placeholder="Filter rows..." value={filterQuery()} onInput={(e) => { setFilterQuery(e.currentTarget.value); }} />
                 </div>
 
-                <div class="d-flex justify-content-center">
+                <div>
                     <table class="table table-striped table-bordered" classList={{ "table-fixed": isTableFixed() }}>
                         <Show when={isFirstRowHeader()}>
                             <thead>

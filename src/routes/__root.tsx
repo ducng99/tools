@@ -75,7 +75,7 @@ function RootComponent() {
             <ClientOnly>
                 <Sidebar />
             </ClientOnly>
-            <div class="col">
+            <div class="col max-vh-100 overflow-auto">
                 <Suspense fallback={<Loading />}>
                     <Outlet />
                 </Suspense>
