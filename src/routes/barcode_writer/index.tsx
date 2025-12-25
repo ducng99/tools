@@ -6,7 +6,7 @@ import InputURL from "./-input_types/InputURL";
 import InputWiFiConfig from "./-input_types/InputWiFiConfig";
 import InputEmail from "./-input_types/InputEmail";
 import InputNormalText from "./-input_types/InputNormalText";
-import type { WriteInputBarcodeFormat } from "zxing-wasm";
+import type { EcLevel, WriteInputBarcodeFormat } from "zxing-wasm";
 import type { JSX } from "solid-js";
 
 type BarcodeInputType = "url" | "wifi" | "text" | "mail";
@@ -26,7 +26,7 @@ export const Route = createFileRoute("/barcode_writer/")({
     component: ToolComponent,
 });
 
-const inputComponents: Record<BarcodeInputType, ({ updateText }: BarcodeInputProps) => JSX.Element> = {
+const inputComponents: Record<BarcodeInputType, (_: BarcodeInputProps) => JSX.Element> = {
     url: InputURL,
     wifi: InputWiFiConfig,
     mail: InputEmail,
@@ -36,25 +36,68 @@ const inputComponents: Record<BarcodeInputType, ({ updateText }: BarcodeInputPro
 function ToolComponent() {
     const [barcodeInputType, setBarcodeInputType] = createSignal<BarcodeInputType>("url");
     const [barcodeInputText, setBarcodeInputText] = createSignal<string>("");
+    const [barcodeResult, setBarcodeResult] = createSignal<{
+        image: Blob | null;
+        svg: string;
+        utf8: string;
+        error: string;
+    } | null>(null);
     let barcodeFormatRef: HTMLSelectElement | undefined;
-    let barcodeOutputImageRef: HTMLImageElement | undefined;
+    let barcodeSizeHintRef: HTMLInputElement | undefined;
+    let barcodeECLevelRef: HTMLSelectElement | undefined;
+    let barcodeQuietZoneRef: HTMLInputElement | undefined;
+    let barcodeWithHrtRef: HTMLInputElement | undefined;
 
     function generateBarcode() {
-        if (barcodeInputText()
-            && barcodeFormatRef?.value
-        ) {
-            const text = barcodeInputText();
-            const format = barcodeFormatRef.value as WriteInputBarcodeFormat;
+        const text = barcodeInputText();
 
-            writeBarcode(text, { format }).then((result) => {
-                if (result.svg) {
-                    if (barcodeOutputImageRef) {
-                        barcodeOutputImageRef.src = `data:image/svg+xml,${encodeURIComponent(result.svg)}`;
-                    }
+        if (text && barcodeFormatRef?.value) {
+            const format = barcodeFormatRef.value as WriteInputBarcodeFormat;
+            const sizeHint = barcodeSizeHintRef ? parseInt(barcodeSizeHintRef.value) : 512;
+            const ecLevel = barcodeECLevelRef ? barcodeECLevelRef.value as EcLevel : "";
+            const withQuietZones = barcodeQuietZoneRef?.checked ?? true;
+            const withHRT = barcodeWithHrtRef?.checked ?? true;
+
+            writeBarcode(text, { format, sizeHint, ecLevel, withQuietZones, withHRT }).then((result) => {
+                if (result.error) {
+                    console.error("Error generating barcode:", result.error);
+                }
+                else {
+                    setBarcodeResult(result);
                 }
             }).catch((error) => {
                 console.error("Error generating barcode:", error);
             });
+        }
+    }
+
+    function downloadSvg() {
+        const result = barcodeResult();
+        if (result?.svg) {
+            const blob = new Blob([result.svg], { type: "image/svg+xml" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "barcode.svg";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    }
+
+    function downloadPng() {
+        const result = barcodeResult();
+        if (result?.image) {
+            const url = URL.createObjectURL(result.image);
+            const a = document.createElement("a");
+            a.href = url;
+            a.type = result.image.type;
+            a.download = "barcode.png";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
     }
 
@@ -100,15 +143,6 @@ function ToolComponent() {
                             Email
                         </button>
                     </li>
-                    {/* <li class="nav-item">
-                        <button class="nav-link" onClick={changeBarcodeInputType} data-input-type='phone'>Phone</button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link" onClick={changeBarcodeInputType} data-input-type='sms'>SMS</button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link" onClick={changeBarcodeInputType} data-input-type='bitcoin'>Bitcoin</button>
-                    </li> */}
                 </ul>
                 <div class="tab-content my-2" id="barcode-input-type-container">
                     <Dynamic component={inputComponents[barcodeInputType()]} updateText={setBarcodeInputText} />
@@ -135,10 +169,12 @@ function ToolComponent() {
                 </select>
             </div>
 
-            <button class="btn btn-primary mt-3" onClick={generateBarcode}>
-                {"Generate "}
-                <i class="bi bi-qr-code" />
-            </button>
+            <div class="mt-3">
+                <button class="btn btn-primary" onClick={generateBarcode}>
+                    {"Generate "}
+                    <i class="bi bi-qr-code" />
+                </button>
+            </div>
 
             <div class="accordion mt-3" id="advancedOptionsContainer">
                 <div class="accordion-item">
@@ -148,71 +184,34 @@ function ToolComponent() {
                     <div id="advancedOptions" class="accordion-collapse collapse" data-bs-parent="#advancedOptionsContainer">
                         <div class="accordion-body">
                             <div class="row">
-                                {/* <div class="col-12 col-md-6">
-                                    <label for="barcode-writer-charset">Encoding:</label>
-                                    <select class="form-select" id="barcode-writer-charset" defaultValue="UTF-8" ref={barcodeEncodingRef}>
-                                        <option value="Cp437">Cp437</option>
-                                        <option value="ISO-8859-1">ISO-8859-1</option>
-                                        <option value="ISO-8859-2">ISO-8859-2</option>
-                                        <option value="ISO-8859-3">ISO-8859-3</option>
-                                        <option value="ISO-8859-4">ISO-8859-4</option>
-                                        <option value="ISO-8859-5">ISO-8859-5</option>
-                                        <option value="ISO-8859-6">ISO-8859-6</option>
-                                        <option value="ISO-8859-7">ISO-8859-7</option>
-                                        <option value="ISO-8859-8">ISO-8859-8</option>
-                                        <option value="ISO-8859-9">ISO-8859-9</option>
-                                        <option value="ISO-8859-10">ISO-8859-10</option>
-                                        <option value="ISO-8859-11">ISO-8859-11</option>
-                                        <option value="ISO-8859-13">ISO-8859-13</option>
-                                        <option value="ISO-8859-14">ISO-8859-14</option>
-                                        <option value="ISO-8859-15">ISO-8859-15</option>
-                                        <option value="ISO-8859-16">ISO-8859-16</option>
-                                        <option value="Shift_JIS">Shift_JIS</option>
-                                        <option value="windows-1250">windows-1250</option>
-                                        <option value="windows-1251">windows-1251</option>
-                                        <option value="windows-1252">windows-1252</option>
-                                        <option value="windows-1256">windows-1256</option>
-                                        <option value="UTF-16BE">UTF-16BE</option>
-                                        <option value="UTF-8">UTF-8</option>
-                                        <option value="ASCII">ASCII</option>
-                                        <option value="Big5">Big5</option>
-                                        <option value="GB2312">GB2312</option>
-                                        <option value="GB18030">GB18030</option>
-                                        <option value="EUC-CN">EUC-CN</option>
-                                        <option value="GBK">GBK</option>
-                                        <option value="EUC-KR">EUC-KR</option>
+                                <div class="col-12 col-md-6">
+                                    <label for="barcode-writer-size-hint">Image size (hint):</label>
+                                    <input type="number" class="form-control" id="barcode-writer-size-hint" min={1} step={1} value="512" ref={barcodeSizeHintRef} />
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label for="barcode-writer-ecclevel">Error Correction Level:</label>
+                                    <select class="form-select" id="barcode-writer-ecclevel" ref={barcodeECLevelRef}>
+                                        <option value="L">Low</option>
+                                        <option value="M" selected>Medium</option>
+                                        <option value="Q">Quartile</option>
+                                        <option value="H">High</option>
                                     </select>
-                                </div> */}
-                                {/* <div class="col-12 col-md-6">
-                                    <label for="barcode-writer-ecclevel">ECC Level:</label>
-                                    <select class="form-select" id="barcode-writer-ecclevel" ref={barcodeECCLevelRef}>
-                                        <option value="" selected>Default</option>
-                                        <option value="0">0</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                        <option value="6">6</option>
-                                        <option value="7">7</option>
-                                        <option value="8">8</option>
-                                    </select>
-                                </div> */}
+                                </div>
                             </div>
-                            {/* <div class="row">
-                                <div class="col-12 col-md-4">
-                                    <label for="barcode-writer-margin">Quiet Zone:</label>
-                                    <input class="form-control" id="barcode-writer-margin" type="number" defaultValue="10" ref={barcodeQuietZoneRef} />
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <div class="form-check form-switch">
+                                        <input type="checkbox" class="form-check-input" id="barcode-writer-margin" role="switch" checked ref={barcodeQuietZoneRef} />
+                                        <label class="form-check-label" for="barcode-writer-margin">Quiet Zone</label>
+                                    </div>
                                 </div>
-                                <div class="col-12 col-md-4">
-                                    <label for="barcode-writer-width">Image Width:</label>
-                                    <input class="form-control" id="barcode-writer-width" type="number" defaultValue="512" ref={barcodeWidthRef} />
+                                <div class="col-12">
+                                    <div class="form-check form-switch">
+                                        <input type="checkbox" class="form-check-input" id="barcode-writer-with-hrt" role="switch" checked ref={barcodeWithHrtRef} />
+                                        <label class="form-check-label" for="barcode-writer-with-hrt">Include human readable text</label>
+                                    </div>
                                 </div>
-                                <div class="col-12 col-md-4">
-                                    <label for="barcode-writer-height">Image Height:</label>
-                                    <input class="form-control" id="barcode-writer-height" type="number" defaultValue="512" ref={barcodeHeightRef} />
-                                </div>
-                            </div> */}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -220,7 +219,11 @@ function ToolComponent() {
 
             <label class="form-label mt-3">Output:</label>
             <div class="text-center">
-                <img class="max-vh-30 w-100" style={{ "object-fit": "contain" }} src="" alt="<Output image will be displayed here>" id="barcode-output-image" ref={barcodeOutputImageRef} />
+                <Show when={barcodeResult()} fallback={<span>Output image will be displayed here</span>}>
+                    {result => (
+                        <img class="max-vh-30 w-100" style={{ "object-fit": "contain" }} src={`data:image/svg+xml,${encodeURIComponent(result().svg)}`} />
+                    )}
+                </Show>
             </div>
         </div>
     );

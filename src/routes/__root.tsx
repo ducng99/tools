@@ -29,7 +29,7 @@ export const Route = createRootRoute({
         ],
         links: [
             { rel: "stylesheet", href: styles },
-            { rel: "stylesheet", href: "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" },
+            { rel: "stylesheet", href: "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13/font/bootstrap-icons.min.css" },
             {
                 rel: "icon",
                 type: "image/svg+xml",
