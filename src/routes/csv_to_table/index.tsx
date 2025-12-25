@@ -188,7 +188,7 @@ function ToolComponent() {
                 </div>
             </div>
 
-            <Show when={table.getRowCount() > 0}>
+            <Show when={processedData().length > 0}>
                 <div class="row mb-3">
                     <div class="col d-flex">
                         <nav aria-label="Table pages">
