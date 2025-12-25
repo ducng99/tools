@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/solid-router";
-import { createSignal } from "solid-js";
+import { createSignal, Show } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { writeBarcode } from "zxing-wasm";
 import InputURL from "./-input_types/InputURL";
@@ -217,14 +217,25 @@ function ToolComponent() {
                 </div>
             </div>
 
-            <label class="form-label mt-3">Output:</label>
-            <div class="text-center">
-                <Show when={barcodeResult()} fallback={<span>Output image will be displayed here</span>}>
-                    {result => (
-                        <img class="max-vh-30 w-100" style={{ "object-fit": "contain" }} src={`data:image/svg+xml,${encodeURIComponent(result().svg)}`} />
-                    )}
-                </Show>
-            </div>
+            <Show when={barcodeResult()}>
+                {result => (
+                    <>
+                        <label class="form-label mt-3">Output:</label>
+                        <div class="text-center">
+                            <img class="max-vh-30 w-100 object-fit-contain" src={`data:image/svg+xml,${encodeURIComponent(result().svg)}`} />
+                        </div>
+
+                        <div class="mt-2 d-flex justify-content-center gap-2">
+                            <button class="btn btn-primary" onClick={downloadSvg}>
+                                Save as SVG
+                            </button>
+                            <button class="btn btn-primary" onClick={downloadPng}>
+                                Save as PNG
+                            </button>
+                        </div>
+                    </>
+                )}
+            </Show>
         </div>
     );
 }
