@@ -1,3 +1,18 @@
+## [2.0.2] - 2025-12-25
+
+### 🐛 Bug Fixes
+
+- *(csv_to_table)* Fixed incorrectly hiding the table when there are no rows after filter & pagination
+
+### 🚜 Refactor
+
+- Simplify some bootstrap types and styles
+- [**breaking**] Renamed `csv_display_table` to `csv_to_table`
+
+### 🎨 Styling
+
+- Fixed overflowing table page
+
 ## [2.0.1] - 2025-12-25
 
 ### ⚙️ Miscellaneous Tasks
