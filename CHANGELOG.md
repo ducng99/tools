@@ -1,3 +1,14 @@
+## [2.0.3] - 2025-12-26
+
+### ⛰️  Features
+
+- *(barcode_writer)* Re-adding some advanced options from v1 with better defaults
+- *(barcode_writer)* Added buttons to save the image as svg or png
+
+### 🎨 Styling
+
+- Fixed flashing white theme on page load
+
 ## [2.0.2] - 2025-12-25
 
 ### 🐛 Bug Fixes
