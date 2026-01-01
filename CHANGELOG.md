@@ -1,3 +1,12 @@
+## [2.0.4] - 2026-01-01
+
+### ⚙️ Miscellaneous Tasks
+
+- *(deps)* Bump @tanstack/solid-router from 1.143.4 to 1.144.0
+- *(deps)* Bump @tanstack/router-plugin from 1.143.4 to 1.145.2
+- *(deps)* Bump @tanstack/solid-router-ssr-query
+- *(deps)* Bump all dependencies
+
 ## [2.0.3] - 2025-12-26
 
 ### ⛰️  Features
