@@ -16,9 +16,9 @@
     "@tanstack/match-sorter-utils": "^8.19.4",
     "@tanstack/router-plugin": "^1.145.2",
     "@tanstack/solid-router": "^1.144.0",
-    "@tanstack/solid-router-devtools": "^1.143.4",
+    "@tanstack/solid-router-devtools": "^1.144.0",
     "@tanstack/solid-router-ssr-query": "^1.144.0",
-    "@tanstack/solid-start": "^1.143.4",
+    "@tanstack/solid-start": "^1.145.3",
     "@tanstack/solid-table": "^8.21.3",
     "bootstrap": "^5.3.8",
     "csv-parse": "^6.1.0",
@@ -35,9 +35,9 @@
     "@tanstack/devtools-vite": "^0.3.12",
     "@types/bootstrap": "^5.2.10",
     "eslint-plugin-import-x": "^4.16.1",
-    "globals": "^16",
+    "globals": "^16.5.0",
     "nanospinner": "1.2.2",
-    "typescript": "^5",
-    "typescript-eslint": "^8.50.1"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.51.0"
   }
 }
