@@ -1,3 +1,9 @@
+## [2.0.5] - 2026-01-01
+
+### ⚙️ Miscellaneous Tasks
+
+- *(deps-dev)* Bump @tanstack/devtools-vite from 0.3.12 to 0.4.0
+
 ## [2.0.4] - 2026-01-01
 
 ### ⚙️ Miscellaneous Tasks
