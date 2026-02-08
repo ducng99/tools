@@ -49,11 +49,11 @@ const Barcode_readerIndexRoute = Barcode_readerIndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/barcode_reader': typeof Barcode_readerIndexRoute
-  '/barcode_writer': typeof Barcode_writerIndexRoute
-  '/csv_swap': typeof Csv_swapIndexRoute
-  '/csv_to_table': typeof Csv_to_tableIndexRoute
-  '/password_generator': typeof Password_generatorIndexRoute
+  '/barcode_reader/': typeof Barcode_readerIndexRoute
+  '/barcode_writer/': typeof Barcode_writerIndexRoute
+  '/csv_swap/': typeof Csv_swapIndexRoute
+  '/csv_to_table/': typeof Csv_to_tableIndexRoute
+  '/password_generator/': typeof Password_generatorIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -76,11 +76,11 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/barcode_reader'
-    | '/barcode_writer'
-    | '/csv_swap'
-    | '/csv_to_table'
-    | '/password_generator'
+    | '/barcode_reader/'
+    | '/barcode_writer/'
+    | '/csv_swap/'
+    | '/csv_to_table/'
+    | '/password_generator/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -120,35 +120,35 @@ declare module '@tanstack/solid-router' {
     '/password_generator/': {
       id: '/password_generator/'
       path: '/password_generator'
-      fullPath: '/password_generator'
+      fullPath: '/password_generator/'
       preLoaderRoute: typeof Password_generatorIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/csv_to_table/': {
       id: '/csv_to_table/'
       path: '/csv_to_table'
-      fullPath: '/csv_to_table'
+      fullPath: '/csv_to_table/'
       preLoaderRoute: typeof Csv_to_tableIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/csv_swap/': {
       id: '/csv_swap/'
       path: '/csv_swap'
-      fullPath: '/csv_swap'
+      fullPath: '/csv_swap/'
       preLoaderRoute: typeof Csv_swapIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/barcode_writer/': {
       id: '/barcode_writer/'
       path: '/barcode_writer'
-      fullPath: '/barcode_writer'
+      fullPath: '/barcode_writer/'
       preLoaderRoute: typeof Barcode_writerIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/barcode_reader/': {
       id: '/barcode_reader/'
       path: '/barcode_reader'
-      fullPath: '/barcode_reader'
+      fullPath: '/barcode_reader/'
       preLoaderRoute: typeof Barcode_readerIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
