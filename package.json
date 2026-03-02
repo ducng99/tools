@@ -16,7 +16,7 @@
     "@tanstack/match-sorter-utils": "^8.19.4",
     "@tanstack/router-plugin": "^1.159.3",
     "@tanstack/solid-router": "^1.159.3",
-    "@tanstack/solid-router-devtools": "^1.159.3",
+    "@tanstack/solid-router-devtools": "^1.163.3",
     "@tanstack/solid-router-ssr-query": "^1.159.3",
     "@tanstack/solid-start": "^1.159.3",
     "@tanstack/solid-table": "^8.21.3",
