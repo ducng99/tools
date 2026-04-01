@@ -5,7 +5,7 @@ function SidebarFooter() {
         <>
             <hr />
             <footer>
-                <small>&copy; 2022 - 2025 Thomas Nguyen</small>
+                <small>&copy; 2022 - 2026 Thomas Nguyen</small>
                 <br />
                 <a href="https://github.com/ducng99/tools" class={`text-decoration-none ${styles.footerLink}`} target="_blank" rel="noreferrer"><i class="bi bi-github" /></a>
                 <small>
