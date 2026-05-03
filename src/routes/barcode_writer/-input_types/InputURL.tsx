@@ -1,7 +1,9 @@
 import type { BarcodeInputProps } from "..";
 
 export default function InputURL({ updateText }: BarcodeInputProps) {
+    // eslint-disable-next-line no-unassigned-vars
     let protocolRef: HTMLSelectElement | undefined;
+    // eslint-disable-next-line no-unassigned-vars
     let urlRef: HTMLInputElement | undefined;
 
     function onChange() {

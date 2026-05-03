@@ -14,7 +14,9 @@ export const Route = createFileRoute("/csv_swap/")({
 });
 
 function ToolComponent() {
+    // eslint-disable-next-line no-unassigned-vars
     let csvTextboxRef: HTMLTextAreaElement | undefined;
+    // eslint-disable-next-line no-unassigned-vars
     let csvTextOutputRef: HTMLTextAreaElement | undefined;
 
     function handleFileChange(event: ChangeEvent<HTMLInputElement>) {

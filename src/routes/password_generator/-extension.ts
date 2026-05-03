@@ -34,8 +34,8 @@ export function generatePassword(options: PasswordOptions): string {
         chars += symbolChars;
     }
 
-    let password = "";
-    let passwordPasses = 4;
+    let password: string;
+    let passwordPasses: number;
 
     // If there are no characters to choose from or non-positive length, return empty
     if (chars.length === 0 || options.length <= 0) {

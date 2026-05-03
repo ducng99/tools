@@ -20,14 +20,19 @@ function ToolComponent() {
     const [selectedCamera, setSelectedCamera] = createSignal<string>("");
     const [cameraDevices, setCameraDevices] = createSignal<Array<MediaDeviceInfo>>([]);
 
+    // eslint-disable-next-line no-unassigned-vars
     let barcodeFileUploadRef: HTMLInputElement | undefined;
+    // eslint-disable-next-line no-unassigned-vars
     let barcodeImageDisplayRef: HTMLImageElement | undefined;
 
+    // eslint-disable-next-line no-unassigned-vars
     let barcodeVideoRef: HTMLVideoElement | undefined;
     let cameraStreamRef: MediaStream | undefined;
     let lastCameraFrameProcessedRef = performance.now();
 
+    // eslint-disable-next-line no-unassigned-vars
     let helperCanvasRef: HTMLCanvasElement | undefined;
+    // eslint-disable-next-line no-unassigned-vars
     let outputTextboxRef: HTMLTextAreaElement | undefined;
 
     function handleFileChange(event: ChangeEvent<HTMLInputElement>) {

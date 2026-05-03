@@ -1,10 +1,15 @@
 import type { BarcodeInputProps } from "..";
 
 export default function InputEmail({ updateText }: BarcodeInputProps) {
+    // eslint-disable-next-line no-unassigned-vars
     let recipientRef: HTMLInputElement | undefined;
+    // eslint-disable-next-line no-unassigned-vars
     let ccRef: HTMLInputElement | undefined;
+    // eslint-disable-next-line no-unassigned-vars
     let bccRef: HTMLInputElement | undefined;
+    // eslint-disable-next-line no-unassigned-vars
     let subjectRef: HTMLInputElement | undefined;
+    // eslint-disable-next-line no-unassigned-vars
     let bodyRef: HTMLTextAreaElement | undefined;
 
     function onChange() {

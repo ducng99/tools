@@ -28,11 +28,13 @@ declare module "@tanstack/solid-table" {
 }
 
 function ToolComponent() {
+    // eslint-disable-next-line no-unassigned-vars
     let csvTextboxRef: HTMLTextAreaElement | undefined;
     const [processedData, setProcessedData] = createSignal<Array<Array<string>>>([]);
     const [isFirstRowHeader, setIsFirstRowHeader] = createSignal<boolean>(true);
     const [isFirstRowSticky, setIsFirstRowSticky] = createSignal<boolean>(true);
     const [isTableFixed, setIsTableFixed] = createSignal<boolean>(false);
+    // eslint-disable-next-line no-unassigned-vars
     let tableFixedInfoRef: HTMLSpanElement | undefined;
     const [filterQuery, setFilterQuery] = createSignal<string>("");
 

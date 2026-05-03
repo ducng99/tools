@@ -4,12 +4,19 @@ import type { BarcodeInputProps } from "..";
 
 export default function InputWiFiConfig({ updateText }: BarcodeInputProps) {
     const [authenticationType, setAuthenticationType] = createSignal<string>("WPA");
+    // eslint-disable-next-line no-unassigned-vars
     let ssidRef: HTMLInputElement | undefined;
+    // eslint-disable-next-line no-unassigned-vars
     let ssidHiddenRef: HTMLInputElement | undefined;
+    // eslint-disable-next-line no-unassigned-vars
     let eapMethodRef: HTMLInputElement | undefined;
+    // eslint-disable-next-line no-unassigned-vars
     let anonymousIdentityRef: HTMLInputElement | undefined;
+    // eslint-disable-next-line no-unassigned-vars
     let phase2MethodRef: HTMLInputElement | undefined;
+    // eslint-disable-next-line no-unassigned-vars
     let identityRef: HTMLInputElement | undefined;
+    // eslint-disable-next-line no-unassigned-vars
     let passwordRef: HTMLInputElement | undefined;
 
     function onInputChange(type?: string) {

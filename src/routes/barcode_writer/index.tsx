@@ -42,10 +42,16 @@ function ToolComponent() {
         utf8: string;
         error: string;
     } | null>(null);
+
+    // eslint-disable-next-line no-unassigned-vars
     let barcodeFormatRef: HTMLSelectElement | undefined;
+    // eslint-disable-next-line no-unassigned-vars
     let barcodeSizeHintRef: HTMLInputElement | undefined;
+    // eslint-disable-next-line no-unassigned-vars
     let barcodeECLevelRef: HTMLSelectElement | undefined;
+    // eslint-disable-next-line no-unassigned-vars
     let barcodeQuietZoneRef: HTMLInputElement | undefined;
+    // eslint-disable-next-line no-unassigned-vars
     let barcodeWithHrtRef: HTMLInputElement | undefined;
 
     function generateBarcode() {

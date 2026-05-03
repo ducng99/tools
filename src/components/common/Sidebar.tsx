@@ -5,6 +5,7 @@ import ThemeToggle from "./ThemeToggle";
 import styles from "./Sidebar.module.css";
 
 export default function Sidebar() {
+    // eslint-disable-next-line no-unassigned-vars
     let sidebarContentRef: HTMLDivElement | undefined;
     let sidebarCollapseRef: globalThis.bootstrap.Collapse | undefined;
 

@@ -17,6 +17,7 @@ export const Route = createFileRoute("/password_generator/")({
 });
 
 function ToolComponent() {
+    // eslint-disable-next-line no-unassigned-vars
     let passwordCopyButtonRef: HTMLButtonElement | undefined;
     let passwordCopyTooltip: globalThis.bootstrap.Tooltip | undefined;
     let passwordCopyTooltipTimeout = 0;
