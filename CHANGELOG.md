@@ -1,3 +1,22 @@
+## [2.0.6] - 2026-05-03
+
+### 🐛 Bug Fixes
+
+- Updated copyright year
+
+### ⚙️ Miscellaneous Tasks
+
+- *(deps)* Bump @tanstack/solid-router-ssr-query
+- *(deps)* Bump vite-tsconfig-paths from 6.0.3 to 6.0.5
+- *(deps)* Bump @tanstack/solid-router from 1.144.0 to 1.157.18
+- *(deps)* Bump @tanstack/router-plugin from 1.145.2 to 1.157.18
+- *(deps)* Bump all dependencies
+- *(deps)* Bump all packages
+- *(deps)* Bump softprops/action-gh-release from 2 to 3
+- *(deps)* Bump all packages
+- *(deps-dev)* Bump typescript-eslint from 8.51.0 to 8.54.0
+- *(deps-dev)* Bump globals from 16.5.0 to 17.4.0
+
 ## [2.0.5] - 2026-01-01
 
 ### ⚙️ Miscellaneous Tasks
