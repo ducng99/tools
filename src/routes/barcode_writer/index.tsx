@@ -61,10 +61,12 @@ function ToolComponent() {
             const format = barcodeFormatRef.value as WriteInputBarcodeFormat;
             const sizeHint = barcodeSizeHintRef ? parseInt(barcodeSizeHintRef.value) : 512;
             const ecLevel = barcodeECLevelRef ? barcodeECLevelRef.value as EcLevel : "";
-            const withQuietZones = barcodeQuietZoneRef?.checked ?? true;
-            const withHRT = barcodeWithHrtRef?.checked ?? true;
+            const addQuietZones = barcodeQuietZoneRef?.checked ?? true;
+            const addHRT = barcodeWithHrtRef?.checked ?? true;
 
-            writeBarcode(text, { format, sizeHint, ecLevel, withQuietZones, withHRT }).then((result) => {
+            const options = `ecLevel=${ecLevel}`;
+
+            writeBarcode(text, { format, scale: -Math.abs(sizeHint), options, addQuietZones, addHRT }).then((result) => {
                 if (result.error) {
                     console.error("Error generating barcode:", result.error);
                 }
@@ -197,10 +199,10 @@ function ToolComponent() {
                                 <div class="col-12 col-md-6">
                                     <label for="barcode-writer-ecclevel">Error Correction Level:</label>
                                     <select class="form-select" id="barcode-writer-ecclevel" ref={barcodeECLevelRef}>
-                                        <option value="L">Low</option>
-                                        <option value="M" selected>Medium</option>
-                                        <option value="Q">Quartile</option>
-                                        <option value="H">High</option>
+                                        <option value="7%">Low</option>
+                                        <option value="15%" selected>Medium</option>
+                                        <option value="25%">Quartile</option>
+                                        <option value="30%">High</option>
                                     </select>
                                 </div>
                             </div>
