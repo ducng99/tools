@@ -1,3 +1,9 @@
+## [2.0.8] - 2026-05-04
+
+### 🐛 Bug Fixes
+
+- Fixed zxing breaking changes
+
 ## [2.0.7] - 2026-05-03
 
 ### 🐛 Bug Fixes
