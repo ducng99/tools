@@ -23,7 +23,7 @@
     "csv-parse": "^6.2.1",
     "sass-embedded": "^1.99.0",
     "solid-js": "^1.9.12",
-    "vite": "^8.0.10",
+    "vite": "^8.0.16",
     "vite-plugin-solid": "^2.11.12",
     "zxing-wasm": "3.0.2"
   },
