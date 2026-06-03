@@ -16,7 +16,7 @@
     "@tanstack/router-plugin": "^1.167.32",
     "@tanstack/solid-router": "^1.169.1",
     "@tanstack/solid-router-devtools": "^1.166.13",
-    "@tanstack/solid-router-ssr-query": "^1.166.12",
+    "@tanstack/solid-router-ssr-query": "^1.167.1",
     "@tanstack/solid-start": "^1.167.59",
     "@tanstack/solid-table": "^8.21.3",
     "bootstrap": "^5.3.8",
