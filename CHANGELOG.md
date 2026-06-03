@@ -1,3 +1,10 @@
+## [2.0.9] - 2026-06-03
+
+### ⚙️ Miscellaneous Tasks
+
+- *(deps)* Bump vite from 8.0.10 to 8.0.16
+- *(deps)* Bump all packages
+
 ## [2.0.8] - 2026-05-04
 
 ### 🐛 Bug Fixes
