@@ -14,7 +14,7 @@
     "@cloudflare/vite-plugin": "^1.35.0",
     "@tanstack/match-sorter-utils": "^8.19.4",
     "@tanstack/router-plugin": "^1.167.32",
-    "@tanstack/solid-router": "^1.169.1",
+    "@tanstack/solid-router": "^1.170.11",
     "@tanstack/solid-router-devtools": "^1.166.13",
     "@tanstack/solid-router-ssr-query": "^1.166.12",
     "@tanstack/solid-start": "^1.167.59",
