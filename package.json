@@ -20,7 +20,7 @@
     "@tanstack/solid-start": "^1.168.19",
     "@tanstack/solid-table": "^8.21.3",
     "bootstrap": "^5.3.8",
-    "csv-parse": "^6.2.1",
+    "csv-parse": "^7.0.1",
     "sass-embedded": "^1.100.0",
     "solid-js": "^1.9.13",
     "vite": "^8.0.16",
