@@ -9,6 +9,16 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "monthly"
+    groups:
+      tanstack:
+        patterns:
+          - '@tanstack/*'
+      eslint:
+        patterns:
+          - 'eslint'
+          - '@eslint/*'
+          - 'eslint-*'
+          - 'typescript-eslint'
 
   - package-ecosystem: "github-actions"
     directory: "/"
