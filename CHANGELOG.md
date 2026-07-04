@@ -1,3 +1,18 @@
+## [2.0.10] - 2026-07-04
+
+### ⚙️ Miscellaneous Tasks
+
+- *(deps)* Bump actions/checkout from 6 to 7
+- *(deps)* Bump the tanstack group across 1 directory with 4 updates
+- *(deps)* Bump solid-js from 1.9.13 to 1.9.14
+- *(deps)* Bump vite from 8.0.16 to 8.1.2
+- *(deps)* Bump csv-parse to 7.0.0
+- *(deps-dev)* Bump the eslint group with 3 updates
+
+### Security
+
+- Added minimumReleaseAge
+
 ## [2.0.9] - 2026-06-03
 
 ### ⚙️ Miscellaneous Tasks
