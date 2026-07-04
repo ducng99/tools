@@ -22,7 +22,7 @@
     "bootstrap": "^5.3.8",
     "csv-parse": "^6.2.1",
     "sass-embedded": "^1.100.0",
-    "solid-js": "^1.9.13",
+    "solid-js": "^1.9.14",
     "vite": "^8.0.16",
     "vite-plugin-solid": "^2.11.12",
     "zxing-wasm": "3.1.0"
