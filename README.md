@@ -34,6 +34,12 @@ Reads QR code/barcode from image or camera and output its content. Using ZXing l
 
 Create QR code/barcode image from text, URL, Wi-Fi,...
 
+### HTML Email checker
+
+Check if the provided HTML is compatible with major email clients.
+
+All credits to [axllent/mailpit](https://github.com/axllent/mailpit/tree/develop/internal/htmlcheck)
+
 ## License
 
 [MIT license](./LICENSE)

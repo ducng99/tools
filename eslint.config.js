@@ -5,8 +5,10 @@ import pluginJs from "@eslint/js";
 import tseslint from "typescript-eslint";
 import stylistic from "@stylistic/eslint-plugin";
 import { importX } from "eslint-plugin-import-x";
+import { globalIgnores } from "eslint/config";
 
 export default [
+    globalIgnores(["public/htmlcheck/wasm_exec.js"]),
     {
         files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
         languageOptions: {

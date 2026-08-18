@@ -55,6 +55,9 @@ export default function Sidebar() {
                             <Link to="/barcode_writer" class="nav-link" onClick={hideSidebar}>
                                 <span class={styles.linkText}>Barcode writer</span>
                             </Link>
+                            <Link to="/htmlcheck" class="nav-link" onClick={hideSidebar}>
+                                <span class={styles.linkText}>HTML Email Checker</span>
+                            </Link>
                         </li>
                     </ul>
                     <div class="mt-auto w-100">
