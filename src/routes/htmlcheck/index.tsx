@@ -120,8 +120,8 @@ function ToolComponent() {
         <div class="container mt-5">
             <h1>HTML Email Checker</h1>
             <p class="text-muted">
-                Checks HTML/CSS email markup against email client support data from
-                <a href="https://www.caniemail.com/" target="_blank" rel="noreferrer">caniemail.com</a>
+                {"Checks HTML/CSS email markup against email client support data from "}
+                <a href="https://www.caniemail.com/" target="_blank" rel="noopener noreferrer">caniemail.com</a>
                 .
             </p>
 
