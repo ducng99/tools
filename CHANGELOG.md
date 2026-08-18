@@ -1,3 +1,9 @@
+## [2.1.1] - 2026-08-18
+
+### 🐛 Bug Fixes
+
+- *(htmlcheck)* Fixed typo
+
 ## [2.1.0] - 2026-08-18
 
 ### ⛰️  Features
