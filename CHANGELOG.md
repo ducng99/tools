@@ -1,3 +1,16 @@
+## [2.1.0] - 2026-08-18
+
+### ⛰️  Features
+
+- *(htmlcheck)* Added htmlcheck tool
+
+### ⚙️ Miscellaneous Tasks
+
+- *(deps)* Bump the tanstack group with 4 updates
+- *(deps)* Bump @cloudflare/vite-plugin from 1.39.2 to 1.48.0
+- *(deps-dev)* Bump the eslint group across 1 directory with 2 updates
+- *(deps-dev)* Bump globals from 17.6.0 to 17.8.0
+
 ## [2.0.10] - 2026-07-04
 
 ### ⚙️ Miscellaneous Tasks
