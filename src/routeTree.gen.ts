@@ -15,6 +15,7 @@ import { Route as Barcode_writerIndexRouteImport } from './routes/barcode_writer
 import { Route as Csv_swapIndexRouteImport } from './routes/csv_swap/index'
 import { Route as Csv_to_tableIndexRouteImport } from './routes/csv_to_table/index'
 import { Route as HtmlcheckIndexRouteImport } from './routes/htmlcheck/index'
+import { Route as OcrIndexRouteImport } from './routes/ocr/index'
 import { Route as Password_generatorIndexRouteImport } from './routes/password_generator/index'
 
 const IndexRoute = IndexRouteImport.update({
@@ -47,6 +48,11 @@ const HtmlcheckIndexRoute = HtmlcheckIndexRouteImport.update({
   path: '/htmlcheck/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OcrIndexRoute = OcrIndexRouteImport.update({
+  id: '/ocr/',
+  path: '/ocr/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const Password_generatorIndexRoute = Password_generatorIndexRouteImport.update({
   id: '/password_generator/',
   path: '/password_generator/',
@@ -60,6 +66,7 @@ export interface FileRoutesByFullPath {
   '/csv_swap/': typeof Csv_swapIndexRoute
   '/csv_to_table/': typeof Csv_to_tableIndexRoute
   '/htmlcheck/': typeof HtmlcheckIndexRoute
+  '/ocr/': typeof OcrIndexRoute
   '/password_generator/': typeof Password_generatorIndexRoute
 }
 export interface FileRoutesByTo {
@@ -69,6 +76,7 @@ export interface FileRoutesByTo {
   '/csv_swap': typeof Csv_swapIndexRoute
   '/csv_to_table': typeof Csv_to_tableIndexRoute
   '/htmlcheck': typeof HtmlcheckIndexRoute
+  '/ocr': typeof OcrIndexRoute
   '/password_generator': typeof Password_generatorIndexRoute
 }
 export interface FileRoutesById {
@@ -79,6 +87,7 @@ export interface FileRoutesById {
   '/csv_swap/': typeof Csv_swapIndexRoute
   '/csv_to_table/': typeof Csv_to_tableIndexRoute
   '/htmlcheck/': typeof HtmlcheckIndexRoute
+  '/ocr/': typeof OcrIndexRoute
   '/password_generator/': typeof Password_generatorIndexRoute
 }
 export interface FileRouteTypes {
@@ -90,6 +99,7 @@ export interface FileRouteTypes {
     | '/csv_swap/'
     | '/csv_to_table/'
     | '/htmlcheck/'
+    | '/ocr/'
     | '/password_generator/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -99,6 +109,7 @@ export interface FileRouteTypes {
     | '/csv_swap'
     | '/csv_to_table'
     | '/htmlcheck'
+    | '/ocr'
     | '/password_generator'
   id:
     | '__root__'
@@ -108,6 +119,7 @@ export interface FileRouteTypes {
     | '/csv_swap/'
     | '/csv_to_table/'
     | '/htmlcheck/'
+    | '/ocr/'
     | '/password_generator/'
   fileRoutesById: FileRoutesById
 }
@@ -118,6 +130,7 @@ export interface RootRouteChildren {
   Csv_swapIndexRoute: typeof Csv_swapIndexRoute
   Csv_to_tableIndexRoute: typeof Csv_to_tableIndexRoute
   HtmlcheckIndexRoute: typeof HtmlcheckIndexRoute
+  OcrIndexRoute: typeof OcrIndexRoute
   Password_generatorIndexRoute: typeof Password_generatorIndexRoute
 }
 
@@ -165,6 +178,13 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof HtmlcheckIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ocr/': {
+      id: '/ocr/'
+      path: '/ocr'
+      fullPath: '/ocr/'
+      preLoaderRoute: typeof OcrIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/password_generator/': {
       id: '/password_generator/'
       path: '/password_generator'
@@ -182,6 +202,7 @@ const rootRouteChildren: RootRouteChildren = {
   Csv_swapIndexRoute: Csv_swapIndexRoute,
   Csv_to_tableIndexRoute: Csv_to_tableIndexRoute,
   HtmlcheckIndexRoute: HtmlcheckIndexRoute,
+  OcrIndexRoute: OcrIndexRoute,
   Password_generatorIndexRoute: Password_generatorIndexRoute,
 }
 export const routeTree = rootRouteImport

@@ -58,6 +58,9 @@ export default function Sidebar() {
                             <Link to="/htmlcheck" class="nav-link" onClick={hideSidebar}>
                                 <span class={styles.linkText}>HTML Email Checker</span>
                             </Link>
+                            <Link to="/ocr" class="nav-link" onClick={hideSidebar}>
+                                <span class={styles.linkText}>OCR</span>
+                            </Link>
                         </li>
                     </ul>
                     <div class="mt-auto w-100">

@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.48.0",
+    "@huggingface/transformers": "^4.2.0",
     "@tanstack/match-sorter-utils": "^8.19.4",
     "@tanstack/router-plugin": "^1.168.23",
     "@tanstack/solid-router": "^1.170.18",
