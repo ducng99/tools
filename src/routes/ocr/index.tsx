@@ -175,7 +175,7 @@ function ToolComponent() {
                 <a href="https://huggingface.co/onnx-community/LightOnOCR-2-1B-ONNX" target="_blank" rel="noopener noreferrer">LightOnOCR</a>
                 {" via "}
                 <a href="https://huggingface.co/docs/transformers.js" target="_blank" rel="noopener noreferrer">transformers.js</a>
-                {" (WebGPU). The model is downloaded and cached on first use, no data leaves your device."}
+                . The model is downloaded and cached on first use, no data leaves your device.
             </p>
 
             <div>
