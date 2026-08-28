@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/solid-router";
 import { For, Show, createMemo, createSignal } from "solid-js";
 import { runHtmlCheck } from "./-extension";
 import type { HTMLCheckResponse } from "./-extension";
+import EmailClientPreview from "../../components/htmlcheck/EmailClientPreview";
 import type { ChangeEvent } from "../../utils";
 
 interface ClientCompat {
@@ -77,6 +78,7 @@ function ToolComponent() {
     const [isChecking, setIsChecking] = createSignal(false);
     const [error, setError] = createSignal<string>("");
     const [checkResult, setCheckResult] = createSignal<HTMLCheckResponse | null>(null);
+    const [previewSource, setPreviewSource] = createSignal("");
     const clientCompat = createMemo(() => {
         const result = checkResult();
         return result ? computeClientCompat(result) : [];
@@ -102,6 +104,7 @@ function ToolComponent() {
 
         setError("");
         setCheckResult(null);
+        setPreviewSource(htmlTextboxRef.value);
         setIsChecking(true);
 
         runHtmlCheck(htmlTextboxRef.value)
@@ -143,6 +146,10 @@ function ToolComponent() {
 
             <Show when={error()}>
                 <div class="alert alert-danger">{error()}</div>
+            </Show>
+
+            <Show when={previewSource()}>
+                <EmailClientPreview html={previewSource()} checkResult={checkResult()} />
             </Show>
 
             <Show when={checkResult()}>
