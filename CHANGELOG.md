@@ -1,3 +1,9 @@
+## [2.2.2] - 2026-08-28
+
+### 🐛 Bug Fixes
+
+- *(ocr)* Removed onnx wasm file in bundle
+
 ## [2.2.1] - 2026-08-28
 
 ### 🐛 Bug Fixes
