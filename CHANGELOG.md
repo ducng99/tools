@@ -1,3 +1,16 @@
+## [2.2.0] - 2026-08-28
+
+### ⛰️  Features
+
+- *(ocr)* Added ocr
+
+### ⚙️ Miscellaneous Tasks
+
+- *(deps)* Bump sass-embedded from 1.100.0 to 1.102.0
+- *(deps)* Bump zxing-wasm from 3.1.0 to 3.1.3
+- *(deps)* Bump all deps
+- *(deps-dev)* Bump the eslint group with 2 updates
+
 ## [2.1.1] - 2026-08-18
 
 ### 🐛 Bug Fixes
