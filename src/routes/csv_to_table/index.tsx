@@ -1,9 +1,9 @@
 import { parse as csvParse } from "csv-parse/browser/esm/sync";
-import { createSolidTable, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, sortingFns } from "@tanstack/solid-table";
+import { columnFilteringFeature, columnVisibilityFeature, createFilteredRowModel, createPaginatedRowModel, createSortedRowModel, createTable, FlexRender, globalFilteringFeature, metaHelper, rowPaginationFeature, rowSortingFeature, sortFn_alphanumeric, tableFeatures } from "@tanstack/solid-table";
 import { For, Show, createEffect, createMemo, createSignal } from "solid-js";
 import { createFileRoute } from "@tanstack/solid-router";
 import { compareItems, rankItem, type RankingInfo } from "@tanstack/match-sorter-utils";
-import type { ColumnDef, FilterFn, SortingFn } from "@tanstack/solid-table";
+import type { ColumnDef, FilterFn, SortFn } from "@tanstack/solid-table";
 import type { ChangeEvent } from "../../utils";
 
 export const Route = createFileRoute("/csv_to_table/")({
@@ -17,15 +17,67 @@ export const Route = createFileRoute("/csv_to_table/")({
     component: ToolComponent,
 });
 
-declare module "@tanstack/solid-table" {
-    // add fuzzy filter to the filterFns
-    interface FilterFns {
-        fuzzy: FilterFn<unknown>;
+type ItemRankMeta = { itemRank?: RankingInfo };
+type TData = Record<string, string>;
+
+const features = tableFeatures({
+    columnFilteringFeature,
+    columnVisibilityFeature,
+    globalFilteringFeature,
+    rowPaginationFeature,
+    rowSortingFeature,
+    filteredRowModel: createFilteredRowModel(),
+    sortedRowModel: createSortedRowModel(),
+    paginatedRowModel: createPaginatedRowModel(),
+    filterMeta: metaHelper<ItemRankMeta>(),
+    sortFns: { alphanumeric: sortFn_alphanumeric },
+});
+
+// Rank the item for fuzzy filtering
+const fuzzyFilter: FilterFn<typeof features, TData> = (row, columnId, value, addMeta) => {
+    // Rank the item
+    const itemRank = rankItem(row.getValue(columnId), value);
+
+    // Store the itemRank info
+    addMeta?.({
+        itemRank,
+    });
+
+    // Return if the item should be filtered in/out
+    return itemRank.passed;
+};
+
+// Define a custom fuzzy sort function that will sort by rank if the row has ranking information
+const fuzzySort: SortFn<typeof features, TData> = (rowA, rowB, columnId) => {
+    // Helper to find the best (highest `rank`) itemRank from all column metas of a row
+    const getBestItemRank = (row: typeof rowA) => {
+        let best: RankingInfo | undefined = undefined;
+
+        for (const metaKey in row.columnFiltersMeta) {
+            const ir = row.columnFiltersMeta[metaKey]?.itemRank;
+            if (ir) {
+                const rVal = ir.rank;
+                if (best === undefined || rVal > best.rank) {
+                    best = ir;
+                }
+            }
+        }
+
+        return best;
+    };
+
+    const bestA = getBestItemRank(rowA);
+    const bestB = getBestItemRank(rowB);
+
+    // If we have ranking info for both, use compareItems
+    if (bestA && bestB) {
+        const dir = compareItems(bestA, bestB);
+        return dir === 0 ? sortFn_alphanumeric(rowA, rowB, columnId) : dir;
     }
-    interface FilterMeta {
-        itemRank: RankingInfo;
-    }
-}
+
+    // Fallback: alphanumeric comparison on the requested column
+    return sortFn_alphanumeric(rowA, rowB, columnId);
+};
 
 function ToolComponent() {
     // eslint-disable-next-line no-unassigned-vars
@@ -64,16 +116,16 @@ function ToolComponent() {
         }
     }
 
-    const tableColumnDefs = createMemo<Array<ColumnDef<Record<string, string>>>>(() => {
+    const tableColumnDefs = createMemo<Array<ColumnDef<typeof features, TData>>>(() => {
         const data = processedData();
         if (data.length > 0) {
             // Get longest row (most columns) and use that as the number of columns
             const numColumns = data.reduce((a, b) => a.length - b.length > 0 ? a : b).length;
 
-            const headers: Array<ColumnDef<Record<string, string>>> = [{
+            const headers: Array<ColumnDef<typeof features, TData>> = [{
                 id: "__row_index",
                 accessorKey: "__row_index",
-                sortingFn: fuzzySort,
+                sortFn: fuzzySort,
             }];
 
             for (let i = 0; i < numColumns; i++) {
@@ -89,11 +141,11 @@ function ToolComponent() {
         return [];
     });
 
-    const tableData = createMemo<Array<Record<string, string>>>(() => {
+    const tableData = createMemo<Array<TData>>(() => {
         const data = processedData();
         if (data.length > 0) {
             return data.map((row, rowIndex) => {
-                const returnData: Record<string, string> = {
+                const returnData: TData = {
                     __row_index: rowIndex.toString(),
                 };
 
@@ -108,7 +160,8 @@ function ToolComponent() {
         return [];
     });
 
-    const table = createSolidTable({
+    const table = createTable({
+        features,
         get data() {
             return tableData();
         },
@@ -120,14 +173,7 @@ function ToolComponent() {
                 return filterQuery();
             },
         },
-        getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-        globalFilterFn: "fuzzy",
-        filterFns: {
-            fuzzy: fuzzyFilter,
-        },
+        globalFilterFn: fuzzyFilter,
         onGlobalFilterChange: setFilterQuery,
         initialState: {
             sorting: [
@@ -211,7 +257,7 @@ function ToolComponent() {
                         </nav>
                         <div class="input-group mx-1 maxw-fit maxh-fit">
                             <span class="input-group-text">Page</span>
-                            <input type="number" class="form-control" id="table-current-page" size={3} value={table.getState().pagination.pageIndex + 1} onChange={(e) => { setTablePageIndex(parseInt(e.target.value) - 1); }} />
+                            <input type="number" class="form-control" id="table-current-page" size={3} value={table.store.get().pagination.pageIndex + 1} onChange={(e) => { setTablePageIndex(parseInt(e.target.value) - 1); }} />
                             <span class="input-group-text">
                                 /
                                 {" " + table.getPageCount()}
@@ -237,7 +283,7 @@ function ToolComponent() {
 
                     <div class="text-nowrap mt-3 mt-md-0">
                         <span>{"Show "}</span>
-                        <select class="d-inline-block form-select maxw-fit maxh-fit" aria-label="Show rows per page" value={table.getState().pagination.pageSize} onChange={(e) => { setTablePageSize(parseInt(e.currentTarget.value)); }}>
+                        <select class="d-inline-block form-select maxw-fit maxh-fit" aria-label="Show rows per page" value={table.store.get().pagination.pageSize} onChange={(e) => { setTablePageSize(parseInt(e.currentTarget.value)); }}>
                             <For each={[20, 50, 100, 200, 500, 1000, 5000, tableData().length]}>
                                 {value => (
                                     <option value={value}>{value === tableData().length ? "All" : value}</option>
@@ -262,10 +308,7 @@ function ToolComponent() {
                                             <For each={headerGroup.headers}>
                                                 {header => (
                                                     <th classList={{ "sticky-top": isFirstRowSticky() }} colSpan={header.colSpan}>
-                                                        {flexRender(
-                                                            header.column.columnDef.header,
-                                                            header.getContext(),
-                                                        )}
+                                                        <FlexRender header={header} />
                                                     </th>
                                                 )}
                                             </For>
@@ -282,10 +325,7 @@ function ToolComponent() {
                                             <For each={row.getVisibleCells()}>
                                                 {cell => (
                                                     <td classList={{ "sticky-top": isFirstRowSticky() && row.index === 0 }}>
-                                                        {flexRender(
-                                                            cell.column.columnDef.cell,
-                                                            cell.getContext(),
-                                                        )}
+                                                        <FlexRender cell={cell} />
                                                     </td>
                                                 )}
                                             </For>
@@ -300,48 +340,3 @@ function ToolComponent() {
         </div>
     );
 }
-
-const fuzzyFilter: FilterFn<Record<string, string>> = (row, columnId, value, addMeta) => {
-    // Rank the item
-    const itemRank = rankItem(row.getValue(columnId), value);
-
-    // Store the itemRank info
-    addMeta({
-        itemRank,
-    });
-
-    // Return if the item should be filtered in/out
-    return itemRank.passed;
-};
-
-// Define a custom fuzzy sort function that will sort by rank if the row has ranking information
-const fuzzySort: SortingFn<Record<string, string>> = (rowA, rowB, columnId) => {
-    // Helper to find the best (highest `rank`) itemRank from all column metas of a row
-    const getBestItemRank = (row: typeof rowA) => {
-        let best: RankingInfo | undefined = undefined;
-
-        for (const metaKey in row.columnFiltersMeta) {
-            if (row.columnFiltersMeta[metaKey]?.itemRank) {
-                const ir = row.columnFiltersMeta[metaKey].itemRank;
-                const rVal = ir.rank;
-                if (best === undefined || rVal > best.rank) {
-                    best = ir;
-                }
-            }
-        }
-
-        return best;
-    };
-
-    const bestA = getBestItemRank(rowA);
-    const bestB = getBestItemRank(rowB);
-
-    // If we have ranking info for both, use compareItems
-    if (bestA && bestB) {
-        const dir = compareItems(bestA, bestB);
-        return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir;
-    }
-
-    // Fallback: alphanumeric comparison on the requested column
-    return sortingFns.alphanumeric(rowA, rowB, columnId);
-};
