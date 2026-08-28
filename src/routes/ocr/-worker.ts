@@ -35,7 +35,7 @@ function loadModel() {
                         decoder_model_merged: "q4",
                     },
                     progress_callback,
-                    device: "webgpu",
+                    device: typeof navigator !== "undefined" && "gpu" in navigator ? "webgpu" : "auto",
                 }),
             ]);
 
