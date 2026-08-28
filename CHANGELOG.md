@@ -1,3 +1,9 @@
+## [2.2.1] - 2026-08-28
+
+### 🐛 Bug Fixes
+
+- Updated wrangler config
+
 ## [2.2.0] - 2026-08-28
 
 ### ⛰️  Features
