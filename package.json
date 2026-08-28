@@ -11,7 +11,7 @@
     "lint": "eslint --fix"
   },
   "dependencies": {
-    "@cloudflare/vite-plugin": "^1.48.0",
+    "@cloudflare/vite-plugin": "^1.53.1",
     "@huggingface/transformers": "^4.2.0",
     "@tanstack/match-sorter-utils": "^8.19.4",
     "@tanstack/router-plugin": "^1.168.23",
