@@ -17,6 +17,7 @@ import { Route as Csv_to_tableIndexRouteImport } from './routes/csv_to_table/ind
 import { Route as HtmlcheckIndexRouteImport } from './routes/htmlcheck/index'
 import { Route as OcrIndexRouteImport } from './routes/ocr/index'
 import { Route as Password_generatorIndexRouteImport } from './routes/password_generator/index'
+import { Route as TranslateIndexRouteImport } from './routes/translate/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -58,6 +59,11 @@ const Password_generatorIndexRoute = Password_generatorIndexRouteImport.update({
   path: '/password_generator/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TranslateIndexRoute = TranslateIndexRouteImport.update({
+  id: '/translate/',
+  path: '/translate/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -68,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/htmlcheck/': typeof HtmlcheckIndexRoute
   '/ocr/': typeof OcrIndexRoute
   '/password_generator/': typeof Password_generatorIndexRoute
+  '/translate/': typeof TranslateIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,6 +85,7 @@ export interface FileRoutesByTo {
   '/htmlcheck': typeof HtmlcheckIndexRoute
   '/ocr': typeof OcrIndexRoute
   '/password_generator': typeof Password_generatorIndexRoute
+  '/translate': typeof TranslateIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/htmlcheck/': typeof HtmlcheckIndexRoute
   '/ocr/': typeof OcrIndexRoute
   '/password_generator/': typeof Password_generatorIndexRoute
+  '/translate/': typeof TranslateIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
     | '/htmlcheck/'
     | '/ocr/'
     | '/password_generator/'
+    | '/translate/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
     | '/htmlcheck'
     | '/ocr'
     | '/password_generator'
+    | '/translate'
   id:
     | '__root__'
     | '/'
@@ -121,6 +132,7 @@ export interface FileRouteTypes {
     | '/htmlcheck/'
     | '/ocr/'
     | '/password_generator/'
+    | '/translate/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -132,6 +144,7 @@ export interface RootRouteChildren {
   HtmlcheckIndexRoute: typeof HtmlcheckIndexRoute
   OcrIndexRoute: typeof OcrIndexRoute
   Password_generatorIndexRoute: typeof Password_generatorIndexRoute
+  TranslateIndexRoute: typeof TranslateIndexRoute
 }
 
 declare module '@tanstack/solid-router' {
@@ -192,6 +205,13 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof Password_generatorIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/translate/': {
+      id: '/translate/'
+      path: '/translate'
+      fullPath: '/translate/'
+      preLoaderRoute: typeof TranslateIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -204,6 +224,7 @@ const rootRouteChildren: RootRouteChildren = {
   HtmlcheckIndexRoute: HtmlcheckIndexRoute,
   OcrIndexRoute: OcrIndexRoute,
   Password_generatorIndexRoute: Password_generatorIndexRoute,
+  TranslateIndexRoute: TranslateIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

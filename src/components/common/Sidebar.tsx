@@ -61,6 +61,9 @@ export default function Sidebar() {
                             <Link to="/ocr" class="nav-link" onClick={hideSidebar}>
                                 <span class={styles.linkText}>OCR</span>
                             </Link>
+                            <Link to="/translate" class="nav-link" onClick={hideSidebar}>
+                                <span class={styles.linkText}>Translate</span>
+                            </Link>
                         </li>
                     </ul>
                     <div class="mt-auto w-100">
