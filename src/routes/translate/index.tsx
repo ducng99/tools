@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/solid-router";
 import { For, Show, createEffect, createSignal, onCleanup } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import type { JSX } from "solid-js";
@@ -49,17 +48,6 @@ const inputComponents: Record<TranslateInputType, (_: TranslateInputProps) => JS
     image: InputImage,
 };
 
-export const Route = createFileRoute("/translate/")({
-    head: () => ({
-        meta: [
-            {
-                title: "Translate",
-            },
-        ],
-    }),
-    component: ToolComponent,
-});
-
 type TranslationStatus
     = | { kind: "idle"; message: string }
         | { kind: "info"; message: string }
@@ -67,7 +55,9 @@ type TranslationStatus
 
 const PLACEHOLDER_OUTPUT = "The streamed translation will appear here.";
 
-function ToolComponent() {
+export default function ToolComponent() {
+    document.title = "Translate";
+
     // eslint-disable-next-line no-unassigned-vars
     let copyButtonRef: HTMLButtonElement | undefined;
     let copyTooltip: globalThis.bootstrap.Tooltip | undefined;

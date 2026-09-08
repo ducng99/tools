@@ -1,5 +1,4 @@
-import { createFileRoute } from "@tanstack/solid-router";
-import { For, Show, createMemo, createSignal } from "solid-js";
+import { For, Show, createMemo, createSignal, onMount } from "solid-js";
 import { runHtmlCheck } from "./-extension";
 import type { HTMLCheckResponse } from "./-extension";
 import type { ChangeEvent } from "../../utils";
@@ -57,21 +56,17 @@ function computeClientCompat(result: HTMLCheckResponse): Array<ClientCompat> {
         .sort((a, b) => a.platform.localeCompare(b.platform));
 }
 
-export const Route = createFileRoute("/htmlcheck/")({
-    head: () => ({
-        meta: [
-            {
-                title: "HTML Email Checker",
-            },
-        ],
-        scripts: [
-            { src: "/htmlcheck/wasm_exec.js" },
-        ],
-    }),
-    component: ToolComponent,
-});
+export default function ToolComponent() {
+    document.title = "HTML Email Checker";
 
-function ToolComponent() {
+    onMount(() => {
+        if (!document.querySelector("script[src=\"/htmlcheck/wasm_exec.js\"]")) {
+            const script = document.createElement("script");
+            script.src = "/htmlcheck/wasm_exec.js";
+            document.head.append(script);
+        }
+    });
+
     // eslint-disable-next-line no-unassigned-vars
     let htmlTextboxRef: HTMLTextAreaElement | undefined;
     const [isChecking, setIsChecking] = createSignal(false);

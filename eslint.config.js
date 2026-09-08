@@ -8,7 +8,7 @@ import { importX } from "eslint-plugin-import-x";
 import { globalIgnores } from "eslint/config";
 
 export default [
-    globalIgnores(["public/htmlcheck/wasm_exec.js"]),
+    globalIgnores(["dist/**", "public/htmlcheck/wasm_exec.js"]),
     {
         files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
         languageOptions: {

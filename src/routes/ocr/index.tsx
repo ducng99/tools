@@ -1,8 +1,7 @@
-import { createFileRoute } from "@tanstack/solid-router";
 import { Show, createSignal, onCleanup } from "solid-js";
 import { clampWidthHeight } from "../../utils";
-import type { OcrWorkerRequest, OcrWorkerResponse } from "./-worker";
-import OcrWorker from "./-worker?worker";
+import type { OcrWorkerRequest, OcrWorkerResponse } from "../../workers/ocr";
+import OcrWorker from "../../workers/ocr?worker";
 import type { ChangeEvent } from "../../utils";
 
 interface FileProgress {
@@ -10,20 +9,11 @@ interface FileProgress {
     progress: number;
 }
 
-export const Route = createFileRoute("/ocr/")({
-    head: () => ({
-        meta: [
-            {
-                title: "OCR",
-            },
-        ],
-    }),
-    component: ToolComponent,
-});
-
 type OcrState = "idle" | "loading" | "processing" | "done" | "error";
 
-function ToolComponent() {
+export default function OcrPage() {
+    document.title = "OCR";
+
     const [state, setState] = createSignal<OcrState>("idle");
     const [statusMessage, setStatusMessage] = createSignal("");
     const [progressItems, setProgressItems] = createSignal<Array<FileProgress>>([]);

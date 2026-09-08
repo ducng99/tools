@@ -1,22 +1,11 @@
-import { createFileRoute } from "@tanstack/solid-router";
 import { createEffect, createSignal, Show } from "solid-js";
 import { DEFAULT_SYMBOLS, generatePassword } from "./-extension";
 import { useOptions } from "./-store";
 import type { ChangeEvent } from "../../utils";
 
-export const Route = createFileRoute("/password_generator/")({
-    head: () => ({
-        meta: [
-            {
-                title: "Password Generator",
-            },
-        ],
-    }),
-    component: ToolComponent,
-    ssr: false,
-});
+export default function ToolComponent() {
+    document.title = "Password Generator";
 
-function ToolComponent() {
     // eslint-disable-next-line no-unassigned-vars
     let passwordCopyButtonRef: HTMLButtonElement | undefined;
     let passwordCopyTooltip: globalThis.bootstrap.Tooltip | undefined;

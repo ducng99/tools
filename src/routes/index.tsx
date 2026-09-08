@@ -1,8 +1,4 @@
-import { createFileRoute } from "@tanstack/solid-router";
-
-export const Route = createFileRoute("/")({ component: App });
-
-function App() {
+export default function App() {
     return (
         <div class="container-fluid min-vh-100 d-flex justify-content-center align-items-center text-center">
             <div>

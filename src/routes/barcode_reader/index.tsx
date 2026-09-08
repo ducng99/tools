@@ -1,21 +1,11 @@
-import { createFileRoute } from "@tanstack/solid-router";
 import { For, Show, createEffect, createSignal } from "solid-js";
 import { readBarcodes } from "zxing-wasm";
 import { clampWidthHeight } from "../../utils";
 import type { ChangeEvent } from "../../utils";
 
-export const Route = createFileRoute("/barcode_reader/")({
-    head: () => ({
-        meta: [
-            {
-                title: "Barcode Reader",
-            },
-        ],
-    }),
-    component: ToolComponent,
-});
+export default function ToolComponent() {
+    document.title = "Barcode Reader";
 
-function ToolComponent() {
     const [openCamera, setOpenCamera] = createSignal(false);
     const [selectedCamera, setSelectedCamera] = createSignal<string>("");
     const [cameraDevices, setCameraDevices] = createSignal<Array<MediaDeviceInfo>>([]);
