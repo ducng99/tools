@@ -1,19 +1,9 @@
-import { createFileRoute } from "@tanstack/solid-router";
-import { swapColumnsRows } from "./-extension";
+import { swapColumnsRows } from "./extension";
 import type { ChangeEvent } from "../../utils";
 
-export const Route = createFileRoute("/csv_swap/")({
-    head: () => ({
-        meta: [
-            {
-                title: "CSV Swap Columns and Rows",
-            },
-        ],
-    }),
-    component: ToolComponent,
-});
+export default function ToolComponent() {
+    document.title = "CSV Swap Columns and Rows";
 
-function ToolComponent() {
     // eslint-disable-next-line no-unassigned-vars
     let csvTextboxRef: HTMLTextAreaElement | undefined;
     // eslint-disable-next-line no-unassigned-vars

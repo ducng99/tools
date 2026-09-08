@@ -32,7 +32,7 @@
 
     @include media-breakpoint-up(md) {
         &::before {
-            content: "sidebar on the left";
+            content: "sidebar to the left";
         }
     }
 }

@@ -1,11 +1,10 @@
-import { createFileRoute } from "@tanstack/solid-router";
 import { createSignal, Show } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { writeBarcode } from "zxing-wasm";
-import InputURL from "./-input_types/InputURL";
-import InputWiFiConfig from "./-input_types/InputWiFiConfig";
-import InputEmail from "./-input_types/InputEmail";
-import InputNormalText from "./-input_types/InputNormalText";
+import InputURL from "./input_types/InputURL";
+import InputWiFiConfig from "./input_types/InputWiFiConfig";
+import InputEmail from "./input_types/InputEmail";
+import InputNormalText from "./input_types/InputNormalText";
 import type { EcLevel, WriteInputBarcodeFormat } from "zxing-wasm";
 import type { JSX } from "solid-js";
 
@@ -15,17 +14,6 @@ export interface BarcodeInputProps {
     updateText: (text: string) => void;
 }
 
-export const Route = createFileRoute("/barcode_writer/")({
-    head: () => ({
-        meta: [
-            {
-                title: "Barcode Writer",
-            },
-        ],
-    }),
-    component: ToolComponent,
-});
-
 const inputComponents: Record<BarcodeInputType, (_: BarcodeInputProps) => JSX.Element> = {
     url: InputURL,
     wifi: InputWiFiConfig,
@@ -33,7 +21,9 @@ const inputComponents: Record<BarcodeInputType, (_: BarcodeInputProps) => JSX.El
     text: InputNormalText,
 };
 
-function ToolComponent() {
+export default function ToolComponent() {
+    document.title = "Barcode Writer";
+
     const [barcodeInputType, setBarcodeInputType] = createSignal<BarcodeInputType>("url");
     const [barcodeInputText, setBarcodeInputText] = createSignal<string>("");
     const [barcodeResult, setBarcodeResult] = createSignal<{

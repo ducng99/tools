@@ -1,25 +1,15 @@
-import { createFileRoute } from "@tanstack/solid-router";
 import { createEffect, createSignal, Show } from "solid-js";
-import { DEFAULT_SYMBOLS, generatePassword } from "./-extension";
-import { useOptions } from "./-store";
+import { DEFAULT_SYMBOLS, generatePassword } from "./extension";
+import { useOptions } from "./store";
 import type { ChangeEvent } from "../../utils";
+import { Tooltip } from "bootstrap";
 
-export const Route = createFileRoute("/password_generator/")({
-    head: () => ({
-        meta: [
-            {
-                title: "Password Generator",
-            },
-        ],
-    }),
-    component: ToolComponent,
-    ssr: false,
-});
+export default function ToolComponent() {
+    document.title = "Password Generator";
 
-function ToolComponent() {
     // eslint-disable-next-line no-unassigned-vars
     let passwordCopyButtonRef: HTMLButtonElement | undefined;
-    let passwordCopyTooltip: globalThis.bootstrap.Tooltip | undefined;
+    let passwordCopyTooltip: Tooltip | undefined;
     let passwordCopyTooltipTimeout = 0;
 
     const [password, setPassword] = createSignal<string>("");
@@ -28,7 +18,7 @@ function ToolComponent() {
 
     createEffect(() => {
         if (passwordCopyButtonRef) {
-            passwordCopyTooltip = new globalThis.bootstrap.Tooltip(passwordCopyButtonRef, {
+            passwordCopyTooltip = new Tooltip(passwordCopyButtonRef, {
                 title: "Copied!",
                 trigger: "manual",
             });
@@ -63,7 +53,7 @@ function ToolComponent() {
             navigator.clipboard.writeText(_password).then(() => {
                 passwordCopyTooltip?.show();
 
-                const timeout = setTimeout(() => {
+                const timeout = window.setTimeout(() => {
                     passwordCopyTooltip?.hide();
                 }, 1000);
 

@@ -2,11 +2,11 @@
   "include": [ "**/*.ts", "**/*.tsx", "eslint.config.js", "vite.config.js" ],
 
   "compilerOptions": {
-    "target": "ES2022",
+    "target": "ESNext",
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
     "module": "ESNext",
-    "lib": [ "ES2022", "DOM", "DOM.Iterable" ],
+    "lib": [ "esnext", "DOM", "DOM.Iterable" ],
     "types": [ "vite/client" ],
 
     /* Bundler mode */

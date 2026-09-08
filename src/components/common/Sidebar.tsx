@@ -1,17 +1,18 @@
 import { createEffect } from "solid-js";
-import { ClientOnly, Link } from "@tanstack/solid-router";
+import { A } from "@solidjs/router";
 import SidebarFooter from "./SidebarFooter";
 import ThemeToggle from "./ThemeToggle";
 import styles from "./Sidebar.module.css";
+import { Collapse } from "bootstrap";
 
 export default function Sidebar() {
     // eslint-disable-next-line no-unassigned-vars
     let sidebarContentRef: HTMLDivElement | undefined;
-    let sidebarCollapseRef: globalThis.bootstrap.Collapse | undefined;
+    let sidebarCollapseRef: Collapse | undefined;
 
     createEffect(() => {
         if (sidebarContentRef)
-            sidebarCollapseRef = new globalThis.bootstrap.Collapse(sidebarContentRef, { toggle: false });
+            sidebarCollapseRef = new Collapse(sidebarContentRef, { toggle: false });
     });
 
     const hideSidebar = () => {
@@ -31,39 +32,37 @@ export default function Sidebar() {
                     </button>
                     <div class="navbar-brand">Tools</div>
                     <div class="ms-auto nav-item dropdown">
-                        <ClientOnly>
-                            <ThemeToggle />
-                        </ClientOnly>
+                        <ThemeToggle />
                     </div>
                 </div>
 
                 <div class={`collapse navbar-collapse flex-column align-items-start w-100 ${styles.sidebarContent}`} ref={sidebarContentRef}>
                     <ul class="navbar-nav flex-column">
                         <li class="nav-item">
-                            <Link to="/csv_to_table" class="nav-link" onClick={hideSidebar}>
+                            <A href="/csv_to_table" class="nav-link" onClick={hideSidebar}>
                                 <span class={styles.linkText}>CSV to table</span>
-                            </Link>
-                            <Link to="/csv_swap" class="nav-link" onClick={hideSidebar}>
+                            </A>
+                            <A href="/csv_swap" class="nav-link" onClick={hideSidebar}>
                                 <span class={styles.linkText}>CSV Swap</span>
-                            </Link>
-                            <Link to="/password_generator" class="nav-link" onClick={hideSidebar}>
+                            </A>
+                            <A href="/password_generator" class="nav-link" onClick={hideSidebar}>
                                 <span class={styles.linkText}>Password generator</span>
-                            </Link>
-                            <Link to="/barcode_reader" class="nav-link" onClick={hideSidebar}>
+                            </A>
+                            <A href="/barcode_reader" class="nav-link" onClick={hideSidebar}>
                                 <span class={styles.linkText}>Barcode reader</span>
-                            </Link>
-                            <Link to="/barcode_writer" class="nav-link" onClick={hideSidebar}>
+                            </A>
+                            <A href="/barcode_writer" class="nav-link" onClick={hideSidebar}>
                                 <span class={styles.linkText}>Barcode writer</span>
-                            </Link>
-                            <Link to="/htmlcheck" class="nav-link" onClick={hideSidebar}>
+                            </A>
+                            <A href="/htmlcheck" class="nav-link" onClick={hideSidebar}>
                                 <span class={styles.linkText}>HTML Email Checker</span>
-                            </Link>
-                            <Link to="/ocr" class="nav-link" onClick={hideSidebar}>
+                            </A>
+                            <A href="/ocr" class="nav-link" onClick={hideSidebar}>
                                 <span class={styles.linkText}>OCR</span>
-                            </Link>
-                            <Link to="/translate" class="nav-link" onClick={hideSidebar}>
+                            </A>
+                            <A href="/translate" class="nav-link" onClick={hideSidebar}>
                                 <span class={styles.linkText}>Translate</span>
-                            </Link>
+                            </A>
                         </li>
                     </ul>
                     <div class="mt-auto w-100">

@@ -1,21 +1,10 @@
 import { parse as csvParse } from "csv-parse/browser/esm/sync";
 import { columnFilteringFeature, columnVisibilityFeature, createFilteredRowModel, createPaginatedRowModel, createSortedRowModel, createTable, FlexRender, globalFilteringFeature, metaHelper, rowPaginationFeature, rowSortingFeature, sortFn_alphanumeric, tableFeatures } from "@tanstack/solid-table";
 import { For, Show, createEffect, createMemo, createSignal } from "solid-js";
-import { createFileRoute } from "@tanstack/solid-router";
 import { compareItems, rankItem, type RankingInfo } from "@tanstack/match-sorter-utils";
 import type { ColumnDef, FilterFn, SortFn } from "@tanstack/solid-table";
 import type { ChangeEvent } from "../../utils";
-
-export const Route = createFileRoute("/csv_to_table/")({
-    head: () => ({
-        meta: [
-            {
-                title: "CSV Display in table",
-            },
-        ],
-    }),
-    component: ToolComponent,
-});
+import { Tooltip } from "bootstrap";
 
 type ItemRankMeta = { itemRank?: RankingInfo };
 type TData = Record<string, string>;
@@ -79,7 +68,9 @@ const fuzzySort: SortFn<typeof features, TData> = (rowA, rowB, columnId) => {
     return sortFn_alphanumeric(rowA, rowB, columnId);
 };
 
-function ToolComponent() {
+export default function ToolComponent() {
+    document.title = "CSV Display in table";
+
     // eslint-disable-next-line no-unassigned-vars
     let csvTextboxRef: HTMLTextAreaElement | undefined;
     const [processedData, setProcessedData] = createSignal<Array<Array<string>>>([]);
@@ -92,7 +83,7 @@ function ToolComponent() {
 
     createEffect(() => {
         if (tableFixedInfoRef) {
-            new globalThis.bootstrap.Tooltip(tableFixedInfoRef);
+            new Tooltip(tableFixedInfoRef);
         }
     });
 
