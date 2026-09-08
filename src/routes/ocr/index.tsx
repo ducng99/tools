@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/solid-router";
 import { Show, createSignal, onCleanup } from "solid-js";
 import { clampWidthHeight } from "../../utils";
 import type { OcrWorkerRequest, OcrWorkerResponse } from "./-worker";
+import OcrWorker from "./-worker?worker";
 import type { ChangeEvent } from "../../utils";
 
 interface FileProgress {
@@ -42,7 +43,7 @@ function ToolComponent() {
 
     function getWorker() {
         if (!worker) {
-            worker = new Worker(new URL("./-worker.ts", import.meta.url), { type: "module" });
+            worker = new OcrWorker();
             worker.addEventListener("message", (event: MessageEvent<OcrWorkerResponse>) => {
                 const data = event.data;
 
