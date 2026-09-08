@@ -1,27 +1,17 @@
-// Local in-browser translation using @huggingface/transformers with the
-// WebGPU device. This is a direct port of the upstream Translator class
-// (https://huggingface.co/spaces/webml-community/TranslateGemma-WebGPU),
-// adjusted for the SolidStart tool: ESM exports, dynamic import so the
-// transformers runtime is not pulled into the initial bundle, and an
-// isReady() accessor for UI state.
-
+import TranslateWorker from "../../../workers/translate?worker";
+import type { TranslateWorkerRequest, TranslateWorkerResponse } from "../../../workers/translate";
 import type { ProgressInfo } from "@huggingface/transformers";
-import type * as Transformers from "@huggingface/transformers";
 
-const MODEL_ID = "onnx-community/translategemma-text-4b-it-ONNX";
-const DTYPE = "q4";
-const MAX_NEW_TOKENS = 1024;
-
-// Mirror the OCR worker: forward the library's per-file ProgressInfo and
-// let the UI aggregate. This avoids hardcoding the model's total byte size
-// (which silently changes when weights are re-uploaded) and renders one
-// progress bar per file, like the upstream WebGPU examples.
 type ProgressFn = (info: ProgressInfo) => void;
 
 class Translator {
     private static instance: Translator | null = null;
-    private pipeline: ((...args: unknown[]) => Promise<Array<{ generated_text: Array<{ content: string }> }>>) | null = null;
-    private transformers: typeof Transformers | null = null;
+    private worker: Worker | null = null;
+    private ready = false;
+    private readyPromise: Promise<void> | null = null;
+    private onProgress: ProgressFn | undefined;
+    private pendingTranslate: ((text: string) => void) | null = null;
+    private pendingReject: ((error: Error) => void) | null = null;
 
     private constructor() {}
 
@@ -33,60 +23,78 @@ class Translator {
     }
 
     public isReady(): boolean {
-        return this.pipeline !== null;
+        return this.ready;
+    }
+
+    private getWorker(): Worker {
+        if (!this.worker) {
+            this.worker = new TranslateWorker();
+            this.worker.addEventListener("message", (event: MessageEvent<TranslateWorkerResponse>) => {
+                const data = event.data;
+
+                if (data.type === "progress") {
+                    this.onProgress?.(data.progress);
+                }
+                else if (data.type === "ready") {
+                    this.ready = true;
+                }
+                else if (data.type === "result") {
+                    this.pendingTranslate?.(data.text);
+                    this.clearPending();
+                }
+                else if (data.type === "error") {
+                    this.pendingReject?.(new Error(data.message));
+                    this.clearPending();
+                }
+            });
+        }
+
+        return this.worker;
+    }
+
+    private clearPending() {
+        this.pendingTranslate = null;
+        this.pendingReject = null;
     }
 
     public async init(onProgress?: ProgressFn): Promise<void> {
-        if (this.pipeline) {
+        if (this.ready) {
             return;
         }
+        this.onProgress = onProgress;
 
-        // Dynamic import so the transformers runtime + WASM/ORT shims are not
-        // pulled into the initial route bundle.
-        this.transformers = await import("@huggingface/transformers");
-        if (this.pipeline) {
-            return;
+        if (!this.readyPromise) {
+            this.readyPromise = new Promise<void>((resolve, reject) => {
+                const worker = this.getWorker();
+                const onMessage = (event: MessageEvent<TranslateWorkerResponse>) => {
+                    const data = event.data;
+                    if (data.type === "ready") {
+                        worker.removeEventListener("message", onMessage);
+                        resolve();
+                    }
+                    else if (data.type === "error") {
+                        worker.removeEventListener("message", onMessage);
+                        // Allow a retry on the next init() call.
+                        this.readyPromise = null;
+                        reject(new Error(data.message));
+                    }
+                };
+                worker.addEventListener("message", onMessage);
+                worker.postMessage({ type: "init" } satisfies TranslateWorkerRequest);
+            });
         }
 
-        const transformers = this.transformers;
-        if (!transformers) {
-            throw new Error("Translator module failed to load.");
-        }
-        this.pipeline = await transformers.pipeline("text-generation", MODEL_ID, {
-            progress_callback: (e: ProgressInfo) => {
-                onProgress?.(e);
-            },
-            device: "webgpu",
-            dtype: DTYPE,
-        }) as Translator["pipeline"];
+        return this.readyPromise;
     }
 
     public async translate(text: string, sourceLang: string, targetLang: string): Promise<string> {
-        if (!this.pipeline) {
-            throw new Error("Translator not initialized. Call init() first.");
-        }
+        await this.init();
 
-        const messages = [
-            {
-                role: "user",
-                content: [
-                    {
-                        type: "text",
-                        source_lang_code: sourceLang,
-                        target_lang_code: targetLang,
-                        text,
-                    },
-                ],
-            },
-        ];
-
-        const output = await this.pipeline(messages, { max_new_tokens: MAX_NEW_TOKENS });
-        const lastMessage = output[0]?.generated_text?.at(-1);
-        const content = lastMessage?.content;
-        if (typeof content !== "string" || content.length === 0) {
-            throw new Error("Translator returned an empty response.");
-        }
-        return content;
+        return new Promise<string>((resolve, reject) => {
+            this.pendingTranslate = resolve;
+            this.pendingReject = reject;
+            this.getWorker().postMessage({ type: "translate", text, sourceLang, targetLang } satisfies TranslateWorkerRequest);
+        });
     }
 }
 
