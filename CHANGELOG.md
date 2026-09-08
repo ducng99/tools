@@ -1,3 +1,18 @@
+## [3.0.0] - 2026-09-08
+
+### ⛰️  Features
+
+- *(translate)* Added translate tool
+
+### 🚜 Refactor
+
+- [**breaking**] Removed tanstack-start and back to SPA (#146)
+
+### ⚙️ Miscellaneous Tasks
+
+- *(deps)* Bump the tanstack group with 2 updates
+- *(deps)* Bump @cloudflare/vite-plugin from 1.53.1 to 1.54.2
+
 ## [2.2.2] - 2026-08-28
 
 ### 🐛 Bug Fixes
