@@ -1,6 +1,6 @@
 import { Show, onCleanup } from "solid-js";
 import { type TranslateInputProps } from "..";
-import { formatBytes } from "../-extension";
+import { formatBytes } from "../extension";
 import type { ChangeEvent } from "../../../utils";
 
 export default function InputImage(props: TranslateInputProps) {

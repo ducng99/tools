@@ -1,10 +1,10 @@
 import { createSignal, Show } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { writeBarcode } from "zxing-wasm";
-import InputURL from "./-input_types/InputURL";
-import InputWiFiConfig from "./-input_types/InputWiFiConfig";
-import InputEmail from "./-input_types/InputEmail";
-import InputNormalText from "./-input_types/InputNormalText";
+import InputURL from "./input_types/InputURL";
+import InputWiFiConfig from "./input_types/InputWiFiConfig";
+import InputEmail from "./input_types/InputEmail";
+import InputNormalText from "./input_types/InputNormalText";
 import type { EcLevel, WriteInputBarcodeFormat } from "zxing-wasm";
 import type { JSX } from "solid-js";
 

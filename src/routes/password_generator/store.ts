@@ -1,7 +1,7 @@
 import { createStore } from "solid-js/store";
 import { createComputed } from "solid-js";
-import { DEFAULT_SYMBOLS } from "./-extension";
-import type { PasswordOptions } from "./-extension";
+import { DEFAULT_SYMBOLS } from "./extension";
+import type { PasswordOptions } from "./extension";
 
 export function useOptions() {
     const [options, setOptions] = createStore<PasswordOptions>({

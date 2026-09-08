@@ -1,6 +1,6 @@
 import { createEffect, createSignal, Show } from "solid-js";
-import { DEFAULT_SYMBOLS, generatePassword } from "./-extension";
-import { useOptions } from "./-store";
+import { DEFAULT_SYMBOLS, generatePassword } from "./extension";
+import { useOptions } from "./store";
 import type { ChangeEvent } from "../../utils";
 
 export default function ToolComponent() {
@@ -52,7 +52,7 @@ export default function ToolComponent() {
             navigator.clipboard.writeText(_password).then(() => {
                 passwordCopyTooltip?.show();
 
-                const timeout = setTimeout(() => {
+                const timeout = window.setTimeout(() => {
                     passwordCopyTooltip?.hide();
                 }, 1000);
 

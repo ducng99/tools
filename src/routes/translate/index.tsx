@@ -15,10 +15,10 @@ import {
     clampNumber,
     type InputMode,
     type TranslateOptions,
-} from "./-extension";
-import InputImage from "./-input_types/InputImage";
-import InputText from "./-input_types/InputText";
-import Translator from "./-webgpu/Translator";
+} from "./extension";
+import InputImage from "./input_types/InputImage";
+import InputText from "./input_types/InputText";
+import Translator from "./webgpu/Translator";
 import type { ProgressInfo } from "@huggingface/transformers";
 
 interface FileProgress {

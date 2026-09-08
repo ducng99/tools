@@ -1,6 +1,6 @@
 import { For, Show, createMemo, createSignal, onMount } from "solid-js";
-import { runHtmlCheck } from "./-extension";
-import type { HTMLCheckResponse } from "./-extension";
+import { runHtmlCheck } from "./extension";
+import type { HTMLCheckResponse } from "./extension";
 import type { ChangeEvent } from "../../utils";
 
 interface ClientCompat {

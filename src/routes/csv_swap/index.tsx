@@ -1,4 +1,4 @@
-import { swapColumnsRows } from "./-extension";
+import { swapColumnsRows } from "./extension";
 import type { ChangeEvent } from "../../utils";
 
 export default function ToolComponent() {
