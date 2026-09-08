@@ -2,13 +2,14 @@ import { createEffect, createSignal, Show } from "solid-js";
 import { DEFAULT_SYMBOLS, generatePassword } from "./extension";
 import { useOptions } from "./store";
 import type { ChangeEvent } from "../../utils";
+import { Tooltip } from "bootstrap";
 
 export default function ToolComponent() {
     document.title = "Password Generator";
 
     // eslint-disable-next-line no-unassigned-vars
     let passwordCopyButtonRef: HTMLButtonElement | undefined;
-    let passwordCopyTooltip: globalThis.bootstrap.Tooltip | undefined;
+    let passwordCopyTooltip: Tooltip | undefined;
     let passwordCopyTooltipTimeout = 0;
 
     const [password, setPassword] = createSignal<string>("");
@@ -17,7 +18,7 @@ export default function ToolComponent() {
 
     createEffect(() => {
         if (passwordCopyButtonRef) {
-            passwordCopyTooltip = new globalThis.bootstrap.Tooltip(passwordCopyButtonRef, {
+            passwordCopyTooltip = new Tooltip(passwordCopyButtonRef, {
                 title: "Copied!",
                 trigger: "manual",
             });

@@ -3,15 +3,16 @@ import { A } from "@solidjs/router";
 import SidebarFooter from "./SidebarFooter";
 import ThemeToggle from "./ThemeToggle";
 import styles from "./Sidebar.module.css";
+import { Collapse } from "bootstrap";
 
 export default function Sidebar() {
     // eslint-disable-next-line no-unassigned-vars
     let sidebarContentRef: HTMLDivElement | undefined;
-    let sidebarCollapseRef: globalThis.bootstrap.Collapse | undefined;
+    let sidebarCollapseRef: Collapse | undefined;
 
     createEffect(() => {
         if (sidebarContentRef)
-            sidebarCollapseRef = new globalThis.bootstrap.Collapse(sidebarContentRef, { toggle: false });
+            sidebarCollapseRef = new Collapse(sidebarContentRef, { toggle: false });
     });
 
     const hideSidebar = () => {

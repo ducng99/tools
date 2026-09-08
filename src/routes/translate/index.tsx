@@ -20,6 +20,7 @@ import InputImage from "./input_types/InputImage";
 import InputText from "./input_types/InputText";
 import Translator from "./webgpu/Translator";
 import type { ProgressInfo } from "@huggingface/transformers";
+import { Tooltip } from "bootstrap";
 
 interface FileProgress {
     file: string;
@@ -60,7 +61,7 @@ export default function ToolComponent() {
 
     // eslint-disable-next-line no-unassigned-vars
     let copyButtonRef: HTMLButtonElement | undefined;
-    let copyTooltip: globalThis.bootstrap.Tooltip | undefined;
+    let copyTooltip: Tooltip | undefined;
     let copyTooltipTimeout = 0;
 
     const [apiBase, setApiBase] = createSignal(DEFAULT_API_BASE);
@@ -85,7 +86,7 @@ export default function ToolComponent() {
 
     createEffect(() => {
         if (copyButtonRef) {
-            copyTooltip = new globalThis.bootstrap.Tooltip(copyButtonRef, {
+            copyTooltip = new Tooltip(copyButtonRef, {
                 title: "Copied!",
                 trigger: "manual",
             });

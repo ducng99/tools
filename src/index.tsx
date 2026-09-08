@@ -3,7 +3,6 @@ import { lazy } from "solid-js";
 import { render } from "solid-js/web";
 import { Router, Route } from "@solidjs/router";
 
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "./theme";
 import "./scss/styles.scss";
 

@@ -4,6 +4,7 @@ import { For, Show, createEffect, createMemo, createSignal } from "solid-js";
 import { compareItems, rankItem, type RankingInfo } from "@tanstack/match-sorter-utils";
 import type { ColumnDef, FilterFn, SortFn } from "@tanstack/solid-table";
 import type { ChangeEvent } from "../../utils";
+import { Tooltip } from "bootstrap";
 
 type ItemRankMeta = { itemRank?: RankingInfo };
 type TData = Record<string, string>;
@@ -82,7 +83,7 @@ export default function ToolComponent() {
 
     createEffect(() => {
         if (tableFixedInfoRef) {
-            new globalThis.bootstrap.Tooltip(tableFixedInfoRef);
+            new Tooltip(tableFixedInfoRef);
         }
     });
 
