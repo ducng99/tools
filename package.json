@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.54.4",
-    "@huggingface/transformers": "^4.2.0",
+    "@huggingface/transformers": "^4.3.0",
     "@tanstack/match-sorter-utils": "^9.1.2",
     "@tanstack/solid-table": "^9.2.4",
     "bootstrap": "^5.3.8",
