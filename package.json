@@ -10,15 +10,15 @@
     "lint": "eslint --fix"
   },
   "dependencies": {
-    "@cloudflare/vite-plugin": "^1.54.4",
-    "@huggingface/transformers": "^4.3.0",
-    "@tanstack/match-sorter-utils": "^9.1.2",
-    "@tanstack/solid-table": "^9.2.4",
+    "@cloudflare/vite-plugin": "^1.63.1",
+    "@huggingface/transformers": "^4.3.1",
+    "@tanstack/match-sorter-utils": "^9.2.6",
+    "@tanstack/solid-table": "^9.2.8",
     "bootstrap": "^5.3.8",
     "csv-parse": "^7.0.3",
-    "sass-embedded": "^1.104.0",
-    "solid-js": "^1.9.15",
-    "vite": "^8.3.1",
+    "sass-embedded": "^1.105.1",
+    "solid-js": "^1.9.17",
+    "vite": "^8.3.4",
     "vite-plugin-solid": "^2.11.14",
     "zxing-wasm": "3.1.4",
     "@solidjs/router": "^1.0.0"
@@ -28,11 +28,11 @@
     "@stylistic/eslint-plugin": "^5.10.0",
     "@tanstack/devtools-vite": "^0.8.5",
     "@types/bootstrap": "^5.2.11",
-    "eslint": "^10.11.0",
+    "eslint": "^10.12.0",
     "eslint-plugin-import-x": "^4.17.1",
-    "globals": "^17.12.0",
+    "globals": "^17.13.0",
     "nanospinner": "1.2.2",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.71.0"
+    "typescript-eslint": "^8.71.1"
   }
 }
