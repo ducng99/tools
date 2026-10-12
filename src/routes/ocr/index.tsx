@@ -19,7 +19,6 @@ export default function OcrPage() {
     const [progressItems, setProgressItems] = createSignal<Array<FileProgress>>([]);
     const [outputText, setOutputText] = createSignal("");
     const [errorMessage, setErrorMessage] = createSignal("");
-    const [prompt, setPrompt] = createSignal("");
     const [hasImage, setHasImage] = createSignal(false);
 
     // eslint-disable-next-line no-unassigned-vars
@@ -126,7 +125,7 @@ export default function OcrPage() {
             return null;
         }
 
-        const [width, height] = clampWidthHeight(imageElement.naturalWidth, imageElement.naturalHeight, 1024, 1024);
+        const [width, height] = clampWidthHeight(imageElement.naturalWidth, imageElement.naturalHeight, 2048, 2048);
 
         const context = helperCanvasRef?.getContext("2d", { alpha: false, willReadFrequently: true });
         if (!helperCanvasRef || !context || width <= 0 || height <= 0) {
@@ -155,7 +154,7 @@ export default function OcrPage() {
         setState("loading");
         setStatusMessage("Preparing…");
 
-        getWorker().postMessage({ type: "run", prompt: prompt(), imageData } satisfies OcrWorkerRequest);
+        getWorker().postMessage({ type: "run", imageData } satisfies OcrWorkerRequest);
     }
 
     return (
@@ -163,7 +162,7 @@ export default function OcrPage() {
             <h1>OCR</h1>
             <p class="text-muted">
                 {"Extract text from images entirely in your browser using "}
-                <a href="https://huggingface.co/onnx-community/LightOnOCR-2-1B-ONNX" target="_blank" rel="noopener noreferrer">LightOnOCR</a>
+                <a href="https://huggingface.co/superpdf/LightOnOCR-3-0.8B-ONNX-web" target="_blank" rel="noopener noreferrer">LightOnOCR-3</a>
                 {" via "}
                 <a href="https://huggingface.co/docs/transformers.js" target="_blank" rel="noopener noreferrer">transformers.js</a>
                 . The model is downloaded and cached on first use, no data leaves your device.
@@ -175,18 +174,6 @@ export default function OcrPage() {
             </div>
             <div class="mt-2">
                 <small>Or simply paste the image on this page!</small>
-            </div>
-
-            <div class="mt-3">
-                <label class="form-label" for="ocr-prompt-input">Instruction (optional):</label>
-                <input
-                    type="text"
-                    class="form-control"
-                    id="ocr-prompt-input"
-                    placeholder="Leave empty to extract all text, or e.g. Extract the table as markdown"
-                    value={prompt()}
-                    onInput={(e) => { setPrompt(e.currentTarget.value); }}
-                />
             </div>
 
             <button
