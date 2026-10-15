@@ -1,23 +1,11 @@
-import { AutoProcessor, Qwen3_5ForConditionalGeneration, RawImage } from "@huggingface/transformers";
-import type { Processor, ProgressInfo, Tensor } from "@huggingface/transformers";
+import { AutoModelForImageTextToText, AutoProcessor, RawImage } from "@huggingface/transformers";
+import type { PreTrainedModel, Processor, ProgressInfo, Tensor } from "@huggingface/transformers";
 
-const MODEL_ID = "superpdf/LightOnOCR-3-0.8B-ONNX-web";
-
-// Qwen3.5 chat template: disable the <think> reasoning block for plain transcription output.
-type ChatTemplateOptions = Parameters<Processor["apply_chat_template"]>[1];
-const CHAT_TEMPLATE_OPTIONS = {
-    add_generation_prompt: true,
-    tokenize: false,
-    enable_thinking: false,
-} as ChatTemplateOptions;
-
-const GENERATE_OPTIONS = {
-    max_new_tokens: 6144,
-    do_sample: false,
-} as const;
+const MODEL_ID = "onnx-community/LightOnOCR-2-1B-ONNX";
 
 export interface OcrWorkerRequest {
     type: "run";
+    prompt: string;
     imageData: ImageData;
 }
 
@@ -27,10 +15,7 @@ export type OcrWorkerResponse
         | { type: "result"; text: string }
         | { type: "error"; message: string };
 
-let modelPromise: Promise<{
-    processor: Processor;
-    model: InstanceType<typeof Qwen3_5ForConditionalGeneration>;
-}> | null = null;
+let modelPromise: Promise<{ processor: Processor; model: PreTrainedModel }> | null = null;
 
 function loadModel() {
     if (!modelPromise) {
@@ -43,16 +28,15 @@ function loadModel() {
 
             const [processor, model] = await Promise.all([
                 AutoProcessor.from_pretrained(MODEL_ID, { progress_callback }),
-                Qwen3_5ForConditionalGeneration.from_pretrained(MODEL_ID, {
+                AutoModelForImageTextToText.from_pretrained(MODEL_ID, {
                     dtype: {
-                        embed_tokens: "q4",
+                        embed_tokens: "fp16",
+                        vision_encoder: "q4",
                         decoder_model_merged: "q4",
-                        vision_encoder: "fp16",
                     },
                     progress_callback,
                     device: typeof navigator !== "undefined" && "gpu" in navigator ? "webgpu" : "auto",
-                // from_pretrained is typed as Promise<PreTrainedModel>, but returns the concrete class instance.
-                }) as Promise<InstanceType<typeof Qwen3_5ForConditionalGeneration>>,
+                }),
             ]);
 
             return { processor, model };
@@ -62,23 +46,28 @@ function loadModel() {
     return modelPromise;
 }
 
-async function runOcr(imageData: ImageData) {
+async function runOcr(prompt: string, imageData: ImageData) {
     const { processor, model } = await loadModel();
 
     postMessage({ type: "status", message: "Running inference…" } satisfies OcrWorkerResponse);
 
     const image = new RawImage(imageData.data, imageData.width, imageData.height, 4);
 
+    const content: Array<{ type: string; text?: string }> = [{ type: "image" }];
+    if (prompt.trim()) {
+        content.push({ type: "text", text: prompt });
+    }
+
     const messages = [
-        { role: "user", content: [{ type: "image" }] },
+        { role: "user", content },
     ] as Parameters<Processor["apply_chat_template"]>[0];
 
-    const text = processor.apply_chat_template(messages, CHAT_TEMPLATE_OPTIONS) as string;
-    const inputs = await processor(text, image) as Record<string, Tensor> & { input_ids: Tensor };
+    const text = processor.apply_chat_template(messages, { add_generation_prompt: true, tokenize: false }) as string;
+    const inputs = await processor(image, text) as Record<string, Tensor> & { input_ids: Tensor };
 
     const generated = await model.generate({
         ...inputs,
-        ...GENERATE_OPTIONS,
+        max_new_tokens: 1024,
     }) as Tensor;
 
     const inputLength = inputs.input_ids.dims.at(-1) as number;
@@ -95,7 +84,7 @@ self.addEventListener("message", (event: MessageEvent<OcrWorkerRequest>) => {
     const data = event.data;
 
     if (data.type === "run") {
-        runOcr(data.imageData)
+        runOcr(data.prompt, data.imageData)
             .then((text) => {
                 postMessage({ type: "result", text } satisfies OcrWorkerResponse);
             })
