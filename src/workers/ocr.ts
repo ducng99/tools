@@ -9,9 +9,20 @@ const MODEL_BASE = "datalab-to/indra-ocr";
 // matching the installed onnxruntime-web version instead.
 const ORT_WASM_PATHS = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.30.0/dist/";
 
+/** Optional loadIndra features, all default-off in the package. */
+export interface OcrFeatures {
+    /** Read math lines as LaTeX (downloads the extra math models). */
+    math: boolean;
+    /** Build tables from the order model's table heads instead of from geometry. */
+    tableHeads: boolean;
+    /** Keep page headers and footers in the markdown output. */
+    furniture: boolean;
+}
+
 export interface OcrWorkerRequest {
     type: "run";
     gray: GrayImage;
+    features: OcrFeatures;
 }
 
 export interface OcrFileProgress {
@@ -23,7 +34,7 @@ export interface OcrFileProgress {
 export type OcrWorkerResponse
     = | { type: "progress"; progress: OcrFileProgress }
         | { type: "status"; message: string }
-        | { type: "result"; text: string; lineCount: number }
+        | { type: "result"; text: string; lineCount: number; markdown: string | null }
         | { type: "error"; message: string };
 
 // ORT derives its default thread count from self.crossOriginIsolated, which
@@ -45,15 +56,24 @@ function detectThreadCount() {
 }
 
 let ocrPromise: Promise<IndraOCR> | null = null;
+let loadedFeatures: OcrFeatures | null = null;
 
-function loadOcr() {
-    if (!ocrPromise) {
+function sameFeatures(a: OcrFeatures, b: OcrFeatures) {
+    return a.math === b.math && a.tableHeads === b.tableHeads && a.furniture === b.furniture;
+}
+
+// Feature flags are loadIndra options, so a changed set means a fresh load
+// (only `math` changes what gets downloaded; the files are HTTP-cached).
+function loadOcr(features: OcrFeatures) {
+    if (!ocrPromise || !loadedFeatures || !sameFeatures(loadedFeatures, features)) {
+        loadedFeatures = { ...features };
         ocrPromise = (async () => {
             postMessage({ type: "status", message: "Loading OCR models…" } satisfies OcrWorkerResponse);
 
             ortEnv.wasm.numThreads = detectThreadCount();
 
             return await loadIndra(MODEL_BASE, {
+                ...features,
                 wasmPaths: ORT_WASM_PATHS,
                 progress: (info) => {
                     postMessage({
@@ -71,20 +91,20 @@ function loadOcr() {
     return ocrPromise;
 }
 
-async function runOcr(gray: GrayImage) {
-    const ocr = await loadOcr();
+async function runOcr(gray: GrayImage, features: OcrFeatures) {
+    const ocr = await loadOcr(features);
 
     postMessage({ type: "status", message: "Running OCR…" } satisfies OcrWorkerResponse);
 
     const page = await ocr.run(gray);
-    return { text: page.text, lineCount: page.lines.length };
+    return { text: page.text, lineCount: page.lines.length, markdown: page.markdown };
 }
 
 self.addEventListener("message", (event: MessageEvent<OcrWorkerRequest>) => {
     const data = event.data;
 
     if (data.type === "run") {
-        runOcr(data.gray)
+        runOcr(data.gray, data.features)
             .then((result) => {
                 postMessage({ type: "result", ...result } satisfies OcrWorkerResponse);
             })

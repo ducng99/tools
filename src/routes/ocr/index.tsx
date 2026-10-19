@@ -1,6 +1,6 @@
 import { Show, createSignal, onCleanup } from "solid-js";
 import { clampWidthHeight } from "../../utils";
-import type { OcrWorkerRequest, OcrWorkerResponse } from "../../workers/ocr";
+import type { OcrFeatures, OcrWorkerRequest, OcrWorkerResponse } from "../../workers/ocr";
 import OcrWorker from "../../workers/ocr?worker";
 import type { ChangeEvent } from "../../utils";
 
@@ -22,6 +22,11 @@ export default function OcrPage() {
     const [lineCount, setLineCount] = createSignal<number | null>(null);
     const [errorMessage, setErrorMessage] = createSignal("");
     const [hasImage, setHasImage] = createSignal(false);
+    const [features, setFeatures] = createSignal<OcrFeatures>({ math: false, tableHeads: false, furniture: false });
+
+    // Snapshot of the features the in-flight run was started with (the
+    // checkboxes are disabled while loading, so this can't change mid-run).
+    let activeFeatures: OcrFeatures = { math: false, tableHeads: false, furniture: false };
 
     // eslint-disable-next-line no-unassigned-vars
     let ocrFileUploadRef: HTMLInputElement | undefined;
@@ -58,7 +63,11 @@ export default function OcrPage() {
                     });
                 }
                 else if (data.type === "result") {
-                    setOutputText(data.text);
+                    // tableHeads/furniture only shape the markdown, so show
+                    // that when either is on; markdown is null when no layout
+                    // model ran, in which case fall back to the plain text.
+                    const markdown = (activeFeatures.tableHeads || activeFeatures.furniture) ? data.markdown : null;
+                    setOutputText(markdown ?? data.text);
                     setLineCount(data.lineCount);
                     setStatusMessage("");
                     setState("done");
@@ -148,6 +157,13 @@ export default function OcrPage() {
         return { data: gray, width, height };
     }
 
+    function handleFeatureToggle(key: keyof OcrFeatures) {
+        return (event: ChangeEvent<HTMLInputElement>) => {
+            const checked = event.currentTarget.checked;
+            setFeatures(prev => ({ ...prev, [key]: checked }));
+        };
+    }
+
     function handleRunOcr() {
         const gray = getImageGray();
         if (!gray) {
@@ -156,6 +172,9 @@ export default function OcrPage() {
             return;
         }
 
+        const requestFeatures = features();
+        activeFeatures = requestFeatures;
+
         setErrorMessage("");
         setOutputText("");
         setLineCount(null);
@@ -163,7 +182,7 @@ export default function OcrPage() {
         setState("loading");
         setStatusMessage("Preparing…");
 
-        const request = { type: "run", gray } satisfies OcrWorkerRequest;
+        const request = { type: "run", gray, features: requestFeatures } satisfies OcrWorkerRequest;
         getWorker().postMessage(request, [gray.data.buffer]);
     }
 
@@ -183,6 +202,54 @@ export default function OcrPage() {
             </div>
             <div class="mt-2">
                 <small>Or simply paste the image on this page!</small>
+            </div>
+
+            <div class="mt-3">
+                <div class="form-label mb-0">Additional features:</div>
+                <div class="form-check">
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="ocr-feature-math"
+                        checked={features().math}
+                        disabled={state() === "loading"}
+                        onChange={handleFeatureToggle("math")}
+                    />
+                    <label class="form-check-label" for="ocr-feature-math">
+                        Read math as LaTeX
+                        {" "}
+                        <small class="text-muted">(downloads extra models)</small>
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="ocr-feature-table-heads"
+                        checked={features().tableHeads}
+                        disabled={state() === "loading"}
+                        onChange={handleFeatureToggle("tableHeads")}
+                    />
+                    <label class="form-check-label" for="ocr-feature-table-heads">
+                        Build tables from the model's table heads
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="ocr-feature-furniture"
+                        checked={features().furniture}
+                        disabled={state() === "loading"}
+                        onChange={handleFeatureToggle("furniture")}
+                    />
+                    <label class="form-check-label" for="ocr-feature-furniture">
+                        Keep page headers and footers
+                    </label>
+                </div>
+                <Show when={features().tableHeads || features().furniture}>
+                    <small class="text-muted">Table and header/footer options shape the markdown output — the result will be shown as markdown.</small>
+                </Show>
             </div>
 
             <button
