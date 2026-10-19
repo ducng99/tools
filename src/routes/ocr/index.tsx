@@ -9,7 +9,7 @@ interface FileProgress {
     progress: number;
 }
 
-type OcrState = "idle" | "loading" | "processing" | "done" | "error";
+type OcrState = "idle" | "loading" | "done" | "error";
 
 export default function OcrPage() {
     document.title = "OCR";
@@ -18,8 +18,8 @@ export default function OcrPage() {
     const [statusMessage, setStatusMessage] = createSignal("");
     const [progressItems, setProgressItems] = createSignal<Array<FileProgress>>([]);
     const [outputText, setOutputText] = createSignal("");
+    const [lineCount, setLineCount] = createSignal<number | null>(null);
     const [errorMessage, setErrorMessage] = createSignal("");
-    const [prompt, setPrompt] = createSignal("");
     const [hasImage, setHasImage] = createSignal(false);
 
     // eslint-disable-next-line no-unassigned-vars
@@ -43,12 +43,8 @@ export default function OcrPage() {
                 else if (data.type === "progress") {
                     const progress = data.progress;
                     setProgressItems((items) => {
-                        if (progress.status === "done") {
+                        if (progress.progress >= 100) {
                             return items.filter(item => item.file !== progress.file);
-                        }
-
-                        if (progress.status !== "progress") {
-                            return items;
                         }
 
                         const index = items.findIndex(item => item.file === progress.file);
@@ -62,6 +58,8 @@ export default function OcrPage() {
                 }
                 else if (data.type === "result") {
                     setOutputText(data.text);
+                    setLineCount(data.lineCount);
+                    setStatusMessage("");
                     setState("done");
                 }
                 else if (data.type === "error") {
@@ -83,6 +81,7 @@ export default function OcrPage() {
             ocrImageDisplayRef.src = window.URL.createObjectURL(file);
             setHasImage(true);
             setOutputText("");
+            setLineCount(null);
             setErrorMessage("");
             setState("idle");
         }
@@ -120,13 +119,13 @@ export default function OcrPage() {
         }
     }
 
-    function getImageData(): ImageData | null {
+    function getImageGray(): OcrWorkerRequest["gray"] | null {
         const imageElement = ocrImageDisplayRef;
         if (!imageElement || !imageElement.naturalWidth) {
             return null;
         }
 
-        const [width, height] = clampWidthHeight(imageElement.naturalWidth, imageElement.naturalHeight, 1024, 1024);
+        const [width, height] = clampWidthHeight(imageElement.naturalWidth, imageElement.naturalHeight, 2048, 2048);
 
         const context = helperCanvasRef?.getContext("2d", { alpha: false, willReadFrequently: true });
         if (!helperCanvasRef || !context || width <= 0 || height <= 0) {
@@ -138,12 +137,19 @@ export default function OcrPage() {
         context.fillStyle = "white";
         context.fillRect(0, 0, width, height);
         context.drawImage(imageElement, 0, 0, width, height);
-        return context.getImageData(0, 0, width, height);
+        const imageData = context.getImageData(0, 0, width, height);
+
+        // Rec.601 luma, matching the package's readGray preprocessing.
+        const gray = new Uint8Array(width * height);
+        for (let i = 0, p = 0; i < gray.length; i++, p += 4) {
+            gray[i] = Math.round(0.299 * imageData.data[p] + 0.587 * imageData.data[p + 1] + 0.114 * imageData.data[p + 2]);
+        }
+        return { data: gray, width, height };
     }
 
     function handleRunOcr() {
-        const imageData = getImageData();
-        if (!imageData) {
+        const gray = getImageGray();
+        if (!gray) {
             setErrorMessage("Cannot read image data!");
             setState("error");
             return;
@@ -151,11 +157,13 @@ export default function OcrPage() {
 
         setErrorMessage("");
         setOutputText("");
+        setLineCount(null);
         setProgressItems([]);
         setState("loading");
         setStatusMessage("Preparing…");
 
-        getWorker().postMessage({ type: "run", prompt: prompt(), imageData } satisfies OcrWorkerRequest);
+        const request = { type: "run", gray } satisfies OcrWorkerRequest;
+        getWorker().postMessage(request, [gray.data.buffer]);
     }
 
     return (
@@ -163,10 +171,9 @@ export default function OcrPage() {
             <h1>OCR</h1>
             <p class="text-muted">
                 {"Extract text from images entirely in your browser using "}
-                <a href="https://huggingface.co/onnx-community/LightOnOCR-2-1B-ONNX" target="_blank" rel="noopener noreferrer">LightOnOCR</a>
+                <a href="https://huggingface.co/datalab-to/indra-ocr" target="_blank" rel="noopener noreferrer">indra-ocr</a>
                 {" via "}
-                <a href="https://huggingface.co/docs/transformers.js" target="_blank" rel="noopener noreferrer">transformers.js</a>
-                . The model is downloaded and cached on first use, no data leaves your device.
+                <a href="https://github.com/ducng99/indra-ocr-js" target="_blank" rel="noopener noreferrer">indra-ocr-js</a>
             </p>
 
             <div>
@@ -177,32 +184,20 @@ export default function OcrPage() {
                 <small>Or simply paste the image on this page!</small>
             </div>
 
-            <div class="mt-3">
-                <label class="form-label" for="ocr-prompt-input">Instruction (optional):</label>
-                <input
-                    type="text"
-                    class="form-control"
-                    id="ocr-prompt-input"
-                    placeholder="Leave empty to extract all text, or e.g. Extract the table as markdown"
-                    value={prompt()}
-                    onInput={(e) => { setPrompt(e.currentTarget.value); }}
-                />
-            </div>
-
             <button
                 type="button"
                 class="btn btn-primary mt-3"
                 id="trigger-button"
-                disabled={!hasImage() || state() === "loading" || state() === "processing"}
+                disabled={!hasImage() || state() === "loading"}
                 onClick={handleRunOcr}
             >
-                <Show when={state() === "loading" || state() === "processing"} fallback="Run OCR 🔎">
+                <Show when={state() === "loading"} fallback="Run OCR 🔎">
                     <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
                     Working…
                 </Show>
             </button>
 
-            <Show when={state() === "loading" || state() === "processing"}>
+            <Show when={state() === "loading"}>
                 <div class="mt-3">
                     <div class="text-muted">{statusMessage()}</div>
                     <Show when={progressItems().length > 0}>
@@ -228,7 +223,13 @@ export default function OcrPage() {
             </Show>
 
             <div class="mt-3">
-                <label class="form-label" for="output-textbox">Output:</label>
+                <label class="form-label" for="output-textbox">
+                    Output
+                    <Show when={lineCount() !== null}>
+                        {` (${lineCount()} line${lineCount() === 1 ? "" : "s"})`}
+                    </Show>
+                    :
+                </label>
                 <textarea class="form-control" id="output-textbox" rows={10} readOnly value={outputText()} />
             </div>
 

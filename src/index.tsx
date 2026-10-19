@@ -5,6 +5,7 @@ import { Router, Route } from "@solidjs/router";
 
 import "./theme";
 import "./scss/styles.scss";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 import Layout from "./components/common/Layout";
 import NotFound from "./components/common/NotFound";

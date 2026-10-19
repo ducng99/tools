@@ -1,0 +1,8 @@
+# Cross-origin isolation: lets onnxruntime-web's threaded wasm backend use
+# SharedArrayBuffer (multi-threaded inference) in the OCR and translate
+# workers. Every cross-origin subresource must opt in — all bundled assets
+# are same-origin, and the runtime model/wasm fetches (Hugging Face, jsDelivr)
+# send CORS headers.
+/*
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: require-corp
