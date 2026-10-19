@@ -2,8 +2,6 @@ import { loadIndra } from "@ducng99/indra-ocr-js/browser";
 import type { GrayImage, IndraOCR } from "@ducng99/indra-ocr-js/browser";
 import { env as ortEnv } from "onnxruntime-web";
 
-// Pinned upstream revision: CORS-enabled, so it works straight from the
-// browser (see the package README for self-hosting the ~18 MB model files).
 const MODEL_BASE = "datalab-to/indra-ocr";
 
 // The ort .wasm binary is stripped from the build output (see the

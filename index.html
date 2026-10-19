@@ -3,6 +3,13 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <!--
+          Cross-origin fetches must not carry a Referer: Hugging Face's model
+          resolver 404s any request with a *.workers.dev Referer (see
+          public/_headers). The meta keeps dev — where _headers is not applied
+          by the Vite dev server — consistent with the deployed site.
+        -->
+        <meta name="referrer" content="same-origin" />
         <title>Tools</title>
         <link rel="icon" type="image/svg+xml" href="/logo.svg" />
     </head>
