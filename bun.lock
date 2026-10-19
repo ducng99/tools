@@ -6,7 +6,7 @@
       "name": "tools",
       "dependencies": {
         "@cloudflare/vite-plugin": "^1.63.1",
-        "@ducng99/indra-ocr-js": "^0.1.0",
+        "@ducng99/indra-ocr-js": "^0.2.1",
         "@huggingface/transformers": "^4.3.1",
         "@solidjs/router": "^1.0.0",
         "@tanstack/match-sorter-utils": "^9.2.6",
@@ -96,7 +96,7 @@
 
     "@cspotcode/source-map-support": ["@cspotcode/source-map-support@0.8.1", "", { "dependencies": { "@jridgewell/trace-mapping": "0.3.9" } }, "sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw=="],
 
-    "@ducng99/indra-ocr-js": ["@ducng99/indra-ocr-js@0.1.0", "", { "dependencies": { "onnxruntime-web": "^1.30.0" }, "optionalDependencies": { "onnxruntime-node": "^1.30.0", "sharp": "^0.35.0" } }, "sha512-pzFkFLPqjgymccAIL/UCNJG5LURtSxzHTIeTbPfk9MoeBRFxSHZd3+XTUuEHAyjVf7SguvMrfxWVenM4UHktww=="],
+    "@ducng99/indra-ocr-js": ["@ducng99/indra-ocr-js@0.2.1", "", { "dependencies": { "onnxruntime-web": "^1.30.0" }, "optionalDependencies": { "onnxruntime-node": "^1.30.0", "sharp": "^0.35.0" } }, "sha512-Tp48ouftWkpAMA69cBO35KhY2H9NDZBEyc4q2f63z4PCCyMwBRAhefMu+mz1yi76bJ4G4inIWs6im+fm4ZZQuQ=="],
 
     "@emnapi/core": ["@emnapi/core@1.10.0", "", { "dependencies": { "@emnapi/wasi-threads": "1.2.1", "tslib": "^2.4.0" } }, "sha512-yq6OkJ4p82CAfPl0u9mQebQHKPJkY7WrIuk205cTYnYe+k2Z8YBh11FrbRG/H6ihirqcacOgl2BIO8oyMQLeXw=="],
 

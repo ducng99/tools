@@ -23,8 +23,16 @@ declare module "@ducng99/indra-ocr-js/browser" {
         lines: Array<OcrLine>;
         /** Detected quarter-turn in degrees (0 / 90 / 180 / 270). */
         rotation: number;
+        /** Deskew angle applied, in degrees (0 when no deskew). */
+        skew: number;
+        /** Assembled markdown (headings, tables, etc.). */
+        markdown: string;
+        /** Layout blocks with classes and bounding boxes. */
+        blocks: Array<Record<string, unknown>>;
         /** All lines joined by newlines. */
         text: string;
+        /** Per-phase timings (ms). */
+        timings: Record<string, number>;
     }
 
     export interface LoadIndraOptions {
@@ -36,14 +44,29 @@ declare module "@ducng99/indra-ocr-js/browser" {
         orient?: boolean;
         /** Toggle the second, higher-resolution detection pass. */
         adaptive?: boolean;
+        /** Load the math models (mathcls/enc/dec .onnx + math_meta.json). */
+        math?: boolean;
         /** onnxruntime-web `env.wasm.wasmPaths` override. */
         wasmPaths?: string;
+        /** Per-file download progress: streamed chunks, then one `done: true`. */
+        progress?: (info: DownloadProgress) => void;
+    }
+
+    export interface DownloadProgress {
+        file: string;
+        loaded: number;
+        /** null when the response has no Content-Length. */
+        total: number | null;
+        /** true on the final event for a file. */
+        done?: boolean;
     }
 
     /** Backend contract for IndraOCR.create: ONNX sessions and Tensor, injected. */
     export interface IndraBackend {
         Tensor: abstract new (...args: Array<never>) => unknown;
         meta: () => Promise<unknown>;
+        /** Optional JSON loader (used by the math models). */
+        json?: (name: string) => Promise<unknown>;
         session: (name: string) => Promise<{
             run: (inputs: never) => Promise<Record<string, unknown>>;
         }>;

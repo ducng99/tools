@@ -1,6 +1,6 @@
-import { IndraOCR } from "@ducng99/indra-ocr-js/browser";
-import type { GrayImage } from "@ducng99/indra-ocr-js/browser";
-import { InferenceSession, Tensor, env as ortEnv } from "onnxruntime-web";
+import { loadIndra } from "@ducng99/indra-ocr-js/browser";
+import type { GrayImage, IndraOCR } from "@ducng99/indra-ocr-js/browser";
+import { env as ortEnv } from "onnxruntime-web";
 
 // Pinned upstream revision: CORS-enabled, so it works straight from the
 // browser (see the package README for self-hosting the ~18 MB model files).
@@ -10,6 +10,23 @@ const MODEL_BASE = "datalab-to/indra-ocr";
 // excludeOnnxWasm plugin in vite.config.ts), so it is fetched from the CDN
 // matching the installed onnxruntime-web version instead.
 const ORT_WASM_PATHS = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.30.0/dist/";
+
+export interface OcrWorkerRequest {
+    type: "run";
+    gray: GrayImage;
+}
+
+export interface OcrFileProgress {
+    file: string;
+    /** 0–100, or null while indeterminate (no Content-Length); 100 = done. */
+    progress: number | null;
+}
+
+export type OcrWorkerResponse
+    = | { type: "progress"; progress: OcrFileProgress }
+        | { type: "status"; message: string }
+        | { type: "result"; text: string; lineCount: number }
+        | { type: "error"; message: string };
 
 // ORT derives its default thread count from self.crossOriginIsolated, which
 // newer Chrome builds no longer expose — probe the actual capability (SAB
@@ -29,57 +46,6 @@ function detectThreadCount() {
     return Math.max(1, Math.min(4, Math.ceil((navigator.hardwareConcurrency || 2) / 2)));
 }
 
-export interface OcrWorkerRequest {
-    type: "run";
-    gray: GrayImage;
-}
-
-export interface OcrFileProgress {
-    file: string;
-    /** 0–100; 100 means the file finished loading. */
-    progress: number;
-}
-
-export type OcrWorkerResponse
-    = | { type: "progress"; progress: OcrFileProgress }
-        | { type: "status"; message: string }
-        | { type: "result"; text: string; lineCount: number }
-        | { type: "error"; message: string };
-
-async function fetchBuffer(url: string, onProgress: (fraction: number) => void) {
-    const response = await fetch(url);
-    if (!response.ok) {
-        throw new Error(`${response.status} ${response.statusText} for ${url}`);
-    }
-
-    const total = Number(response.headers.get("content-length"));
-    if (!response.body || !total) {
-        onProgress(1);
-        return new Uint8Array(await response.arrayBuffer());
-    }
-
-    const reader = response.body.getReader();
-    const chunks: Array<Uint8Array> = [];
-    let loaded = 0;
-    for (;;) {
-        const { done, value } = await reader.read();
-        if (done) {
-            break;
-        }
-        chunks.push(value);
-        loaded += value.byteLength;
-        onProgress(Math.min(loaded / total, 1));
-    }
-
-    const data = new Uint8Array(loaded);
-    let offset = 0;
-    for (const chunk of chunks) {
-        data.set(chunk, offset);
-        offset += chunk.byteLength;
-    }
-    return data;
-}
-
 let ocrPromise: Promise<IndraOCR> | null = null;
 
 function loadOcr() {
@@ -87,31 +53,18 @@ function loadOcr() {
         ocrPromise = (async () => {
             postMessage({ type: "status", message: "Loading OCR models…" } satisfies OcrWorkerResponse);
 
-            ortEnv.wasm.wasmPaths = ORT_WASM_PATHS;
             ortEnv.wasm.numThreads = detectThreadCount();
 
-            const reportProgress = (file: string) => {
-                return (fraction: number) => {
-                    postMessage({ type: "progress", progress: { file, progress: fraction * 100 } } satisfies OcrWorkerResponse);
-                };
-            };
-
-            // A custom backend (instead of loadIndra) so downloads can report
-            // per-file progress to the UI. Optional models (order, orient,
-            // script/rec_cjk) degrade silently when their fetch fails.
-            return await IndraOCR.create({
-                Tensor,
-                meta: async () => {
-                    const data = await fetchBuffer(`${MODEL_BASE}meta.json`, reportProgress("meta.json"));
-                    return JSON.parse(new TextDecoder().decode(data));
-                },
-                session: async (name) => {
-                    const data = await fetchBuffer(MODEL_BASE + name, reportProgress(name));
-                    const session = await InferenceSession.create(data, {
-                        executionProviders: ["wasm"],
-                        graphOptimizationLevel: "all",
-                    });
-                    return { run: (inputs: never) => session.run(inputs) };
+            return await loadIndra(MODEL_BASE, {
+                wasmPaths: ORT_WASM_PATHS,
+                progress: (info) => {
+                    postMessage({
+                        type: "progress",
+                        progress: {
+                            file: info.file,
+                            progress: info.done ? 100 : info.total ? (info.loaded / info.total) * 100 : null,
+                        },
+                    } satisfies OcrWorkerResponse);
                 },
             });
         })();

@@ -6,7 +6,8 @@ import type { ChangeEvent } from "../../utils";
 
 interface FileProgress {
     file: string;
-    progress: number;
+    /** 0–100, or null while indeterminate (no Content-Length); 100 = done. */
+    progress: number | null;
 }
 
 type OcrState = "idle" | "loading" | "done" | "error";
@@ -43,7 +44,7 @@ export default function OcrPage() {
                 else if (data.type === "progress") {
                     const progress = data.progress;
                     setProgressItems((items) => {
-                        if (progress.progress >= 100) {
+                        if (progress.progress !== null && progress.progress >= 100) {
                             return items.filter(item => item.file !== progress.file);
                         }
 
@@ -206,10 +207,15 @@ export default function OcrPage() {
                                 <li class="small">
                                     {item.file}
                                     {" - "}
-                                    {item.progress.toFixed(0)}
-                                    %
+                                    {item.progress === null ? "downloading…" : item.progress.toFixed(0)}
+                                    {item.progress !== null && "%"}
                                     <div class="progress" style={{ height: "4px" }}>
-                                        <div class="progress-bar" style={{ width: `${item.progress}%` }}></div>
+                                        <div
+                                            class="progress-bar"
+                                            classList={{ "progress-bar-striped progress-bar-animated": item.progress === null }}
+                                            style={{ width: `${item.progress ?? 100}%` }}
+                                        >
+                                        </div>
                                     </div>
                                 </li>
                             ))}
