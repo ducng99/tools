@@ -1,3 +1,22 @@
+## [3.1.0] - 2026-10-20
+
+### ⛰️  Features
+
+- *(ocr)* Now use LightOnOCR-3-0.8B
+- *(ocr)* Replaced with indra ocr (#153)
+
+### ⚙️ Miscellaneous Tasks
+
+- *(deps)* Bump vite from 8.2.2 to 8.3.1
+- *(deps)* Bump zxing-wasm from 3.1.3 to 3.1.4
+- *(deps)* Bump @huggingface/transformers from 4.2.0 to 4.3.0
+- *(deps)* Bump csv-parse from 7.0.2 to 7.0.3
+- *(deps-dev)* Bump the eslint group across 1 directory with 2 updates
+
+### Revert
+
+- *(ocr)* Reverted using lightonocr3
+
 ## [3.0.0] - 2026-09-08
 
 ### ⛰️  Features
