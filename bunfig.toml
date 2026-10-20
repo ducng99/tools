@@ -3,4 +3,4 @@
 minimumReleaseAge = 259200 # seconds
 
 # Exclude trusted packages from the age gate
-minimumReleaseAgeExcludes = ["typescript"]
+minimumReleaseAgeExcludes = ["typescript", "@ducng99/indra-ocr-js"]

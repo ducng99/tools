@@ -1,0 +1,16 @@
+# Cross-origin isolation: lets onnxruntime-web's threaded wasm backend use
+# SharedArrayBuffer (multi-threaded inference) in the OCR and translate
+# workers. Every cross-origin subresource must opt in — all bundled assets
+# are same-origin, and the runtime model/wasm fetches (Hugging Face, jsDelivr)
+# send CORS headers.
+#
+# Referrer policy: Hugging Face's resolver rejects (404, no CORS headers) any
+# request whose Referer is a *.workers.dev URL, so model fetches from the
+# deployed site would always fail. "same-origin" drops the Referer on
+# cross-origin fetches while keeping it for same-origin ones. Applies to the
+# worker scripts too — the OCR/translate workers inherit their policy from
+# the response that served them.
+/*
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: require-corp
+  Referrer-Policy: same-origin
