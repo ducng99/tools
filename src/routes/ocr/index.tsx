@@ -1,6 +1,5 @@
-import { Show, createSignal, onCleanup } from "solid-js";
-import { clampWidthHeight } from "../../utils";
-import type { OcrFeatures, OcrWorkerRequest, OcrWorkerResponse } from "../../workers/ocr";
+import { For, Show, createSignal, onCleanup } from "solid-js";
+import type { OcrFeatures, OcrResult, OcrWorkerRequest, OcrWorkerResponse } from "../../workers/ocr";
 import OcrWorker from "../../workers/ocr?worker";
 import type { ChangeEvent } from "../../utils";
 
@@ -11,6 +10,17 @@ interface FileProgress {
 }
 
 type OcrState = "idle" | "loading" | "done" | "error";
+type OutputView = "text" | "markdown";
+
+const DEFAULT_FEATURES: OcrFeatures = { cjk: true, lm: true, math: false, tableHeads: false, furniture: false };
+
+const FEATURE_OPTIONS: Array<{ key: keyof OcrFeatures; label: string; hint?: string }> = [
+    { key: "cjk", label: "Recognise non-Latin scripts (CJK, Arabic/Hebrew, others)", hint: "~20 MB extra models" },
+    { key: "lm", label: "Improve accuracy with language models", hint: "up to ~45 MB extra models" },
+    { key: "math", label: "Read math as LaTeX", hint: "~20 MB extra models" },
+    { key: "tableHeads", label: "Build markdown tables from the model's table heads" },
+    { key: "furniture", label: "Keep page headers and footers in the markdown" },
+];
 
 export default function OcrPage() {
     document.title = "OCR";
@@ -18,24 +28,33 @@ export default function OcrPage() {
     const [state, setState] = createSignal<OcrState>("idle");
     const [statusMessage, setStatusMessage] = createSignal("");
     const [progressItems, setProgressItems] = createSignal<Array<FileProgress>>([]);
-    const [outputText, setOutputText] = createSignal("");
-    const [lineCount, setLineCount] = createSignal<number | null>(null);
+    const [result, setResult] = createSignal<OcrResult | null>(null);
+    const [view, setView] = createSignal<OutputView>("markdown");
+    const [copied, setCopied] = createSignal(false);
     const [errorMessage, setErrorMessage] = createSignal("");
     const [hasImage, setHasImage] = createSignal(false);
-    const [features, setFeatures] = createSignal<OcrFeatures>({ math: false, tableHeads: false, furniture: false });
+    const [features, setFeatures] = createSignal<OcrFeatures>({ ...DEFAULT_FEATURES });
 
-    // Snapshot of the features the in-flight run was started with (the
-    // checkboxes are disabled while loading, so this can't change mid-run).
-    let activeFeatures: OcrFeatures = { math: false, tableHeads: false, furniture: false };
+    // Markdown is null when the layout model didn't run; fall back to text.
+    const hasMarkdown = () => result()?.markdown != null;
+    const activeView = (): OutputView => (view() === "markdown" && hasMarkdown() ? "markdown" : "text");
+    const outputText = () => {
+        const current = result();
+        if (!current) {
+            return "";
+        }
+        return activeView() === "markdown" ? (current.markdown ?? "") : current.text;
+    };
+
+    let copiedTimeout: number | undefined;
 
     // eslint-disable-next-line no-unassigned-vars
     let ocrFileUploadRef: HTMLInputElement | undefined;
     // eslint-disable-next-line no-unassigned-vars
     let ocrImageDisplayRef: HTMLImageElement | undefined;
-    // eslint-disable-next-line no-unassigned-vars
-    let helperCanvasRef: HTMLCanvasElement | undefined;
 
     let worker: Worker | undefined;
+    let imageFile: File | undefined;
 
     function getWorker() {
         if (!worker) {
@@ -63,12 +82,7 @@ export default function OcrPage() {
                     });
                 }
                 else if (data.type === "result") {
-                    // tableHeads/furniture only shape the markdown, so show
-                    // that when either is on; markdown is null when no layout
-                    // model ran, in which case fall back to the plain text.
-                    const markdown = (activeFeatures.tableHeads || activeFeatures.furniture) ? data.markdown : null;
-                    setOutputText(markdown ?? data.text);
-                    setLineCount(data.lineCount);
+                    setResult(data.result);
                     setStatusMessage("");
                     setState("done");
                 }
@@ -84,14 +98,21 @@ export default function OcrPage() {
 
     onCleanup(() => {
         worker?.terminate();
+        clearTimeout(copiedTimeout);
+        if (ocrImageDisplayRef?.src.startsWith("blob:")) {
+            window.URL.revokeObjectURL(ocrImageDisplayRef.src);
+        }
     });
 
     function setImageFile(file: File) {
         if (ocrImageDisplayRef) {
+            if (ocrImageDisplayRef.src.startsWith("blob:")) {
+                window.URL.revokeObjectURL(ocrImageDisplayRef.src);
+            }
+            imageFile = file;
             ocrImageDisplayRef.src = window.URL.createObjectURL(file);
             setHasImage(true);
-            setOutputText("");
-            setLineCount(null);
+            setResult(null);
             setErrorMessage("");
             setState("idle");
         }
@@ -129,34 +150,6 @@ export default function OcrPage() {
         }
     }
 
-    function getImageGray(): OcrWorkerRequest["gray"] | null {
-        const imageElement = ocrImageDisplayRef;
-        if (!imageElement || !imageElement.naturalWidth) {
-            return null;
-        }
-
-        const [width, height] = clampWidthHeight(imageElement.naturalWidth, imageElement.naturalHeight, 2048, 2048);
-
-        const context = helperCanvasRef?.getContext("2d", { alpha: false, willReadFrequently: true });
-        if (!helperCanvasRef || !context || width <= 0 || height <= 0) {
-            return null;
-        }
-
-        helperCanvasRef.width = width;
-        helperCanvasRef.height = height;
-        context.fillStyle = "white";
-        context.fillRect(0, 0, width, height);
-        context.drawImage(imageElement, 0, 0, width, height);
-        const imageData = context.getImageData(0, 0, width, height);
-
-        // Rec.601 luma, matching the package's readGray preprocessing.
-        const gray = new Uint8Array(width * height);
-        for (let i = 0, p = 0; i < gray.length; i++, p += 4) {
-            gray[i] = Math.round(0.299 * imageData.data[p] + 0.587 * imageData.data[p + 1] + 0.114 * imageData.data[p + 2]);
-        }
-        return { data: gray, width, height };
-    }
-
     function handleFeatureToggle(key: keyof OcrFeatures) {
         return (event: ChangeEvent<HTMLInputElement>) => {
             const checked = event.currentTarget.checked;
@@ -164,26 +157,57 @@ export default function OcrPage() {
         };
     }
 
+    async function handleCopy() {
+        const text = outputText();
+        if (!text) {
+            return;
+        }
+        try {
+            await navigator.clipboard.writeText(text);
+            setCopied(true);
+            clearTimeout(copiedTimeout);
+            copiedTimeout = window.setTimeout(() => setCopied(false), 1500);
+        }
+        catch {
+            setErrorMessage("Could not copy to the clipboard in this browser context.");
+        }
+    }
+
+    function resultSummary(current: OcrResult) {
+        const parts = [`${current.lineCount} line${current.lineCount === 1 ? "" : "s"}`];
+        if (current.rotation) {
+            parts.push(`rotated ${current.rotation}°`);
+        }
+        if (current.skew) {
+            parts.push(`deskewed ${current.skew}°`);
+        }
+        if (current.vertical) {
+            parts.push("vertical text");
+        }
+        if (current.pictureCount) {
+            parts.push(`${current.pictureCount} picture${current.pictureCount === 1 ? "" : "s"}`);
+        }
+        parts.push(`${(current.runMs / 1000).toFixed(1)} s`);
+        return parts.join(" · ");
+    }
+
     function handleRunOcr() {
-        const gray = getImageGray();
-        if (!gray) {
-            setErrorMessage("Cannot read image data!");
+        if (!imageFile) {
+            setErrorMessage("No image selected!");
             setState("error");
             return;
         }
 
         const requestFeatures = features();
-        activeFeatures = requestFeatures;
 
         setErrorMessage("");
-        setOutputText("");
-        setLineCount(null);
+        setResult(null);
         setProgressItems([]);
         setState("loading");
         setStatusMessage("Preparing…");
 
-        const request = { type: "run", gray, features: requestFeatures } satisfies OcrWorkerRequest;
-        getWorker().postMessage(request, [gray.data.buffer]);
+        const request = { type: "run", image: imageFile, features: requestFeatures } satisfies OcrWorkerRequest;
+        getWorker().postMessage(request);
     }
 
     return (
@@ -205,51 +229,28 @@ export default function OcrPage() {
             </div>
 
             <div class="mt-3">
-                <div class="form-label mb-0">Additional features:</div>
-                <div class="form-check">
-                    <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="ocr-feature-math"
-                        checked={features().math}
-                        disabled={state() === "loading"}
-                        onChange={handleFeatureToggle("math")}
-                    />
-                    <label class="form-check-label" for="ocr-feature-math">
-                        Read math as LaTeX
-                        {" "}
-                        <small class="text-muted">(downloads extra models)</small>
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="ocr-feature-table-heads"
-                        checked={features().tableHeads}
-                        disabled={state() === "loading"}
-                        onChange={handleFeatureToggle("tableHeads")}
-                    />
-                    <label class="form-check-label" for="ocr-feature-table-heads">
-                        Build tables from the model's table heads
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="ocr-feature-furniture"
-                        checked={features().furniture}
-                        disabled={state() === "loading"}
-                        onChange={handleFeatureToggle("furniture")}
-                    />
-                    <label class="form-check-label" for="ocr-feature-furniture">
-                        Keep page headers and footers
-                    </label>
-                </div>
-                <Show when={features().tableHeads || features().furniture}>
-                    <small class="text-muted">Table and header/footer options shape the markdown output — the result will be shown as markdown.</small>
-                </Show>
+                <div class="form-label mb-0">Features:</div>
+                <For each={FEATURE_OPTIONS}>
+                    {option => (
+                        <div class="form-check">
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                id={`ocr-feature-${option.key}`}
+                                checked={features()[option.key]}
+                                disabled={state() === "loading"}
+                                onChange={handleFeatureToggle(option.key)}
+                            />
+                            <label class="form-check-label" for={`ocr-feature-${option.key}`}>
+                                {option.label}
+                                <Show when={option.hint}>
+                                    {" "}
+                                    <small class="text-muted">{`(${option.hint})`}</small>
+                                </Show>
+                            </label>
+                        </div>
+                    )}
+                </For>
             </div>
 
             <button
@@ -296,21 +297,49 @@ export default function OcrPage() {
             </Show>
 
             <div class="mt-3">
-                <label class="form-label" for="output-textbox">
-                    Output
-                    <Show when={lineCount() !== null}>
-                        {` (${lineCount()} line${lineCount() === 1 ? "" : "s"})`}
-                    </Show>
-                    :
-                </label>
-                <textarea class="form-control" id="output-textbox" rows={10} readOnly value={outputText()} />
+                <div class="d-flex align-items-end justify-content-between flex-wrap gap-2 mb-2">
+                    <ul class="nav nav-tabs flex-grow-1" role="tablist" aria-label="Output format">
+                        <li class="nav-item">
+                            <button
+                                type="button"
+                                role="tab"
+                                classList={{ "nav-link": true, "active": activeView() === "markdown" }}
+                                aria-selected={activeView() === "markdown"}
+                                disabled={result() !== null && !hasMarkdown()}
+                                title={result() !== null && !hasMarkdown() ? "No layout information for this image." : undefined}
+                                onClick={() => setView("markdown")}
+                            >
+                                <i class="bi bi-markdown" />
+                                &nbsp;Markdown
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button
+                                type="button"
+                                role="tab"
+                                classList={{ "nav-link": true, "active": activeView() === "text" }}
+                                aria-selected={activeView() === "text"}
+                                onClick={() => setView("text")}
+                            >
+                                <i class="bi bi-text-paragraph" />
+                                &nbsp;Plain text
+                            </button>
+                        </li>
+                    </ul>
+                    <button type="button" class="btn btn-outline-secondary btn-sm" disabled={!outputText()} onClick={() => void handleCopy()}>
+                        <i classList={{ "bi": true, "bi-clipboard": !copied(), "bi-clipboard-check": copied() }} />
+                        &nbsp;
+                        {copied() ? "Copied" : "Copy"}
+                    </button>
+                </div>
+                <Show when={result()}>
+                    {current => <div class="small text-muted mb-1">{resultSummary(current())}</div>}
+                </Show>
+                <textarea class="form-control font-monospace" id="output-textbox" aria-label="OCR output" rows={12} readOnly value={outputText()} />
             </div>
 
             <div class="mt-3 text-center">
                 <img class="max-vh-30 maxw-100" src="" alt="<Image will be displayed here>" id="ocr-image" ref={ocrImageDisplayRef} />
-                <div class="d-none">
-                    <canvas ref={helperCanvasRef}></canvas>
-                </div>
             </div>
         </div>
     );

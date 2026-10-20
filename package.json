@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.63.1",
-    "@ducng99/indra-ocr-js": "^0.2.1",
+    "@ducng99/indra-ocr-js": "^0.3.1",
     "@huggingface/transformers": "^4.3.1",
     "@solidjs/router": "^1.0.0",
     "@tanstack/match-sorter-utils": "^9.2.6",
