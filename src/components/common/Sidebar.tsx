@@ -63,6 +63,9 @@ export default function Sidebar() {
                             <A href="/translate" class="nav-link" onClick={hideSidebar}>
                                 <span class={styles.linkText}>Translate</span>
                             </A>
+                            <A href="/wordcraft" class="nav-link" onClick={hideSidebar}>
+                                <span class={styles.linkText}>WordCraft</span>
+                            </A>
                         </li>
                     </ul>
                     <div class="mt-auto w-100">
