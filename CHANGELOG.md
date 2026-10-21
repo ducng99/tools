@@ -1,3 +1,9 @@
+## [3.3.0] - 2026-10-21
+
+### ⛰️  Features
+
+- Added photocraft, filmcraft, pdfcraft, lightcraft
+
 ## [3.2.0] - 2026-10-21
 
 ### ⛰️  Features
