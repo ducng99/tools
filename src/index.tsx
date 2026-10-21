@@ -19,6 +19,7 @@ const HtmlCheck = lazy(() => import("./routes/htmlcheck"));
 const Ocr = lazy(() => import("./routes/ocr"));
 const PasswordGenerator = lazy(() => import("./routes/password_generator"));
 const Translate = lazy(() => import("./routes/translate"));
+const Wordcraft = lazy(() => import("./routes/wordcraft"));
 
 render(
     () => (
@@ -32,6 +33,7 @@ render(
             <Route path="/ocr" component={Ocr} />
             <Route path="/password_generator" component={PasswordGenerator} />
             <Route path="/translate" component={Translate} />
+            <Route path="/wordcraft" component={Wordcraft} />
             <Route path="*" component={NotFound} />
         </Router>
     ),

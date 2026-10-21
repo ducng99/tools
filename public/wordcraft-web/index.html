@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>WordCraft</title>
+  <link rel="icon" href="./wordcraft-fa59e09a3f921e03.ico" integrity="sha384-99DzWb82rFgkdw7hjKziyDQaHbMTklb9MWeLKF7LcVUnq80H4nDrc/pjHJtAj/AA"/>
+  
+<script type="module">
+import init, * as bindings from './wordcraft-web-dac7e7b375acbaf2.js';
+
+// The gzipped wasm is not bundled; it is vendored under /vendor/wordcraft-web
+// (see that folder's README.md) and downloaded from jsDelivr.
+const WASM_GZ_URL = 'https://cdn.jsdelivr.net/gh/ducng99/tools@main/vendor/wordcraft-web/wordcraft-web-dac7e7b375acbaf2_bg.wasm.gz';
+
+try {
+  const gz = await fetch(WASM_GZ_URL);
+  if (!gz.ok) throw new Error(`HTTP ${gz.status} fetching wasm`);
+  const wasmStream = gz.body.pipeThrough(new DecompressionStream('gzip'));
+  const wasmResponse = new Response(wasmStream, { headers: { 'Content-Type': 'application/wasm' } });
+  const wasm = await init({ module_or_path: wasmResponse });
+
+  window.wasmBindings = bindings;
+
+  dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
+} catch (err) {
+  document.getElementById('wordcraft_loading').textContent = `Failed to load WordCraft: ${err}`;
+  throw err;
+}
+</script>
+  <style>
+    html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #e6e6e6; }
+    #wordcraft_canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+    #wordcraft_loading { white-space: pre-wrap; position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: #555; font: 14px system-ui, sans-serif; pointer-events: none; }
+  </style>
+<link rel="modulepreload" href="./wordcraft-web-dac7e7b375acbaf2.js" crossorigin="anonymous" integrity="sha384-gYoGGTemmd2j3/dhKoEl8zLsVnqxKhYemDwQefw7ScuxIQG5yPZn19Yu+kL2oa66"></head>
+<body>
+  <canvas id="wordcraft_canvas"></canvas>
+  <div id="wordcraft_loading">Loading WordCraft&hellip;
+About 15 MB on first load.</div>
+</body>
+</html>
