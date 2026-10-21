@@ -4,13 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
   <title>WordCraft</title>
-  <link rel="icon" href="./wordcraft-fa59e09a3f921e03.ico" integrity="sha384-99DzWb82rFgkdw7hjKziyDQaHbMTklb9MWeLKF7LcVUnq80H4nDrc/pjHJtAj/AA"/>
-  
+    
 <script type="module">
 import init, * as bindings from './wordcraft-web-5cc86b80984cdfee.js';
 
-// The gzipped wasm is not bundled; it is vendored under /vendor/wordcraft-web
-// (see that folder's README.md) and downloaded from jsDelivr.
+// The gzipped wasm is not bundled; it is vendored under /vendor/wordcraft-web and downloaded from jsDelivr.
 const WASM_GZ_URL = 'https://cdn.jsdelivr.net/gh/ducng99/tools@main/vendor/wordcraft-web/wordcraft-web-5cc86b80984cdfee_bg.wasm.gz';
 
 try {
@@ -31,13 +29,12 @@ try {
   <style>
     html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #e6e6e6; }
     #wordcraft_canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-    #wordcraft_loading { white-space: pre-wrap; position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    #wordcraft_loading { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
       color: #555; font: 14px system-ui, sans-serif; pointer-events: none; }
   </style>
 <link rel="modulepreload" href="./wordcraft-web-5cc86b80984cdfee.js" crossorigin="anonymous" integrity="sha384-RR4Ks7BEvUXdmI7at6dvOxzwZonkD8KZ+zCXRAnvQegrmAkZw1AtYL4IEmiWzNkS"></head>
 <body>
   <canvas id="wordcraft_canvas"></canvas>
-  <div id="wordcraft_loading">Loading WordCraft&hellip;
-About 15 MB on first load.</div>
+  <div id="wordcraft_loading">Loading WordCraft&hellip;</div>
 </body>
 </html>

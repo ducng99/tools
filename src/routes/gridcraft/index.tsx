@@ -9,7 +9,7 @@ export default function ToolComponent() {
             src={`/gridcraft-web/index.html${location.search}`}
             title="GridCraft spreadsheet"
             class="w-100 vh-100 border-0 d-block"
-            allow="clipboard-read; clipboard-write; fullscreen"
+            allow="clipboard-read; clipboard-write; fullscreen; local-fonts"
             allowfullscreen
         />
     );

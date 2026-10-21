@@ -17,6 +17,10 @@ const tools = [
     { href: "/wordcraft", icon: "bi-file-earmark-word", label: "Word" },
     { href: "/gridcraft", icon: "bi-file-earmark-spreadsheet", label: "Spreadsheet" },
     { href: "/deckcraft", icon: "bi-file-earmark-easel", label: "Slides" },
+    { href: "/photocraft", icon: "bi-file-earmark-image", label: "Image editor" },
+    { href: "/filmcraft", icon: "bi-file-earmark-play", label: "Video editor" },
+    { href: "/lightcraft", icon: "bi-shadows", label: "Pimp my photo" },
+    { href: "/pdfcraft", icon: "bi-file-earmark-pdf", label: "PDF" },
 ];
 
 export default function Sidebar() {
