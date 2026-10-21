@@ -8,8 +8,7 @@
 <script type="module">
 import init, * as bindings from './deckcraft-web-f413cd376cc2a98b.js';
 
-// The gzipped wasm is not bundled; it is vendored under /vendor/deckcraft-web
-// (see that folder's README.md) and downloaded from jsDelivr.
+// The gzipped wasm is not bundled; it is vendored under /vendor/deckcraft-web and downloaded from jsDelivr.
 const WASM_GZ_URL = 'https://cdn.jsdelivr.net/gh/ducng99/tools@main/vendor/deckcraft-web/deckcraft-web-f413cd376cc2a98b_bg.wasm.gz';
 
 try {
@@ -27,17 +26,15 @@ try {
   throw err;
 }
 </script>
-  <link rel="icon" href="./ai.storyteller.deckcraft-74e97653dd8dd002.png" integrity="sha384-THDce39ERZRgdnEtM/35FnmU4IExPfz9k2XrApCGWP0NUMC98NUWG1VYUMNXNCiD"/>
-  <style>
+    <style>
     html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #262626; }
     #deckcraft_canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-    #deckcraft_loading { white-space: pre-wrap; position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    #deckcraft_loading { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
       color: #b8b8b8; font: 14px system-ui, sans-serif; pointer-events: none; }
   </style>
 <link rel="modulepreload" href="./deckcraft-web-f413cd376cc2a98b.js" crossorigin="anonymous" integrity="sha384-qk+8oC+pD1k8or0rMusflmGPWnsM3FUN0IuM3b4wxqnSTW0Ln5lMqTXFVZHON9m1"></head>
 <body>
   <canvas id="deckcraft_canvas"></canvas>
-  <div id="deckcraft_loading">Loading DeckCraft&hellip;
-About 10 MB on first load.</div>
+  <div id="deckcraft_loading">Loading DeckCraft&hellip;</div>
 </body>
 </html>
