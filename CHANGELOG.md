@@ -1,3 +1,15 @@
+## [3.2.0] - 2026-10-21
+
+### ⛰️  Features
+
+- Added wordcraft
+- Added collapsable sidebar
+- Added deckcraft and gridcraft
+
+### ⚙️ Miscellaneous Tasks
+
+- *(word)* Bump wordcraft to v0.9.0
+
 ## [3.1.0] - 2026-10-20
 
 ### ⛰️  Features
