@@ -15,6 +15,8 @@ const BarcodeReader = lazy(() => import("./routes/barcode_reader"));
 const BarcodeWriter = lazy(() => import("./routes/barcode_writer"));
 const CsvSwap = lazy(() => import("./routes/csv_swap"));
 const CsvToTable = lazy(() => import("./routes/csv_to_table"));
+const Deckcraft = lazy(() => import("./routes/deckcraft"));
+const Gridcraft = lazy(() => import("./routes/gridcraft"));
 const HtmlCheck = lazy(() => import("./routes/htmlcheck"));
 const Ocr = lazy(() => import("./routes/ocr"));
 const PasswordGenerator = lazy(() => import("./routes/password_generator"));
@@ -29,6 +31,8 @@ render(
             <Route path="/barcode_writer" component={BarcodeWriter} />
             <Route path="/csv_swap" component={CsvSwap} />
             <Route path="/csv_to_table" component={CsvToTable} />
+            <Route path="/deckcraft" component={Deckcraft} />
+            <Route path="/gridcraft" component={Gridcraft} />
             <Route path="/htmlcheck" component={HtmlCheck} />
             <Route path="/ocr" component={Ocr} />
             <Route path="/password_generator" component={PasswordGenerator} />

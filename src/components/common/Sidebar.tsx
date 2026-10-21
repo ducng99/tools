@@ -14,7 +14,9 @@ const tools = [
     { href: "/htmlcheck", icon: "bi-envelope-check", label: "HTML Email Checker" },
     { href: "/ocr", icon: "bi-alphabet-uppercase", label: "OCR" },
     { href: "/translate", icon: "bi-translate", label: "Translate" },
-    { href: "/wordcraft", icon: "bi-file-earmark-word", label: "WordCraft" },
+    { href: "/wordcraft", icon: "bi-file-earmark-word", label: "Word" },
+    { href: "/gridcraft", icon: "bi-file-earmark-spreadsheet", label: "Spreadsheet" },
+    { href: "/deckcraft", icon: "bi-file-earmark-easel", label: "Slides" },
 ];
 
 export default function Sidebar() {
