@@ -8,7 +8,7 @@ import { importX } from "eslint-plugin-import-x";
 import { globalIgnores } from "eslint/config";
 
 export default [
-    globalIgnores(["dist/**", ".wrangler/**", "public/htmlcheck/wasm_exec.js", "public/wordcraft-web/**"]),
+    globalIgnores(["dist/**", ".wrangler/**", "public/htmlcheck/wasm_exec.js", "public/wordcraft-web/**", "public/gridcraft-web/**", "public/deckcraft-web/**"]),
     {
         files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
         languageOptions: {

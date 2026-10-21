@@ -8,7 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "bun --check && eslint --fix",
-    "update-wordcraft": "bun scripts/update-wordcraft.ts"
+    "update-wordcraft": "bun scripts/update-wordcraft.ts",
+    "update-gridcraft": "bun scripts/update-gridcraft.ts",
+    "update-deckcraft": "bun scripts/update-deckcraft.ts"
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.63.1",
