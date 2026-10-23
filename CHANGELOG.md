@@ -1,3 +1,17 @@
+## [3.4.0] - 2026-10-23
+
+### 🐛 Bug Fixes
+
+- *(lightcraft)* Added missing font
+
+### 🚜 Refactor
+
+- [**breaking**] Removed artcrafts wasm on github
+
+### ⚙️ Miscellaneous Tasks
+
+- *(deps)* Bump artcrafts tools
+
 ## [3.3.0] - 2026-10-21
 
 ### ⛰️  Features
