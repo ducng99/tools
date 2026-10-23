@@ -8,8 +8,8 @@
 <script type="module">
 import init, * as bindings from './pdfcraft-web-3011a456ef82ee06.js';
 
-// The gzipped wasm is not bundled; it is vendored under /vendor/pdfcraft-web and downloaded from jsDelivr.
-const WASM_GZ_URL = 'https://cdn.jsdelivr.net/gh/ducng99/tools@main/vendor/pdfcraft-web/pdfcraft-web-3011a456ef82ee06_bg.wasm.gz';
+// The gzipped wasm is not bundled; it is downloaded from the R2 bucket.
+const WASM_GZ_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/pdfcraft-web/0.13.0/pdfcraft-web-3011a456ef82ee06_bg.wasm.gz';
 
 try {
   const gz = await fetch(WASM_GZ_URL);

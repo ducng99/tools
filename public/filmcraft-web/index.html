@@ -73,8 +73,8 @@ const params = new URLSearchParams(location.search);
 try {
   const { default: init, start } = await import("./filmcraft_web.js" + v);
 
-  // The gzipped wasm is not bundled; it is vendored under /vendor/filmcraft-web and downloaded from jsDelivr.
-  const WASM_GZ_URL = 'https://cdn.jsdelivr.net/gh/ducng99/tools@main/vendor/filmcraft-web/filmcraft_web_bg.wasm.gz';
+  // The gzipped wasm is not bundled; it is downloaded from the R2 bucket.
+  const WASM_GZ_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/filmcraft-web/0.12.0/filmcraft_web_bg.wasm.gz';
   const gz = await fetch(WASM_GZ_URL);
   if (!gz.ok) throw new Error(`HTTP ${gz.status} fetching wasm`);
   const wasmResponse = new Response(gz.body.pipeThrough(new DecompressionStream('gzip')), { headers: { 'Content-Type': 'application/wasm' } });

@@ -29,8 +29,8 @@ import init, { start, command } from "./lightcraft_web.js";
     .then(async response => response.ok ? new Uint8Array(await response.arrayBuffer()) : new Uint8Array())
     .catch(() => new Uint8Array());
 
-  // The gzipped wasm is not bundled; it is vendored under /vendor/lightcraft-web and downloaded from jsDelivr.
-  const WASM_GZ_URL = 'https://cdn.jsdelivr.net/gh/ducng99/tools@main/vendor/lightcraft-web/lightcraft_web_bg.wasm.gz';
+  // The gzipped wasm is not bundled; it is downloaded from the R2 bucket.
+  const WASM_GZ_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/lightcraft-web/0.13.0/lightcraft_web_bg.wasm.gz';
   const gz = await fetch(WASM_GZ_URL);
   if (!gz.ok) throw new Error(`HTTP ${gz.status} fetching wasm`);
   const wasmResponse = new Response(gz.body.pipeThrough(new DecompressionStream('gzip')), { headers: { 'Content-Type': 'application/wasm' } });

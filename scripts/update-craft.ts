@@ -1,20 +1,25 @@
 #!/usr/bin/env bun
 // Updates the vendored *Craft web builds to GitHub releases.
-// Usage: bun scripts/update-craft.ts [tool] [version]   (default: all tools, latest releases)
+// Usage: bun scripts/update-craft.ts [tool] [version] [--dry-run]   (default: all tools, latest releases)
 //
 // Every tool is vendored the same way:
 //   public/<tool>-web/    patched index.html, glue JS and other runtime assets, licenses
-//   vendor/<tool>-web/    the gzipped wasm, fetched at runtime from jsDelivr
-//                         (jsDelivr caps files at 20 MB, hence the gzip)
+//   R2 bucket             the gzipped wasm at <slug>-web/<version>/<wasm>.gz, fetched at runtime
+//                         from the bucket's public URL. Uploaded with wrangler, so the
+//                         environment needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID.
+//
+// Flags: --dry-run  patch public/ but do not upload anything to R2
 
 import { existsSync } from "fs";
-import { mkdir, readdir, readFile, rm, writeFile } from "fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "fs/promises";
+import { tmpdir } from "os";
 import path from "path";
 import { fileURLToPath } from "url";
 import { unzipSync } from "fflate";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const CDN_PREFIX = "https://cdn.jsdelivr.net/gh/ducng99/tools@main/vendor";
+const R2_BUCKET = "artcraft-tools-wasm";
+const R2_PUBLIC_URL = "https://artcraft-tools-wasm.buckets.tomng.dev";
 
 interface Craft {
     slug: string; // repo name, directory prefix and route
@@ -115,8 +120,42 @@ function formatBytes(bytes: number): string {
     return `${Math.round(bytes / 1024)} KB`;
 }
 
-function gzUrl(craft: Craft, wasmName: string): string {
-    return `${CDN_PREFIX}/${craft.slug}-web/${wasmName}.gz`;
+function gzKey(craft: Craft, version: string, wasmName: string): string {
+    return `${craft.slug}-web/${version}/${wasmName}.gz`;
+}
+
+function gzUrl(craft: Craft, version: string, wasmName: string): string {
+    return `${R2_PUBLIC_URL}/${gzKey(craft, version, wasmName)}`;
+}
+
+async function existsInBucket(url: string): Promise<boolean> {
+    const response = await fetch(url, { method: "HEAD" });
+    return response.ok;
+}
+
+async function uploadToBucket(key: string, data: Uint8Array): Promise<void> {
+    const dir = await mkdtemp(path.join(tmpdir(), "update-craft-"));
+    const file = path.join(dir, "wasm.gz");
+    try {
+        await writeFile(file, data);
+        const proc = Bun.spawn(
+            [
+                "bunx", "wrangler", "r2", "object", "put", `${R2_BUCKET}/${key}`,
+                "--remote",
+                "--file", file,
+                "--content-type", "application/gzip",
+                "--cache-control", "public, max-age=31536000, immutable",
+            ],
+            { cwd: ROOT, stdout: "inherit", stderr: "inherit" },
+        );
+        const code = await proc.exited;
+        if (code !== 0) {
+            throw new Error(`wrangler r2 object put exited with ${code} for ${key}`);
+        }
+    }
+    finally {
+        await rm(dir, { recursive: true, force: true });
+    }
 }
 
 async function findWebZip(craft: Craft, version?: string): Promise<{ url: string; version: string }> {
@@ -139,15 +178,15 @@ async function findWebZip(craft: Craft, version?: string): Promise<{ url: string
 
 // --- loaders: the only per-tool part is how the wasm is fetched and started ---
 
-function trunkLoader(craft: Craft, glueName: string, wasmName: string): string {
+function trunkLoader(craft: Craft, glueName: string, wasmUrl: string): string {
     const on_error = craft.loadingId
         ? `document.getElementById('${craft.loadingId}').textContent = \`Failed to load ${craft.display}: \${err}\`;`
         : "console.error(err);";
     return `<script type="module">
 import init, * as bindings from './${glueName}';
 
-// The gzipped wasm is not bundled; it is vendored under /vendor/${craft.slug}-web and downloaded from jsDelivr.
-const WASM_GZ_URL = '${gzUrl(craft, wasmName)}';
+// The gzipped wasm is not bundled; it is downloaded from the R2 bucket.
+const WASM_GZ_URL = '${wasmUrl}';
 
 try {
   const gz = await fetch(WASM_GZ_URL);
@@ -166,7 +205,7 @@ try {
 </script>`;
 }
 
-function filmcraftLoader(craft: Craft, glueName: string, wasmName: string, html: string): string {
+function filmcraftLoader(glueName: string, wasmUrl: string, html: string): string {
     const build = html.match(/const build = "([0-9a-f_]+)";/);
     if (!build) {
         throw new Error("Could not find the filmcraft build hash in index.html");
@@ -181,8 +220,8 @@ const params = new URLSearchParams(location.search);
 try {
   const { default: init, start } = await import("./${glueName}" + v);
 
-  // The gzipped wasm is not bundled; it is vendored under /vendor/${craft.slug}-web and downloaded from jsDelivr.
-  const WASM_GZ_URL = '${gzUrl(craft, wasmName)}';
+  // The gzipped wasm is not bundled; it is downloaded from the R2 bucket.
+  const WASM_GZ_URL = '${wasmUrl}';
   const gz = await fetch(WASM_GZ_URL);
   if (!gz.ok) throw new Error(\`HTTP \${gz.status} fetching wasm\`);
   const wasmResponse = new Response(gz.body.pipeThrough(new DecompressionStream('gzip')), { headers: { 'Content-Type': 'application/wasm' } });
@@ -206,7 +245,7 @@ try {
 </script>`;
 }
 
-function lightcraftLoader(craft: Craft, glueName: string, wasmName: string): string {
+function lightcraftLoader(glueName: string, wasmUrl: string): string {
     return `<script type="module">
 import init, { start, command } from "./${glueName}";
 (async () => {
@@ -216,8 +255,8 @@ import init, { start, command } from "./${glueName}";
     .then(async response => response.ok ? new Uint8Array(await response.arrayBuffer()) : new Uint8Array())
     .catch(() => new Uint8Array());
 
-  // The gzipped wasm is not bundled; it is vendored under /vendor/${craft.slug}-web and downloaded from jsDelivr.
-  const WASM_GZ_URL = '${gzUrl(craft, wasmName)}';
+  // The gzipped wasm is not bundled; it is downloaded from the R2 bucket.
+  const WASM_GZ_URL = '${wasmUrl}';
   const gz = await fetch(WASM_GZ_URL);
   if (!gz.ok) throw new Error(\`HTTP \${gz.status} fetching wasm\`);
   const wasmResponse = new Response(gz.body.pipeThrough(new DecompressionStream('gzip')), { headers: { 'Content-Type': 'application/wasm' } });
@@ -239,16 +278,16 @@ import init, { start, command } from "./${glueName}";
 </script>`;
 }
 
-function patchIndexHtml(craft: Craft, html: string, glueName: string, wasmName: string): string {
+function patchIndexHtml(craft: Craft, html: string, glueName: string, wasmUrl: string): string {
     let patched: string;
     if (craft.kind === "filmcraft") {
-        patched = html.replace(/<script type="module">[\s\S]*?<\/script>/, () => filmcraftLoader(craft, glueName, wasmName, html));
+        patched = html.replace(/<script type="module">[\s\S]*?<\/script>/, () => filmcraftLoader(glueName, wasmUrl, html));
     }
     else if (craft.kind === "lightcraft") {
-        patched = html.replace(/<script type="module">[\s\S]*?<\/script>/, () => lightcraftLoader(craft, glueName, wasmName));
+        patched = html.replace(/<script type="module">[\s\S]*?<\/script>/, () => lightcraftLoader(glueName, wasmUrl));
     }
     else {
-        patched = html.replace(/<script type="module">[\s\S]*?<\/script>/, () => trunkLoader(craft, glueName, wasmName));
+        patched = html.replace(/<script type="module">[\s\S]*?<\/script>/, () => trunkLoader(craft, glueName, wasmUrl));
     }
     if (!patched.includes("WASM_GZ_URL")) {
         throw new Error("Could not find the wasm loader script in index.html");
@@ -279,7 +318,7 @@ function pickAll(files: Map<string, Uint8Array>, pattern: RegExp): [string, Uint
     return matches;
 }
 
-async function updateCraft(craft: Craft, versionArg?: string): Promise<void> {
+async function updateCraft(craft: Craft, versionArg: string | undefined, dryRun: boolean): Promise<void> {
     const { url, version } = await findWebZip(craft, versionArg);
     console.log(`${craft.slug}-web release: v${version}`);
 
@@ -311,22 +350,33 @@ async function updateCraft(craft: Craft, versionArg?: string): Promise<void> {
 
     // fflate always hands out plain ArrayBuffer-backed views, but its types say ArrayBufferLike.
     const gz = Bun.gzipSync(wasm as Uint8Array<ArrayBuffer>, { level: 9 });
-    const gzName = `${wasmName}.gz`;
+    const key = gzKey(craft, version, wasmName);
+    const wasmUrl = gzUrl(craft, version, wasmName);
 
-    const patchedHtml = patchIndexHtml(craft, new TextDecoder().decode(indexData), glueName, wasmName);
+    const patchedHtml = patchIndexHtml(craft, new TextDecoder().decode(indexData), glueName, wasmUrl);
 
     const publicDir = path.join(ROOT, "public", `${craft.slug}-web`);
-    const vendorDir = path.join(ROOT, "vendor", `${craft.slug}-web`);
 
     const currentHtml = existsSync(path.join(publicDir, "index.html"))
         ? await readFile(path.join(publicDir, "index.html"), "utf8")
         : null;
-    if (currentHtml === patchedHtml && existsSync(path.join(vendorDir, gzName))) {
+    const uploaded = await existsInBucket(wasmUrl);
+    if (currentHtml === patchedHtml && (uploaded || dryRun)) {
         console.log(`  v${version} is already vendored, nothing to do.`);
         return;
     }
 
-    console.log(`  wasm ${formatBytes(wasm.length)} -> ${gzName} ${formatBytes(gz.length)}`);
+    console.log(`  wasm ${formatBytes(wasm.length)} -> ${key} ${formatBytes(gz.length)}`);
+
+    if (uploaded) {
+        console.log(`  ${key} is already in the bucket, skipping upload.`);
+    }
+    else if (dryRun) {
+        console.log(`  dry run: not uploading ${key}`);
+    }
+    else {
+        await uploadToBucket(key, gz);
+    }
 
     await rm(publicDir, { recursive: true, force: true });
     await mkdir(publicDir, { recursive: true });
@@ -337,21 +387,16 @@ async function updateCraft(craft: Craft, versionArg?: string): Promise<void> {
         await writeFile(dest, data);
     }
 
-    await mkdir(vendorDir, { recursive: true });
-    for (const file of await readdir(vendorDir)) {
-        if (file.endsWith(".wasm.gz") && file !== gzName) {
-            await rm(path.join(vendorDir, file));
-        }
-    }
-    await writeFile(path.join(vendorDir, gzName), gz);
-
     const vendored = ["index.html", glueName, ...extras.map(([name]) => name), ...licenses.map(([name]) => name), ...notices.map(([name]) => name)];
     console.log(`  public/${craft.slug}-web: ${vendored.join(", ")}`);
-    console.log(`  vendor/${craft.slug}-web: ${gzName}`);
+    console.log(`  ${wasmUrl}`);
 }
 
-const toolArg = process.argv[2]?.toLowerCase();
-const versionArg = process.argv[3]?.replace(/^v/, "");
+const args = process.argv.slice(2);
+const dryRun = args.includes("--dry-run");
+const positional = args.filter(arg => !arg.startsWith("--"));
+const toolArg = positional[0]?.toLowerCase();
+const versionArg = positional[1]?.replace(/^v/, "");
 
 const selected = toolArg ? CRAFTS.filter(craft => craft.slug === toolArg) : CRAFTS;
 if (selected.length === 0) {
@@ -361,9 +406,9 @@ if (selected.length === 0) {
 
 try {
     for (const craft of selected) {
-        await updateCraft(craft, versionArg);
+        await updateCraft(craft, versionArg, dryRun);
     }
-    console.log("Done. Commit and push to main - the jsDelivr URLs 404 until the .gz files are pushed.");
+    console.log(dryRun ? "Done (dry run, nothing uploaded)." : "Done.");
 }
 catch (err) {
     console.error(err);

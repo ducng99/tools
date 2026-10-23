@@ -8,8 +8,8 @@
 <script type="module">
 import init, * as bindings from './wordcraft-web-8edbd1aaf3363941.js';
 
-// The gzipped wasm is not bundled; it is vendored under /vendor/wordcraft-web and downloaded from jsDelivr.
-const WASM_GZ_URL = 'https://cdn.jsdelivr.net/gh/ducng99/tools@main/vendor/wordcraft-web/wordcraft-web-8edbd1aaf3363941_bg.wasm.gz';
+// The gzipped wasm is not bundled; it is downloaded from the R2 bucket.
+const WASM_GZ_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/wordcraft-web/0.10.0/wordcraft-web-8edbd1aaf3363941_bg.wasm.gz';
 
 try {
   const gz = await fetch(WASM_GZ_URL);

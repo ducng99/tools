@@ -8,8 +8,8 @@
 <script type="module">
 import init, * as bindings from './gridcraft-web-c8912abe87360565.js';
 
-// The gzipped wasm is not bundled; it is vendored under /vendor/gridcraft-web and downloaded from jsDelivr.
-const WASM_GZ_URL = 'https://cdn.jsdelivr.net/gh/ducng99/tools@main/vendor/gridcraft-web/gridcraft-web-c8912abe87360565_bg.wasm.gz';
+// The gzipped wasm is not bundled; it is downloaded from the R2 bucket.
+const WASM_GZ_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/gridcraft-web/0.11.1/gridcraft-web-c8912abe87360565_bg.wasm.gz';
 
 try {
   const gz = await fetch(WASM_GZ_URL);

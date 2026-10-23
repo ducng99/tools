@@ -8,8 +8,8 @@
 <script type="module">
 import init, * as bindings from './deckcraft-web-262011de9bd65d5a.js';
 
-// The gzipped wasm is not bundled; it is vendored under /vendor/deckcraft-web and downloaded from jsDelivr.
-const WASM_GZ_URL = 'https://cdn.jsdelivr.net/gh/ducng99/tools@main/vendor/deckcraft-web/deckcraft-web-262011de9bd65d5a_bg.wasm.gz';
+// The gzipped wasm is not bundled; it is downloaded from the R2 bucket.
+const WASM_GZ_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/deckcraft-web/0.10.0/deckcraft-web-262011de9bd65d5a_bg.wasm.gz';
 
 try {
   const gz = await fetch(WASM_GZ_URL);
