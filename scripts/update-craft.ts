@@ -4,7 +4,8 @@
 //
 // Every tool is vendored the same way:
 //   public/<tool>-web/    patched index.html, glue JS and other runtime assets, licenses
-//   R2 bucket             the gzipped wasm at <slug>-web/<version>/<wasm>.gz, fetched at runtime
+//   R2 bucket             the gzipped wasm (and any other large asset, see bucketAssets) at
+//                         <slug>-web/<version>/<file>.gz, fetched at runtime
 //                         from the bucket's public URL. Uploaded with wrangler, so the
 //                         environment needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID.
 //
@@ -28,6 +29,7 @@ interface Craft {
     glue: RegExp; // JS glue to vendor
     wasm: RegExp; // wasm to vendor gzipped under vendor/<slug>-web/
     extra?: RegExp[]; // additional runtime assets to vendor as-is
+    bucketAssets?: RegExp[]; // additional large runtime assets, gzipped into the bucket next to the wasm
     notice?: boolean; // zip has a NOTICE file to preserve
     kind: "trunk" | "filmcraft" | "lightcraft";
     loadingId?: string; // trunk only: element that shows load errors (none in pdfcraft)
@@ -89,6 +91,7 @@ const CRAFTS: Craft[] = [
         glue: /^lightcraft_web\.js$/,
         wasm: /^lightcraft_web_bg\.wasm$/,
         extra: [/^worker\.js$/],
+        bucketAssets: [/^lightcraft_zh_hans\.otf$/],
         notice: true,
         kind: "lightcraft",
     },
@@ -245,15 +248,18 @@ try {
 </script>`;
 }
 
-function lightcraftLoader(glueName: string, wasmUrl: string): string {
+function lightcraftLoader(glueName: string, wasmUrl: string, fontUrl: string): string {
     return `<script type="module">
 import init, { start, command } from "./${glueName}";
 (async () => {
   // The Chinese font is a separate file: embedding it would exceed the host's WASM size limit.
-  // Font-free development builds can still run, with the same missing-glyph warning as before.
-  const chineseFont = fetch("./lightcraft_zh_hans.otf")
-    .then(async response => response.ok ? new Uint8Array(await response.arrayBuffer()) : new Uint8Array())
-    .catch(() => new Uint8Array());
+  // Like the wasm, the gzipped font is downloaded from the R2 bucket.
+  const FONT_GZ_URL = '${fontUrl}';
+  const chineseFont = fetch(FONT_GZ_URL).then(async response => {
+    if (!response.ok) throw new Error(\`HTTP \${response.status} fetching font\`);
+    const font = await new Response(response.body.pipeThrough(new DecompressionStream('gzip'))).arrayBuffer();
+    return new Uint8Array(font);
+  });
 
   // The gzipped wasm is not bundled; it is downloaded from the R2 bucket.
   const WASM_GZ_URL = '${wasmUrl}';
@@ -278,13 +284,13 @@ import init, { start, command } from "./${glueName}";
 </script>`;
 }
 
-function patchIndexHtml(craft: Craft, html: string, glueName: string, wasmUrl: string): string {
+function patchIndexHtml(craft: Craft, html: string, glueName: string, wasmUrl: string, bucketUrls: string[]): string {
     let patched: string;
     if (craft.kind === "filmcraft") {
         patched = html.replace(/<script type="module">[\s\S]*?<\/script>/, () => filmcraftLoader(glueName, wasmUrl, html));
     }
     else if (craft.kind === "lightcraft") {
-        patched = html.replace(/<script type="module">[\s\S]*?<\/script>/, () => lightcraftLoader(glueName, wasmUrl));
+        patched = html.replace(/<script type="module">[\s\S]*?<\/script>/, () => lightcraftLoader(glueName, wasmUrl, bucketUrls[0]));
     }
     else {
         patched = html.replace(/<script type="module">[\s\S]*?<\/script>/, () => trunkLoader(craft, glueName, wasmUrl));
@@ -345,7 +351,8 @@ async function updateCraft(craft: Craft, versionArg: string | undefined, dryRun:
     const [glueName, glue] = pick(files, craft.glue);
     const [wasmName, wasm] = pick(files, craft.wasm);
     const extras = (craft.extra ?? []).flatMap(pattern => pickAll(files, pattern));
-    const licenses = pickAll(files, /^LICENSE-(?:MIT|APACHE)$/);
+    const bucketAssets = (craft.bucketAssets ?? []).flatMap(pattern => pickAll(files, pattern));
+    const licenses = pickAll(files, /^(?:LICENSE-(?:MIT|APACHE)|OFL-.+\.txt)$/);
     const notices = craft.notice ? pickAll(files, /^NOTICE$/) : [];
 
     // fflate always hands out plain ArrayBuffer-backed views, but its types say ArrayBufferLike.
@@ -353,7 +360,14 @@ async function updateCraft(craft: Craft, versionArg: string | undefined, dryRun:
     const key = gzKey(craft, version, wasmName);
     const wasmUrl = gzUrl(craft, version, wasmName);
 
-    const patchedHtml = patchIndexHtml(craft, new TextDecoder().decode(indexData), glueName, wasmUrl);
+    const bucketUploads = bucketAssets.map(([name, data]) => ({
+        name,
+        key: gzKey(craft, version, name),
+        url: gzUrl(craft, version, name),
+        gz: Bun.gzipSync(data as Uint8Array<ArrayBuffer>, { level: 9 }),
+    }));
+
+    const patchedHtml = patchIndexHtml(craft, new TextDecoder().decode(indexData), glueName, wasmUrl, bucketUploads.map(entry => entry.url));
 
     const publicDir = path.join(ROOT, "public", `${craft.slug}-web`);
 
@@ -361,7 +375,8 @@ async function updateCraft(craft: Craft, versionArg: string | undefined, dryRun:
         ? await readFile(path.join(publicDir, "index.html"), "utf8")
         : null;
     const uploaded = await existsInBucket(wasmUrl);
-    if (currentHtml === patchedHtml && (uploaded || dryRun)) {
+    const assetsUploaded = (await Promise.all(bucketUploads.map(entry => existsInBucket(entry.url)))).every(Boolean);
+    if (currentHtml === patchedHtml && ((uploaded && assetsUploaded) || dryRun)) {
         console.log(`  v${version} is already vendored, nothing to do.`);
         return;
     }
@@ -378,6 +393,19 @@ async function updateCraft(craft: Craft, versionArg: string | undefined, dryRun:
         await uploadToBucket(key, gz);
     }
 
+    for (const entry of bucketUploads) {
+        console.log(`  ${entry.name} ${formatBytes(bucketAssets.find(([name]) => name === entry.name)![1].length)} -> ${entry.key} ${formatBytes(entry.gz.length)}`);
+        if (await existsInBucket(entry.url)) {
+            console.log(`  ${entry.key} is already in the bucket, skipping upload.`);
+        }
+        else if (dryRun) {
+            console.log(`  dry run: not uploading ${entry.key}`);
+        }
+        else {
+            await uploadToBucket(entry.key, entry.gz);
+        }
+    }
+
     await rm(publicDir, { recursive: true, force: true });
     await mkdir(publicDir, { recursive: true });
     await writeFile(path.join(publicDir, "index.html"), patchedHtml);
@@ -390,6 +418,9 @@ async function updateCraft(craft: Craft, versionArg: string | undefined, dryRun:
     const vendored = ["index.html", glueName, ...extras.map(([name]) => name), ...licenses.map(([name]) => name), ...notices.map(([name]) => name)];
     console.log(`  public/${craft.slug}-web: ${vendored.join(", ")}`);
     console.log(`  ${wasmUrl}`);
+    for (const entry of bucketUploads) {
+        console.log(`  ${entry.url}`);
+    }
 }
 
 const args = process.argv.slice(2);
