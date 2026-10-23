@@ -6,10 +6,10 @@
     <title>PdfCraft</title>
     
 <script type="module">
-import init, * as bindings from './pdfcraft-web-5c41d0edd9acf531.js';
+import init, * as bindings from './pdfcraft-web-3011a456ef82ee06.js';
 
 // The gzipped wasm is not bundled; it is vendored under /vendor/pdfcraft-web and downloaded from jsDelivr.
-const WASM_GZ_URL = 'https://cdn.jsdelivr.net/gh/ducng99/tools@main/vendor/pdfcraft-web/pdfcraft-web-5c41d0edd9acf531_bg.wasm.gz';
+const WASM_GZ_URL = 'https://cdn.jsdelivr.net/gh/ducng99/tools@main/vendor/pdfcraft-web/pdfcraft-web-3011a456ef82ee06_bg.wasm.gz';
 
 try {
   const gz = await fetch(WASM_GZ_URL);
@@ -31,7 +31,7 @@ try {
       canvas { width: 100%; height: 100%; display: block; outline: none; }
       @media (prefers-color-scheme: dark) { html, body { background: #19191c; } }
     </style>
-  <link rel="modulepreload" href="./pdfcraft-web-5c41d0edd9acf531.js" crossorigin="anonymous" integrity="sha384-+ZhWp+tVPtyCcy/QilBoQiauJ+nHzFNphmSCyDy7M+zntZkeTxCtTncOYopWVliW"></head>
+  <link rel="modulepreload" href="./pdfcraft-web-3011a456ef82ee06.js" crossorigin="anonymous" integrity="sha384-QJRMlV+OO6ow1Aocwh7SY77xgaCfzuaNjA5kBZaT4N/JvJC3hTcYmMuTV3WdzBrL"></head>
   <body>
     <canvas id="pdfcraft"></canvas>
   </body>
