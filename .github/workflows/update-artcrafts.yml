@@ -2,7 +2,7 @@ name: Update ArtCraft tools
 
 on:
   schedule:
-    - cron: "0 6 * * 1"
+    - cron: "0 6 * * *"
 
   workflow_dispatch:
 
@@ -28,9 +28,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: bun scripts/update-craft.ts
 
-      - name: Open pull request
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -41,10 +39,5 @@ jobs:
             exit 0
           fi
 
-          git switch -c update-artcraft-tools
           git commit -m "bump artcraft tools"
-          git push -f origin update-artcraft-tools
-
-          if [ -z "$(gh pr list --head update-artcraft-tools --state open --json number --jq '.[0].number')" ]; then
-            gh pr create --head update-artcraft-tools --base main --title "chore(deps): bump artcraft tools" --body "Automated update of the vendored ArtCraft web builds. The wasm files are already uploaded to R2."
-          fi
+          git push
