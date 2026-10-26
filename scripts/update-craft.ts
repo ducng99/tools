@@ -6,16 +6,17 @@
 //   public/<tool>-web/    patched index.html, glue JS and other runtime assets, licenses
 //   R2 bucket             the gzipped wasm (and any other large asset, see bucketAssets) at
 //                         <slug>-web/<version>/<file>.gz, fetched at runtime
-//                         from the bucket's public URL. Uploaded with wrangler, so the
-//                         environment needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID.
+//                         from the bucket's public URL. Uploaded through R2's S3 API with
+//                         Bun's S3Client, so the environment needs S3_ACCESS_KEY_ID,
+//                         S3_SECRET_ACCESS_KEY and S3_ENDPOINT (see uploadToBucket).
 //
 // Flags: --dry-run  patch public/ but do not upload anything to R2
 
 import { existsSync } from "fs";
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "fs/promises";
-import { tmpdir } from "os";
+import { mkdir, readFile, rm, writeFile } from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
+import { S3Client } from "bun";
 import { unzipSync } from "fflate";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -136,28 +137,22 @@ async function existsInBucket(url: string): Promise<boolean> {
     return response.ok;
 }
 
+// R2's least-privilege API tokens only carry S3 credentials, which wrangler rejects, so the
+// uploads go straight through R2's S3-compatible endpoint with Bun's S3 client. Credentials
+// are read from the standard environment variables:
+//   S3_ACCESS_KEY_ID / S3_SECRET_ACCESS_KEY  access keys of an R2 API token
+//   S3_ENDPOINT                              https://<account-id>.r2.cloudflarestorage.com
+//   S3_REGION                                optional (R2 takes any value, "auto" by convention)
+// Bun's S3 client cannot set Cache-Control metadata yet (oven-sh/bun#16048); caching for the
+// bucket's public hostname is handled by a Cloudflare Cache Rule instead.
+const s3 = new S3Client({ bucket: R2_BUCKET, region: "auto" });
+
 async function uploadToBucket(key: string, data: Uint8Array): Promise<void> {
-    const dir = await mkdtemp(path.join(tmpdir(), "update-craft-"));
-    const file = path.join(dir, "wasm.gz");
     try {
-        await writeFile(file, data);
-        const proc = Bun.spawn(
-            [
-                "bunx", "wrangler", "r2", "object", "put", `${R2_BUCKET}/${key}`,
-                "--remote",
-                "--file", file,
-                "--content-type", "application/gzip",
-                "--cache-control", "public, max-age=31536000, immutable",
-            ],
-            { cwd: ROOT, stdout: "inherit", stderr: "inherit" },
-        );
-        const code = await proc.exited;
-        if (code !== 0) {
-            throw new Error(`wrangler r2 object put exited with ${code} for ${key}`);
-        }
+        await s3.write(key, data, { type: "application/gzip" });
     }
-    finally {
-        await rm(dir, { recursive: true, force: true });
+    catch (err) {
+        throw new Error(`S3 upload failed for ${key}: ${err instanceof Error ? err.message : err}`);
     }
 }
 
