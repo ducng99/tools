@@ -64,9 +64,9 @@
     addEventListener("unhandledrejection", (ev) => { if (window.filmcraftLoad.readyMs && isFatal(ev.reason)) window.filmcraftFatal(ev.reason); });
   </script>
   <script type="module">
-// `00098fc7990fe148` is replaced by `cargo xtask web` with a hash of the build: the glue is cached as
+// `46152f15a8cca7cc` is replaced by `cargo xtask web` with a hash of the build: the glue is cached as
 // immutable, so its URL must change with every build.
-const build = "00098fc7990fe148";
+const build = "46152f15a8cca7cc";
 const v = build.startsWith("__") ? "" : "?v=" + build;
 const t0 = performance.now();
 const params = new URLSearchParams(location.search);
@@ -74,7 +74,7 @@ try {
   const { default: init, start } = await import("./filmcraft_web.js" + v);
 
   // The gzipped wasm is not bundled; it is downloaded from the R2 bucket.
-  const WASM_GZ_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/filmcraft-web/0.12.0/filmcraft_web_bg.wasm.gz';
+  const WASM_GZ_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/filmcraft-web/0.13.0/filmcraft_web_bg.wasm.gz';
   const gz = await fetch(WASM_GZ_URL);
   if (!gz.ok) throw new Error(`HTTP ${gz.status} fetching wasm`);
   const wasmResponse = new Response(gz.body.pipeThrough(new DecompressionStream('gzip')), { headers: { 'Content-Type': 'application/wasm' } });

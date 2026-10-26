@@ -25,7 +25,7 @@ import init, { start, command } from "./lightcraft_web.js";
 (async () => {
   // The Chinese font is a separate file: embedding it would exceed the host's WASM size limit.
   // Like the wasm, the gzipped font is downloaded from the R2 bucket.
-  const FONT_GZ_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/lightcraft-web/0.13.0/lightcraft_zh_hans.otf.gz';
+  const FONT_GZ_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/lightcraft-web/0.14.0/lightcraft_zh_hans.otf.gz';
   const chineseFont = fetch(FONT_GZ_URL).then(async response => {
     if (!response.ok) throw new Error(`HTTP ${response.status} fetching font`);
     const font = await new Response(response.body.pipeThrough(new DecompressionStream('gzip'))).arrayBuffer();
@@ -33,7 +33,7 @@ import init, { start, command } from "./lightcraft_web.js";
   });
 
   // The gzipped wasm is not bundled; it is downloaded from the R2 bucket.
-  const WASM_GZ_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/lightcraft-web/0.13.0/lightcraft_web_bg.wasm.gz';
+  const WASM_GZ_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/lightcraft-web/0.14.0/lightcraft_web_bg.wasm.gz';
   const gz = await fetch(WASM_GZ_URL);
   if (!gz.ok) throw new Error(`HTTP ${gz.status} fetching wasm`);
   const wasmResponse = new Response(gz.body.pipeThrough(new DecompressionStream('gzip')), { headers: { 'Content-Type': 'application/wasm' } });
