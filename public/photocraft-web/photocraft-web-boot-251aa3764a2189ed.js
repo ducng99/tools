@@ -65,7 +65,7 @@ function __wbg_get_imports() {
             const ret = arg0.createElement(getStringFromWasm0(arg1, arg2));
             return ret;
         }, arguments); },
-        __wbg_default_53380fb8b42f368d: function() { return handleError(function (arg0) {
+        __wbg_default_8830494e956edd5a: function() { return handleError(function (arg0) {
             const ret = _default(arg0);
             return ret;
         }, arguments); },
@@ -148,14 +148,14 @@ function __wbg_get_imports() {
             const ret = arg0.length;
             return ret;
         },
+        __wbg_new_1719f9a3b31086b7: function() { return handleError(function (arg0, arg1) {
+            const ret = new DecompressionStream(getStringFromWasm0(arg0, arg1));
+            return ret;
+        }, arguments); },
         __wbg_new_1dbf7428bba60a42: function(arg0) {
             const ret = new Uint8Array(arg0);
             return ret;
         },
-        __wbg_new_518e1efd93f834f9: function() { return handleError(function (arg0, arg1) {
-            const ret = new DecompressionStream(getStringFromWasm0(arg0, arg1));
-            return ret;
-        }, arguments); },
         __wbg_new_5502aad30c185fc8: function(arg0, arg1) {
             try {
                 var state0 = {a: arg0, b: arg1};
@@ -224,11 +224,11 @@ function __wbg_get_imports() {
             const ret = arg0.read();
             return ret;
         },
-        __wbg_readable_3c1d3c60d7213d3e: function(arg0) {
+        __wbg_readable_4d43535945ae9ca0: function(arg0) {
             const ret = arg0.readable;
             return ret;
         },
-        __wbg_readable_4d43535945ae9ca0: function(arg0) {
+        __wbg_readable_79715664798ffa9f: function(arg0) {
             const ret = arg0.readable;
             return ret;
         },
@@ -314,7 +314,7 @@ function __wbg_get_imports() {
             const ret = arg0.writable;
             return ret;
         },
-        __wbg_writable_a1cf2c43fc98ed81: function(arg0) {
+        __wbg_writable_ef1583e29c52a7b5: function(arg0) {
             const ret = arg0.writable;
             return ret;
         },
@@ -323,17 +323,17 @@ function __wbg_get_imports() {
             return ret;
         },
         __wbindgen_generic_0000000000000001: function(arg0, arg1) {
-            // Cast intrinsic for `Closure(Closure { owned: true, function: Function { arguments: [Externref, NamedExternref("TransformStreamDefaultController")], shim_idx: 1, ret: Result(Unit), inner_ret: Some(Result(Unit)) }, mutable: true }) -> Externref`.
+            // Cast intrinsic for `Closure(Closure { owned: true, function: Function { arguments: [Externref, NamedExternref("TransformStreamDefaultController")], shim_idx: 3, ret: Result(Unit), inner_ret: Some(Result(Unit)) }, mutable: true }) -> Externref`.
             const ret = makeMutClosure(arg0, arg1, wasm_bindgen_12550c06f703281___convert__closures_____invoke___wasm_bindgen_12550c06f703281___JsValue__web_sys_410ff237e3a03c77___features__gen_TransformStreamDefaultController__TransformStreamDefaultController__core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_12550c06f703281___JsValue___true_);
             return ret;
         },
         __wbindgen_generic_0000000000000002: function(arg0, arg1) {
-            // Cast intrinsic for `Closure(Closure { owned: true, function: Function { arguments: [Externref], shim_idx: 25, ret: Result(Unit), inner_ret: Some(Result(Unit)) }, mutable: true }) -> Externref`.
+            // Cast intrinsic for `Closure(Closure { owned: true, function: Function { arguments: [Externref], shim_idx: 30, ret: Result(Unit), inner_ret: Some(Result(Unit)) }, mutable: true }) -> Externref`.
             const ret = makeMutClosure(arg0, arg1, wasm_bindgen_12550c06f703281___convert__closures_____invoke___wasm_bindgen_12550c06f703281___JsValue__core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_12550c06f703281___JsError___true_);
             return ret;
         },
         __wbindgen_generic_0000000000000003: function(arg0, arg1) {
-            // Cast intrinsic for `Closure(Closure { owned: true, function: Function { arguments: [NamedExternref("TransformStreamDefaultController")], shim_idx: 3, ret: Result(Unit), inner_ret: Some(Result(Unit)) }, mutable: true }) -> Externref`.
+            // Cast intrinsic for `Closure(Closure { owned: true, function: Function { arguments: [NamedExternref("TransformStreamDefaultController")], shim_idx: 5, ret: Result(Unit), inner_ret: Some(Result(Unit)) }, mutable: true }) -> Externref`.
             const ret = makeMutClosure(arg0, arg1, wasm_bindgen_12550c06f703281___convert__closures_____invoke___web_sys_410ff237e3a03c77___features__gen_TransformStreamDefaultController__TransformStreamDefaultController__core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_12550c06f703281___JsValue___true_);
             return ret;
         },
