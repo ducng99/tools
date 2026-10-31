@@ -6,10 +6,10 @@
   <title>DeckCraft</title>
   
 <script type="module">
-import init, * as bindings from './deckcraft-web-4828c4f809850ac9.js';
+import init, * as bindings from './deckcraft-web-18da9450e5a3ef14.js';
 
 // The gzipped wasm is not bundled; it is downloaded from the R2 bucket.
-const WASM_GZ_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/deckcraft-web/0.12.0/deckcraft-web-4828c4f809850ac9_bg.wasm.gz';
+const WASM_GZ_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/deckcraft-web/0.13.1/deckcraft-web-18da9450e5a3ef14_bg.wasm.gz';
 
 try {
   const gz = await fetch(WASM_GZ_URL);
@@ -32,7 +32,7 @@ try {
     #deckcraft_loading { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
       color: #b8b8b8; font: 14px system-ui, sans-serif; pointer-events: none; }
   </style>
-<link rel="modulepreload" href="./deckcraft-web-4828c4f809850ac9.js" crossorigin="anonymous" integrity="sha384-C3Yc3/K03k0liA1H97oYBvUyIUV77ex9izu0v/Kie81NrYTbAP7qG2XubEGNwCDp"><link rel="modulepreload" href="./snippets/eframe-d31a8450ea12dfc1/inline0.js" crossorigin="anonymous" integrity="sha384-uPZQ72BwgZ4v7Km6+UIFbkDDlt7ShGEsAVEHVN/+wZSGFhItJZB83iKMFQXauTSs"></head>
+<link rel="modulepreload" href="./deckcraft-web-18da9450e5a3ef14.js" crossorigin="anonymous" integrity="sha384-nv6vn+aehlC9bf9xgJavrbB4drFH58lQ9+wf4M4Dlf6VOBs3jRf/hRoi1Zc9pt3E"><link rel="modulepreload" href="./snippets/eframe-d31a8450ea12dfc1/inline0.js" crossorigin="anonymous" integrity="sha384-uPZQ72BwgZ4v7Km6+UIFbkDDlt7ShGEsAVEHVN/+wZSGFhItJZB83iKMFQXauTSs"></head>
 <body>
   <canvas id="deckcraft_canvas"></canvas>
   <div id="deckcraft_loading">Loading DeckCraft&hellip;</div>
