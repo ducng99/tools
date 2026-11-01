@@ -29,7 +29,7 @@
     "onnxruntime-web": "^1.30.0",
     "sass-embedded": "^1.105.1",
     "solid-js": "^1.9.17",
-    "vite": "^8.3.4",
+    "vite": "^8.3.5",
     "vite-plugin-solid": "^2.11.14",
     "zxing-wasm": "3.1.6"
   },
