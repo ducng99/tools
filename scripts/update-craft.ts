@@ -152,7 +152,7 @@ async function uploadToBucket(key: string, data: Uint8Array): Promise<void> {
         await s3.write(key, data, { type: "application/gzip" });
     }
     catch (err) {
-        throw new Error(`S3 upload failed for ${key}: ${err instanceof Error ? err.message : err}`);
+        throw new Error(`S3 upload failed for ${key}`, { cause: err });
     }
 }
 
