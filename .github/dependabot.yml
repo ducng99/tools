@@ -12,13 +12,19 @@ updates:
     groups:
       tanstack:
         patterns:
-          - '@tanstack/*'
+          - "@tanstack/*"
       eslint:
         patterns:
-          - 'eslint'
-          - '@eslint/*'
-          - 'eslint-*'
-          - 'typescript-eslint'
+          - "eslint"
+          - "@eslint/*"
+          - "eslint-*"
+          - "typescript-eslint"
+          - "@stylistic/eslint-plugin"
+      vite:
+        patterns:
+          - "vite"
+          - "vite-plugin-solid"
+          - "@cloudflare/vite-plugin"
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -27,4 +33,4 @@ updates:
     groups:
       actions:
         patterns:
-          - 'actions/*'
+          - "actions/*"
