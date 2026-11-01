@@ -22,7 +22,7 @@
     "@huggingface/transformers": "^4.3.1",
     "@solidjs/router": "^1.0.0",
     "@tanstack/match-sorter-utils": "^9.2.6",
-    "@tanstack/solid-table": "^9.2.8",
+    "@tanstack/solid-table": "^9.3.1",
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.2",
     "csv-parse": "^7.0.3",
