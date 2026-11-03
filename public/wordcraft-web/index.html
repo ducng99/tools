@@ -6,10 +6,10 @@
   <title>WordCraft</title>
     
 <script type="module">
-import init, * as bindings from './wordcraft-web-a75a8b404d46b7ab.js';
+import init, * as bindings from './wordcraft-web-d7ed39a0caec81c0.js';
 
 // The gzipped wasm is not bundled; it is downloaded from the R2 bucket.
-const WASM_GZ_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/wordcraft-web/0.14.0/wordcraft-web-a75a8b404d46b7ab_bg.wasm.gz';
+const WASM_GZ_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/wordcraft-web/0.15.0/wordcraft-web-d7ed39a0caec81c0_bg.wasm.gz';
 
 try {
   const gz = await fetch(WASM_GZ_URL);
@@ -32,7 +32,7 @@ try {
     #wordcraft_loading { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
       color: #555; font: 14px system-ui, sans-serif; pointer-events: none; }
   </style>
-<link rel="modulepreload" href="./wordcraft-web-a75a8b404d46b7ab.js" crossorigin="anonymous" integrity="sha384-N3+ObH0gCggIdESI2puY4ktY0zLoZCJBuEBguyQJIvAmwND0nfLQ3l8EsK4BHEl6"><link rel="modulepreload" href="./snippets/eframe-d31a8450ea12dfc1/inline0.js" crossorigin="anonymous" integrity="sha384-uPZQ72BwgZ4v7Km6+UIFbkDDlt7ShGEsAVEHVN/+wZSGFhItJZB83iKMFQXauTSs"></head>
+<link rel="modulepreload" href="./wordcraft-web-d7ed39a0caec81c0.js" crossorigin="anonymous" integrity="sha384-wyrIbUHrR20L97shbjjaB48+iSwQwudFJbV+sJtUGjOjeKcmk3ExF0HRIc9nlkwB"><link rel="modulepreload" href="./snippets/eframe-d31a8450ea12dfc1/inline0.js" crossorigin="anonymous" integrity="sha384-uPZQ72BwgZ4v7Km6+UIFbkDDlt7ShGEsAVEHVN/+wZSGFhItJZB83iKMFQXauTSs"></head>
 <body>
   <canvas id="wordcraft_canvas"></canvas>
   <div id="wordcraft_loading">Loading WordCraft&hellip;</div>
