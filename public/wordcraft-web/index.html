@@ -6,17 +6,13 @@
   <title>WordCraft</title>
     
 <script type="module">
-import init, * as bindings from './wordcraft-web-d7ed39a0caec81c0.js';
+import init, * as bindings from 'https://artcraft-tools-wasm.buckets.tomng.dev/wordcraft-web/0.15.0/wordcraft-web-d7ed39a0caec81c0.js';
 
-// The gzipped wasm is not bundled; it is downloaded from the R2 bucket.
-const WASM_GZ_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/wordcraft-web/0.15.0/wordcraft-web-d7ed39a0caec81c0_bg.wasm.gz';
+// The wasm is not bundled; it is downloaded from the R2 bucket.
+const WASM_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/wordcraft-web/0.15.0/wordcraft-web-d7ed39a0caec81c0_bg.wasm';
 
 try {
-  const gz = await fetch(WASM_GZ_URL);
-  if (!gz.ok) throw new Error(`HTTP ${gz.status} fetching wasm`);
-  const wasmStream = gz.body.pipeThrough(new DecompressionStream('gzip'));
-  const wasmResponse = new Response(wasmStream, { headers: { 'Content-Type': 'application/wasm' } });
-  const wasm = await init({ module_or_path: wasmResponse });
+  const wasm = await init({ module_or_path: WASM_URL });
 
   window.wasmBindings = bindings;
 
@@ -32,7 +28,7 @@ try {
     #wordcraft_loading { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
       color: #555; font: 14px system-ui, sans-serif; pointer-events: none; }
   </style>
-<link rel="modulepreload" href="./wordcraft-web-d7ed39a0caec81c0.js" crossorigin="anonymous" integrity="sha384-wyrIbUHrR20L97shbjjaB48+iSwQwudFJbV+sJtUGjOjeKcmk3ExF0HRIc9nlkwB"><link rel="modulepreload" href="./snippets/eframe-d31a8450ea12dfc1/inline0.js" crossorigin="anonymous" integrity="sha384-uPZQ72BwgZ4v7Km6+UIFbkDDlt7ShGEsAVEHVN/+wZSGFhItJZB83iKMFQXauTSs"></head>
+<link rel="modulepreload" href="https://artcraft-tools-wasm.buckets.tomng.dev/wordcraft-web/0.15.0/wordcraft-web-d7ed39a0caec81c0.js" crossorigin="anonymous" integrity="sha384-wyrIbUHrR20L97shbjjaB48+iSwQwudFJbV+sJtUGjOjeKcmk3ExF0HRIc9nlkwB"><link rel="modulepreload" href="https://artcraft-tools-wasm.buckets.tomng.dev/wordcraft-web/0.15.0/snippets/eframe-d31a8450ea12dfc1/inline0.js" crossorigin="anonymous" integrity="sha384-uPZQ72BwgZ4v7Km6+UIFbkDDlt7ShGEsAVEHVN/+wZSGFhItJZB83iKMFQXauTSs"></head>
 <body>
   <canvas id="wordcraft_canvas"></canvas>
   <div id="wordcraft_loading">Loading WordCraft&hellip;</div>

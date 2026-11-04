@@ -71,14 +71,11 @@ const v = build.startsWith("__") ? "" : "?v=" + build;
 const t0 = performance.now();
 const params = new URLSearchParams(location.search);
 try {
-  const { default: init, start } = await import("./filmcraft_web.js" + v);
+  const { default: init, start } = await import("https://artcraft-tools-wasm.buckets.tomng.dev/filmcraft-web/0.17.0/filmcraft_web.js" + v);
 
-  // The gzipped wasm is not bundled; it is downloaded from the R2 bucket.
-  const WASM_GZ_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/filmcraft-web/0.17.0/filmcraft_web_bg.wasm.gz';
-  const gz = await fetch(WASM_GZ_URL);
-  if (!gz.ok) throw new Error(`HTTP ${gz.status} fetching wasm`);
-  const wasmResponse = new Response(gz.body.pipeThrough(new DecompressionStream('gzip')), { headers: { 'Content-Type': 'application/wasm' } });
-  await init({ module_or_path: wasmResponse });
+  // The wasm is not bundled; it is downloaded from the R2 bucket.
+  const WASM_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/filmcraft-web/0.17.0/filmcraft_web_bg.wasm';
+  await init({ module_or_path: WASM_URL });
   window.filmcraftLoad.wasmMs = performance.now() - t0;
   await start("filmcraft_canvas");
   window.filmcraftLoad.readyMs = performance.now() - t0;

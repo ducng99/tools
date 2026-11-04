@@ -3,10 +3,11 @@
 // Usage: bun scripts/update-craft.ts [tool] [version] [--dry-run]   (default: all tools, latest releases)
 //
 // Every tool is vendored the same way:
-//   public/<tool>-web/    patched index.html, glue JS and other runtime assets, licenses
-//   R2 bucket             the gzipped wasm (and any other large asset, see bucketAssets) at
-//                         <slug>-web/<version>/<file>.gz, fetched at runtime
-//                         from the bucket's public URL. Uploaded through R2's S3 API with
+//   public/<tool>-web/    patched index.html, assets that must be same-origin (workers), licenses
+//   R2 bucket             the wasm and the ES modules (glue JS, wasm-bindgen snippets, see
+//                         bucketModules) as-is at <slug>-web/<version>/<file>, and any other large
+//                         asset (see bucketAssets) at <slug>-web/<version>/<file>, fetched
+//                         at runtime from the bucket's public URL. Uploaded through R2's S3 API with
 //                         Bun's S3Client, so the environment needs S3_ACCESS_KEY_ID,
 //                         S3_SECRET_ACCESS_KEY and S3_ENDPOINT (see uploadToBucket).
 //
@@ -28,9 +29,10 @@ interface Craft {
     display: string;
     asset: RegExp; // release zip asset
     glue: RegExp; // JS glue to vendor
-    wasm: RegExp; // wasm to vendor gzipped under vendor/<slug>-web/
+    wasm: RegExp; // wasm to upload to the bucket
     extra?: RegExp[]; // additional runtime assets to vendor as-is
-    bucketAssets?: RegExp[]; // additional large runtime assets, gzipped into the bucket next to the wasm
+    bucketModules?: RegExp[]; // additional ES modules served from the bucket next to the glue
+    bucketAssets?: RegExp[]; // additional large runtime assets, uploaded to the bucket next to the wasm
     notice?: boolean; // zip has a NOTICE file to preserve
     kind: "trunk" | "filmcraft" | "lightcraft";
     loadingId?: string; // trunk only: element that shows load errors (none in pdfcraft)
@@ -70,9 +72,10 @@ const CRAFTS: Craft[] = [
         asset: /^photocraft-web-\d+\.\d+\.\d+\.zip$/,
         glue: /^photocraft-web-boot-.+\.js$/,
         wasm: /^photocraft-web-boot-.+_bg\.wasm$/,
-        // The boot wasm fetches app/parts.txt and the app chunks itself, so the app/ folder
-        // must be served as-is next to index.html.
-        extra: [/^app\//],
+        // The boot wasm fetches app/parts.txt and the app chunks itself, so they must be served
+        // as-is next to index.html. The app glue is imported by the boot glue and lives with it.
+        extra: [/^app\/parts\.txt$/, /^app\/.+\.part-/],
+        bucketModules: [/^app\/.+\.js$/],
         kind: "trunk",
         loadingId: "photocraft_loading",
     },
@@ -117,19 +120,19 @@ interface Release {
     assets: ReleaseAsset[];
 }
 
+function moduleKey(craft: Craft, version: string, name: string): string {
+    return `${craft.slug}-web/${version}/${name}`;
+}
+
+function moduleUrl(craft: Craft, version: string, name: string): string {
+    return `${R2_PUBLIC_URL}/${moduleKey(craft, version, name)}`;
+}
+
 function formatBytes(bytes: number): string {
     if (bytes >= 1024 * 1024) {
         return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
     }
     return `${Math.round(bytes / 1024)} KB`;
-}
-
-function gzKey(craft: Craft, version: string, wasmName: string): string {
-    return `${craft.slug}-web/${version}/${wasmName}.gz`;
-}
-
-function gzUrl(craft: Craft, version: string, wasmName: string): string {
-    return `${R2_PUBLIC_URL}/${gzKey(craft, version, wasmName)}`;
 }
 
 async function existsInBucket(url: string): Promise<boolean> {
@@ -147,9 +150,9 @@ async function existsInBucket(url: string): Promise<boolean> {
 // bucket's public hostname is handled by a Cloudflare Cache Rule instead.
 const s3 = new S3Client({ bucket: R2_BUCKET, region: "auto" });
 
-async function uploadToBucket(key: string, data: Uint8Array): Promise<void> {
+async function uploadToBucket(key: string, data: Uint8Array, type: string): Promise<void> {
     try {
-        await s3.write(key, data, { type: "application/gzip" });
+        await s3.write(key, data, { type });
     }
     catch (err) {
         throw new Error(`S3 upload failed for ${key}`, { cause: err });
@@ -183,15 +186,11 @@ function trunkLoader(craft: Craft, glueName: string, wasmUrl: string): string {
     return `<script type="module">
 import init, * as bindings from './${glueName}';
 
-// The gzipped wasm is not bundled; it is downloaded from the R2 bucket.
-const WASM_GZ_URL = '${wasmUrl}';
+// The wasm is not bundled; it is downloaded from the R2 bucket.
+const WASM_URL = '${wasmUrl}';
 
 try {
-  const gz = await fetch(WASM_GZ_URL);
-  if (!gz.ok) throw new Error(\`HTTP \${gz.status} fetching wasm\`);
-  const wasmStream = gz.body.pipeThrough(new DecompressionStream('gzip'));
-  const wasmResponse = new Response(wasmStream, { headers: { 'Content-Type': 'application/wasm' } });
-  const wasm = await init({ module_or_path: wasmResponse });
+  const wasm = await init({ module_or_path: WASM_URL });
 
   window.wasmBindings = bindings;
 
@@ -218,12 +217,9 @@ const params = new URLSearchParams(location.search);
 try {
   const { default: init, start } = await import("./${glueName}" + v);
 
-  // The gzipped wasm is not bundled; it is downloaded from the R2 bucket.
-  const WASM_GZ_URL = '${wasmUrl}';
-  const gz = await fetch(WASM_GZ_URL);
-  if (!gz.ok) throw new Error(\`HTTP \${gz.status} fetching wasm\`);
-  const wasmResponse = new Response(gz.body.pipeThrough(new DecompressionStream('gzip')), { headers: { 'Content-Type': 'application/wasm' } });
-  await init({ module_or_path: wasmResponse });
+  // The wasm is not bundled; it is downloaded from the R2 bucket.
+  const WASM_URL = '${wasmUrl}';
+  await init({ module_or_path: WASM_URL });
   window.filmcraftLoad.wasmMs = performance.now() - t0;
   await start("filmcraft_canvas");
   window.filmcraftLoad.readyMs = performance.now() - t0;
@@ -248,22 +244,18 @@ function lightcraftLoader(glueName: string, wasmUrl: string, fontUrl: string): s
 import init, { start, command } from "./${glueName}";
 (async () => {
   // The Chinese font is a separate file: embedding it would exceed the host's WASM size limit.
-  // Like the wasm, the gzipped font is downloaded from the R2 bucket.
-  const FONT_GZ_URL = '${fontUrl}';
-  const chineseFont = fetch(FONT_GZ_URL).then(async response => {
+  // Like the wasm, the font is downloaded from the R2 bucket.
+  const FONT_URL = '${fontUrl}';
+  const chineseFont = fetch(FONT_URL).then(async response => {
     if (!response.ok) throw new Error(\`HTTP \${response.status} fetching font\`);
-    const font = await new Response(response.body.pipeThrough(new DecompressionStream('gzip'))).arrayBuffer();
-    return new Uint8Array(font);
+    return new Uint8Array(await response.arrayBuffer());
   });
 
-  // The gzipped wasm is not bundled; it is downloaded from the R2 bucket.
-  const WASM_GZ_URL = '${wasmUrl}';
-  const gz = await fetch(WASM_GZ_URL);
-  if (!gz.ok) throw new Error(\`HTTP \${gz.status} fetching wasm\`);
-  const wasmResponse = new Response(gz.body.pipeThrough(new DecompressionStream('gzip')), { headers: { 'Content-Type': 'application/wasm' } });
+  // The wasm is not bundled; it is downloaded from the R2 bucket.
+  const WASM_URL = '${wasmUrl}';
   // Compile once; the render workers (worker.js) instantiate the same compiled module.
   const [module, font] = await Promise.all([
-    WebAssembly.compileStreaming(wasmResponse),
+    WebAssembly.compileStreaming(fetch(WASM_URL)),
     chineseFont,
   ]);
   globalThis.lightcraftModule = module;
@@ -279,7 +271,7 @@ import init, { start, command } from "./${glueName}";
 </script>`;
 }
 
-function patchIndexHtml(craft: Craft, html: string, glueName: string, wasmUrl: string, bucketUrls: string[]): string {
+function patchIndexHtml(craft: Craft, html: string, glueName: string, wasmUrl: string, bucketUrls: string[], moduleUrls: Map<string, string>): string {
     let patched: string;
     if (craft.kind === "filmcraft") {
         patched = html.replace(/<script type="module">[\s\S]*?<\/script>/, () => filmcraftLoader(glueName, wasmUrl, html));
@@ -290,9 +282,15 @@ function patchIndexHtml(craft: Craft, html: string, glueName: string, wasmUrl: s
     else {
         patched = html.replace(/<script type="module">[\s\S]*?<\/script>/, () => trunkLoader(craft, glueName, wasmUrl));
     }
-    if (!patched.includes("WASM_GZ_URL")) {
+    if (!patched.includes("WASM_URL")) {
         throw new Error("Could not find the wasm loader script in index.html");
     }
+    // Modules (and their modulepreload links) are served from the bucket.
+    for (const [name, url] of moduleUrls) {
+        patched = patched.replaceAll(`"./${name}"`, `"${url}"`).replaceAll(`'./${name}'`, `'${url}'`);
+    }
+    // Preloads that still point at a local path refer to files that are not served from here.
+    patched = patched.replace(/<link rel="modulepreload" href="\.\/[^"]*"[^>]*>/g, "");
     // The raw wasm is not served from here, so a preload would just 404.
     patched = patched.replace(/<link rel="preload"[^>]*_bg\.wasm[^>]*>\n?/, "");
     // The tools run in an iframe, so favicons are dead weight (filmcraft shows one in its
@@ -300,6 +298,38 @@ function patchIndexHtml(craft: Craft, html: string, glueName: string, wasmUrl: s
     patched = patched.replace(/<link rel="icon"[^>]*>\n?/g, "");
     patched = patched.replace(/<img src="favicon\.png"[^>]*>\n?/g, "");
     return patched;
+}
+
+// Relative imports of an ES module (static, side-effect and dynamic).
+function relativeImports(source: string): string[] {
+    const specifiers = new Set<string>();
+    for (const match of source.matchAll(/(?:\bfrom\s*|\bimport\s*\(?\s*)["'](\.{1,2}\/[^"']+)["']/g)) {
+        specifiers.add(match[1]);
+    }
+    return [...specifiers];
+}
+
+// Adds every module that the bucket modules import, at the path the importer resolves it to.
+// The zip may lay a file out differently than its importer expects (e.g. snippets/ at the root
+// while app/<glue>.js imports ./snippets/), so a missing target falls back to the zip file with the
+// same path relative to the zip root.
+function addImportedModules(files: Map<string, Uint8Array>, modules: [string, Uint8Array][]): void {
+    const included = new Set(modules.map(([name]) => name));
+    for (let index = 0; index < modules.length; index++) {
+        const [importer, data] = modules[index];
+        for (const specifier of relativeImports(new TextDecoder().decode(data))) {
+            const target = path.posix.join(path.posix.dirname(importer), specifier);
+            if (included.has(target)) {
+                continue;
+            }
+            const source = files.get(target) ?? files.get(path.posix.normalize(specifier).replace(/^(\.\.\/)+/, ""));
+            if (!source) {
+                throw new Error(`${importer} imports ${specifier}, which is not in the release zip`);
+            }
+            modules.push([target, source]);
+            included.add(target);
+        }
+    }
 }
 
 function pick(files: Map<string, Uint8Array>, pattern: RegExp): [string, Uint8Array] {
@@ -346,37 +376,51 @@ async function updateCraft(craft: Craft, versionArg: string | undefined, dryRun:
     const [glueName, glue] = pick(files, craft.glue);
     const [wasmName, wasm] = pick(files, craft.wasm);
     const extras = (craft.extra ?? []).flatMap(pattern => pickAll(files, pattern));
+    const modules: [string, Uint8Array][] = [
+        [glueName, glue],
+        ...(craft.bucketModules ?? []).flatMap(pattern => pickAll(files, pattern)),
+    ];
+    addImportedModules(files, modules);
     const bucketAssets = (craft.bucketAssets ?? []).flatMap(pattern => pickAll(files, pattern));
     const licenses = pickAll(files, /^(?:LICENSE-(?:MIT|APACHE)|OFL-.+\.txt)$/);
     const notices = craft.notice ? pickAll(files, /^NOTICE$/) : [];
 
     // fflate always hands out plain ArrayBuffer-backed views, but its types say ArrayBufferLike.
-    const gz = Bun.gzipSync(wasm as Uint8Array<ArrayBuffer>, { level: 9 });
-    const key = gzKey(craft, version, wasmName);
-    const wasmUrl = gzUrl(craft, version, wasmName);
+    const key = moduleKey(craft, version, wasmName);
+    const wasmUrl = moduleUrl(craft, version, wasmName);
 
-    const bucketUploads = bucketAssets.map(([name, data]) => ({
-        name,
-        key: gzKey(craft, version, name),
-        url: gzUrl(craft, version, name),
-        gz: Bun.gzipSync(data as Uint8Array<ArrayBuffer>, { level: 9 }),
-    }));
+    const assetUrls = bucketAssets.map(([name]) => moduleUrl(craft, version, name));
 
-    const patchedHtml = patchIndexHtml(craft, new TextDecoder().decode(indexData), glueName, wasmUrl, bucketUploads.map(entry => entry.url));
+    const moduleUrls = new Map(modules.map(([name]) => [name, moduleUrl(craft, version, name)]));
+    const patchedHtml = patchIndexHtml(craft, new TextDecoder().decode(indexData), glueName, wasmUrl, assetUrls, moduleUrls);
+
+    // Same-origin scripts (workers) that import the glue must import it from the bucket.
+    const localExtras: [string, Uint8Array][] = extras.map(([name, data]) => {
+        if (!name.endsWith(".js")) {
+            return [name, data];
+        }
+        let text = new TextDecoder().decode(data);
+        for (const [moduleName, url] of moduleUrls) {
+            text = text.replaceAll(`"./${moduleName}"`, `"${url}"`);
+        }
+        return [name, new TextEncoder().encode(text)];
+    });
 
     const publicDir = path.join(ROOT, "public", `${craft.slug}-web`);
 
     const currentHtml = existsSync(path.join(publicDir, "index.html"))
         ? await readFile(path.join(publicDir, "index.html"), "utf8")
         : null;
+    const vendoredFiles = [...extras.map(([name]) => name), ...licenses.map(([name]) => name), ...notices.map(([name]) => name)];
+    const allFilesPresent = vendoredFiles.every(name => existsSync(path.join(publicDir, name)));
     const uploaded = await existsInBucket(wasmUrl);
-    const assetsUploaded = (await Promise.all(bucketUploads.map(entry => existsInBucket(entry.url)))).every(Boolean);
-    if (currentHtml === patchedHtml && ((uploaded && assetsUploaded) || dryRun)) {
+    const assetsUploaded = (await Promise.all([...assetUrls, ...moduleUrls.values()].map(existsInBucket))).every(Boolean);
+    if (currentHtml === patchedHtml && allFilesPresent && ((uploaded && assetsUploaded) || dryRun)) {
         console.log(`  v${version} is already vendored, nothing to do.`);
         return;
     }
 
-    console.log(`  wasm ${formatBytes(wasm.length)} -> ${key} ${formatBytes(gz.length)}`);
+    console.log(`  wasm ${formatBytes(wasm.length)} -> ${key}`);
 
     if (uploaded) {
         console.log(`  ${key} is already in the bucket, skipping upload.`);
@@ -385,36 +429,53 @@ async function updateCraft(craft: Craft, versionArg: string | undefined, dryRun:
         console.log(`  dry run: not uploading ${key}`);
     }
     else {
-        await uploadToBucket(key, gz);
+        await uploadToBucket(key, wasm, "application/wasm");
     }
 
-    for (const entry of bucketUploads) {
-        console.log(`  ${entry.name} ${formatBytes(bucketAssets.find(([name]) => name === entry.name)![1].length)} -> ${entry.key} ${formatBytes(entry.gz.length)}`);
-        if (await existsInBucket(entry.url)) {
-            console.log(`  ${entry.key} is already in the bucket, skipping upload.`);
+    for (const [name, data] of modules) {
+        const moduleKeyName = moduleKey(craft, version, name);
+        if (await existsInBucket(moduleUrls.get(name)!)) {
+            console.log(`  ${moduleKeyName} is already in the bucket, skipping upload.`);
         }
         else if (dryRun) {
-            console.log(`  dry run: not uploading ${entry.key}`);
+            console.log(`  dry run: not uploading ${moduleKeyName}`);
         }
         else {
-            await uploadToBucket(entry.key, entry.gz);
+            await uploadToBucket(moduleKeyName, data, "text/javascript");
+        }
+    }
+
+    for (const [name, data] of bucketAssets) {
+        const assetKey = moduleKey(craft, version, name);
+        console.log(`  ${name} ${formatBytes(data.length)} -> ${assetKey}`);
+        if (await existsInBucket(moduleUrl(craft, version, name))) {
+            console.log(`  ${assetKey} is already in the bucket, skipping upload.`);
+        }
+        else if (dryRun) {
+            console.log(`  dry run: not uploading ${assetKey}`);
+        }
+        else {
+            await uploadToBucket(assetKey, data, "font/otf");
         }
     }
 
     await rm(publicDir, { recursive: true, force: true });
     await mkdir(publicDir, { recursive: true });
     await writeFile(path.join(publicDir, "index.html"), patchedHtml);
-    for (const [name, data] of [[glueName, glue], ...extras, ...licenses, ...notices] as [string, Uint8Array][]) {
+    for (const [name, data] of [...localExtras, ...licenses, ...notices] as [string, Uint8Array][]) {
         const dest = path.join(publicDir, name);
         await mkdir(path.dirname(dest), { recursive: true });
         await writeFile(dest, data);
     }
 
-    const vendored = ["index.html", glueName, ...extras.map(([name]) => name), ...licenses.map(([name]) => name), ...notices.map(([name]) => name)];
+    const vendored = ["index.html", ...extras.map(([name]) => name), ...licenses.map(([name]) => name), ...notices.map(([name]) => name)];
     console.log(`  public/${craft.slug}-web: ${vendored.join(", ")}`);
     console.log(`  ${wasmUrl}`);
-    for (const entry of bucketUploads) {
-        console.log(`  ${entry.url}`);
+    for (const url of moduleUrls.values()) {
+        console.log(`  ${url}`);
+    }
+    for (const url of assetUrls) {
+        console.log(`  ${url}`);
     }
 }
 
