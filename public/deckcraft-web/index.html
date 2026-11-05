@@ -6,10 +6,10 @@
   <title>DeckCraft</title>
   
 <script type="module">
-import init, * as bindings from 'https://artcraft-tools-wasm.buckets.tomng.dev/deckcraft-web/0.15.0/deckcraft-web-fe3347a36095bb06.js';
+import init, * as bindings from 'https://artcraft-tools-wasm.buckets.tomng.dev/deckcraft-web/0.15.1/deckcraft-web-795cd55361f835bc.js';
 
 // The wasm is not bundled; it is downloaded from the R2 bucket.
-const WASM_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/deckcraft-web/0.15.0/deckcraft-web-fe3347a36095bb06_bg.wasm';
+const WASM_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/deckcraft-web/0.15.1/deckcraft-web-795cd55361f835bc_bg.wasm';
 
 try {
   const wasm = await init({ module_or_path: WASM_URL });
@@ -28,7 +28,7 @@ try {
     #deckcraft_loading { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
       color: #b8b8b8; font: 14px system-ui, sans-serif; pointer-events: none; }
   </style>
-<link rel="modulepreload" href="https://artcraft-tools-wasm.buckets.tomng.dev/deckcraft-web/0.15.0/deckcraft-web-fe3347a36095bb06.js" crossorigin="anonymous" integrity="sha384-muRliuYxdnCt80afVnTYw/iKoH1WhUX3nWjxkMPrVdTOeZp4WdojKepo2wDlc2IE"><link rel="modulepreload" href="https://artcraft-tools-wasm.buckets.tomng.dev/deckcraft-web/0.15.0/snippets/eframe-d31a8450ea12dfc1/inline0.js" crossorigin="anonymous" integrity="sha384-uPZQ72BwgZ4v7Km6+UIFbkDDlt7ShGEsAVEHVN/+wZSGFhItJZB83iKMFQXauTSs"></head>
+<link rel="modulepreload" href="https://artcraft-tools-wasm.buckets.tomng.dev/deckcraft-web/0.15.1/deckcraft-web-795cd55361f835bc.js" crossorigin="anonymous" integrity="sha384-pf/IQCqFTu0WG7bw3cOmWhmG8VtvgsVNdMEL1W8YMDW4HUQqPOfxoAnJvlUTPJYP"><link rel="modulepreload" href="https://artcraft-tools-wasm.buckets.tomng.dev/deckcraft-web/0.15.1/snippets/eframe-d31a8450ea12dfc1/inline0.js" crossorigin="anonymous" integrity="sha384-uPZQ72BwgZ4v7Km6+UIFbkDDlt7ShGEsAVEHVN/+wZSGFhItJZB83iKMFQXauTSs"></head>
 <body>
   <canvas id="deckcraft_canvas"></canvas>
   <div id="deckcraft_loading">Loading DeckCraft&hellip;</div>
