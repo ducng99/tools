@@ -21,18 +21,18 @@
   <div id="lightcraft_loading">Loading LightCraft…</div>
   <div id="lightcraft_status" aria-live="polite"></div>
   <script type="module">
-import init, { start, command } from "https://artcraft-tools-wasm.buckets.tomng.dev/lightcraft-web/0.18.1/lightcraft_web.js";
+import init, { start, command } from "https://artcraft-tools-wasm.buckets.tomng.dev/lightcraft-web/0.19.0/lightcraft_web.js";
 (async () => {
   // The Chinese font is a separate file: embedding it would exceed the host's WASM size limit.
   // Like the wasm, the font is downloaded from the R2 bucket.
-  const FONT_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/lightcraft-web/0.18.1/lightcraft_zh_hans.otf';
+  const FONT_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/lightcraft-web/0.19.0/lightcraft_zh_hans.otf';
   const chineseFont = fetch(FONT_URL).then(async response => {
     if (!response.ok) throw new Error(`HTTP ${response.status} fetching font`);
     return new Uint8Array(await response.arrayBuffer());
   });
 
   // The wasm is not bundled; it is downloaded from the R2 bucket.
-  const WASM_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/lightcraft-web/0.18.1/lightcraft_web_bg.wasm';
+  const WASM_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/lightcraft-web/0.19.0/lightcraft_web_bg.wasm';
   // Compile once; the render workers (worker.js) instantiate the same compiled module.
   const [module, font] = await Promise.all([
     WebAssembly.compileStreaming(fetch(WASM_URL)),

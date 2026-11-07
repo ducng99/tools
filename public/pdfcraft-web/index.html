@@ -6,10 +6,10 @@
     <title>PdfCraft</title>
     
 <script type="module">
-import init, * as bindings from 'https://artcraft-tools-wasm.buckets.tomng.dev/pdfcraft-web/0.18.2/pdfcraft-web-87352eb54998b79.js';
+import init, * as bindings from 'https://artcraft-tools-wasm.buckets.tomng.dev/pdfcraft-web/0.19.0/pdfcraft-web-479fd1d14d164a34.js';
 
 // The wasm is not bundled; it is downloaded from the R2 bucket.
-const WASM_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/pdfcraft-web/0.18.2/pdfcraft-web-87352eb54998b79_bg.wasm';
+const WASM_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/pdfcraft-web/0.19.0/pdfcraft-web-479fd1d14d164a34_bg.wasm';
 
 try {
   const wasm = await init({ module_or_path: WASM_URL });
@@ -27,7 +27,7 @@ try {
       canvas { width: 100%; height: 100%; display: block; outline: none; }
       @media (prefers-color-scheme: dark) { html, body { background: #19191c; } }
     </style>
-  <link rel="modulepreload" href="https://artcraft-tools-wasm.buckets.tomng.dev/pdfcraft-web/0.18.2/pdfcraft-web-87352eb54998b79.js" crossorigin="anonymous" integrity="sha384-Z++CJfxVybE/NeDpzebUrpTXzicXGHBYFKORXnixtzljJfXbZllQRX1+/W9ImxqU"><link rel="modulepreload" href="https://artcraft-tools-wasm.buckets.tomng.dev/pdfcraft-web/0.18.2/snippets/eframe-d31a8450ea12dfc1/inline0.js" crossorigin="anonymous" integrity="sha384-uPZQ72BwgZ4v7Km6+UIFbkDDlt7ShGEsAVEHVN/+wZSGFhItJZB83iKMFQXauTSs"></head>
+  <link rel="modulepreload" href="https://artcraft-tools-wasm.buckets.tomng.dev/pdfcraft-web/0.19.0/pdfcraft-web-479fd1d14d164a34.js" crossorigin="anonymous" integrity="sha384-9dX3Z3SKd/BVK5Jvv1MX1vJdn87aEozjSZ/FdE9Au14FrvQpE4lBbVew+0wt2BGI"><link rel="modulepreload" href="https://artcraft-tools-wasm.buckets.tomng.dev/pdfcraft-web/0.19.0/snippets/eframe-d31a8450ea12dfc1/inline0.js" crossorigin="anonymous" integrity="sha384-uPZQ72BwgZ4v7Km6+UIFbkDDlt7ShGEsAVEHVN/+wZSGFhItJZB83iKMFQXauTSs"></head>
   <body>
     <canvas id="pdfcraft"></canvas>
   </body>

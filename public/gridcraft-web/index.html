@@ -6,10 +6,10 @@
   <title>GridCraft</title>
     
 <script type="module">
-import init, * as bindings from 'https://artcraft-tools-wasm.buckets.tomng.dev/gridcraft-web/0.16.1/gridcraft-web-8808afb15924690b.js';
+import init, * as bindings from 'https://artcraft-tools-wasm.buckets.tomng.dev/gridcraft-web/0.17.0/gridcraft-web-7c84705221d6ac9f.js';
 
 // The wasm is not bundled; it is downloaded from the R2 bucket.
-const WASM_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/gridcraft-web/0.16.1/gridcraft-web-8808afb15924690b_bg.wasm';
+const WASM_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/gridcraft-web/0.17.0/gridcraft-web-7c84705221d6ac9f_bg.wasm';
 
 try {
   const wasm = await init({ module_or_path: WASM_URL });
@@ -28,7 +28,7 @@ try {
     #gridcraft_loading { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
       color: #555; font: 14px system-ui, sans-serif; pointer-events: none; }
   </style>
-<link rel="modulepreload" href="https://artcraft-tools-wasm.buckets.tomng.dev/gridcraft-web/0.16.1/gridcraft-web-8808afb15924690b.js" crossorigin="anonymous" integrity="sha384-Mo7tK7IzNGTVUOx946+Gzj1m5Lr6Zi9DLNuq9BPIWmOhdU7p068+HM0Hg02K6iaF"><link rel="modulepreload" href="https://artcraft-tools-wasm.buckets.tomng.dev/gridcraft-web/0.16.1/snippets/eframe-d31a8450ea12dfc1/inline0.js" crossorigin="anonymous" integrity="sha384-uPZQ72BwgZ4v7Km6+UIFbkDDlt7ShGEsAVEHVN/+wZSGFhItJZB83iKMFQXauTSs"></head>
+<link rel="modulepreload" href="https://artcraft-tools-wasm.buckets.tomng.dev/gridcraft-web/0.17.0/gridcraft-web-7c84705221d6ac9f.js" crossorigin="anonymous" integrity="sha384-OqieK8nlY98BRvW65XcNEfx2zHVOn6CnHhom+Ikrfq0x4d+4wJuMqjnHRDEJ7kjs"><link rel="modulepreload" href="https://artcraft-tools-wasm.buckets.tomng.dev/gridcraft-web/0.17.0/snippets/eframe-d31a8450ea12dfc1/inline0.js" crossorigin="anonymous" integrity="sha384-uPZQ72BwgZ4v7Km6+UIFbkDDlt7ShGEsAVEHVN/+wZSGFhItJZB83iKMFQXauTSs"></head>
 <body>
   <canvas id="gridcraft_canvas"></canvas>
   <div id="gridcraft_loading">Loading GridCraft&hellip;</div>
