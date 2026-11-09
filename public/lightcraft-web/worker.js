@@ -1,7 +1,7 @@
 // LightCraft render worker: a second instance of the app's wasm module that renders jobs posted
 // by the page (see apps/lightcraft-web/src/workers.rs). The first message carries the compiled
 // WebAssembly.Module and the storage backend kind; the module then takes over `onmessage`.
-import init, { worker_main } from "https://artcraft-tools-wasm.buckets.tomng.dev/lightcraft-web/0.19.0/lightcraft_web.js";
+import init, { worker_main } from "https://artcraft-tools-wasm.buckets.tomng.dev/lightcraft-web/0.20.0/lightcraft_web.js";
 
 self.onmessage = async (e) => {
   self.onmessage = null;

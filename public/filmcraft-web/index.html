@@ -64,17 +64,17 @@
     addEventListener("unhandledrejection", (ev) => { if (window.filmcraftLoad.readyMs && isFatal(ev.reason)) window.filmcraftFatal(ev.reason); });
   </script>
   <script type="module">
-// `151dcbe41b993dbe` is replaced by `cargo xtask web` with a hash of the build: the glue is cached as
+// `a5181740cd9e2fec` is replaced by `cargo xtask web` with a hash of the build: the glue is cached as
 // immutable, so its URL must change with every build.
-const build = "151dcbe41b993dbe";
+const build = "a5181740cd9e2fec";
 const v = build.startsWith("__") ? "" : "?v=" + build;
 const t0 = performance.now();
 const params = new URLSearchParams(location.search);
 try {
-  const { default: init, start } = await import("https://artcraft-tools-wasm.buckets.tomng.dev/filmcraft-web/0.18.0/filmcraft_web.js" + v);
+  const { default: init, start } = await import("https://artcraft-tools-wasm.buckets.tomng.dev/filmcraft-web/0.19.0/filmcraft_web.js" + v);
 
   // The wasm is not bundled; it is downloaded from the R2 bucket.
-  const WASM_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/filmcraft-web/0.18.0/filmcraft_web_bg.wasm';
+  const WASM_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/filmcraft-web/0.19.0/filmcraft_web_bg.wasm';
   await init({ module_or_path: WASM_URL });
   window.filmcraftLoad.wasmMs = performance.now() - t0;
   await start("filmcraft_canvas");
