@@ -6,10 +6,10 @@
     <title>PdfCraft</title>
     
 <script type="module">
-import init, * as bindings from 'https://artcraft-tools-wasm.buckets.tomng.dev/pdfcraft-web/0.20.0/pdfcraft-web-c21a6b0e183b9cb3.js';
+import init, * as bindings from 'https://artcraft-tools-wasm.buckets.tomng.dev/pdfcraft-web/0.21.1/pdfcraft-web-dbf16682ba914f2f.js';
 
 // The wasm is not bundled; it is downloaded from the R2 bucket.
-const WASM_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/pdfcraft-web/0.20.0/pdfcraft-web-c21a6b0e183b9cb3_bg.wasm';
+const WASM_URL = 'https://artcraft-tools-wasm.buckets.tomng.dev/pdfcraft-web/0.21.1/pdfcraft-web-dbf16682ba914f2f_bg.wasm';
 
 try {
   const wasm = await init({ module_or_path: WASM_URL });
@@ -29,7 +29,7 @@ try {
       canvas { width: 100%; height: 100%; display: block; outline: none; }
       @media (prefers-color-scheme: dark) { html, body { background: #19191c; } }
     </style>
-  <link rel="modulepreload" href="https://artcraft-tools-wasm.buckets.tomng.dev/pdfcraft-web/0.20.0/pdfcraft-web-c21a6b0e183b9cb3.js" crossorigin="anonymous" integrity="sha384-pfKK1IkGhf9/zlYmsOPpIiL5JxvCSVkHV3a699hFeIxU9QVU/qhCaVq2Q8NdgyiE"><link rel="modulepreload" href="https://artcraft-tools-wasm.buckets.tomng.dev/pdfcraft-web/0.20.0/snippets/eframe-d31a8450ea12dfc1/inline0.js" crossorigin="anonymous" integrity="sha384-uPZQ72BwgZ4v7Km6+UIFbkDDlt7ShGEsAVEHVN/+wZSGFhItJZB83iKMFQXauTSs">  <meta name="pdfcraft-ocr-worker" content="./pdfcraft-ocr-worker-f86b69bf2c91740f_loader.js" />
+  <link rel="modulepreload" href="https://artcraft-tools-wasm.buckets.tomng.dev/pdfcraft-web/0.21.1/pdfcraft-web-dbf16682ba914f2f.js" crossorigin="anonymous" integrity="sha384-3EU6LfMF3wq1uLfzCb/xMYmvJDvUZsR6e4kUHdxP0cacowYFcmg1qSEmCI16EqEL"><link rel="modulepreload" href="https://artcraft-tools-wasm.buckets.tomng.dev/pdfcraft-web/0.21.1/snippets/eframe-d31a8450ea12dfc1/inline0.js" crossorigin="anonymous" integrity="sha384-uPZQ72BwgZ4v7Km6+UIFbkDDlt7ShGEsAVEHVN/+wZSGFhItJZB83iKMFQXauTSs">  <meta name="pdfcraft-ocr-worker" content="./pdfcraft-ocr-worker-b363fe94bbdd0923_loader.js" />
   </head>
   <body>
     <canvas id="pdfcraft"></canvas>
